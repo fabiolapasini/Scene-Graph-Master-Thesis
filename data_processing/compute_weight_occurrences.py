@@ -134,4 +134,4 @@ def main():
     read_relationships_json(args)
 
 
-if __name__ == "__main__": main()
+#if __name__ == "__main__": main()
