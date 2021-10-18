@@ -1,0 +1,528 @@
+air conditioner	
+apron	
+aquarium	
+armchair	
+armoire	large
+armor	protective
+audio system	
+baby bed	small
+baby changing table	
+baby changing unit	
+baby gym	athletic
+baby seat	
+baby toys	
+backpack	
+bag	flexible
+balcony	
+balcony door	
+ball	spherical
+bar	
+bar stool	simple
+barrel	cylindrical
+barstool	simple
+basin	
+basket	
+bath cabinet	
+bath counter	
+bath rack	
+bath robe	loose
+bathrobe	fitting
+bathroom items	whole, individual
+bathtub	large, open
+bbq	
+beam	thick
+bean bag	small
+beanbag	small
+beautician	flexible
+bed	
+bed table	
+bedside table	
+bench	long
+beverage crate	rugged
+bicycle	wheeled
+bidet	
+bike	wheeled
+bin	
+blackboard	
+blanket	
+blinds	protective
+board	flat
+body loofah	porous
+boiler	
+book	physical
+books	physical
+bookshelf	
+boots	
+bottle	
+bottles	
+bowl	
+box	rectangular
+boxes	rectangular
+bread	
+breadboard	
+brochure	small
+brush	
+bucket	cylindrical
+buggy	small, lightweight
+bulletin board	
+cabinet	
+cable	strong, thick
+cable rack	
+calendar	
+can	airtight
+candle	
+candles	
+candlestick	
+canopy	
+cap	fitting
+carpet	
+carriage	small
+cart	wheeled
+case	portable
+ceiling	overhead, upper
+ceiling /other room	overhead, upper
+ceiling light	
+chair	
+chairs	
+chandelier	
+changing table	
+chest	
+child chair	
+child clothes	
+children's table	
+cleaning agent	
+cleaning brush	
+cleanser	
+clock	
+closet	tall
+closet door	
+cloth	
+clothes	
+clothes dryer	
+clothes rack	
+clutter	confused
+coat	outer
+coffee	
+coffee machine	
+coffee maker	
+coffee table	low
+column	
+commode	tall, elegant
+computer	
+computer desk	
+console	small
+container	
+cooking pot	
+corner bench	long
+cosmetics kit	flexible
+couch	upholstered
+couch table	
+counter	
+cover	
+cradle	
+crate	rugged
+crib	
+cube	
+cup	small, open
+cupboard	small
+cups	small, open
+curtain	
+curtain rail	long, thin
+cushion	soft
+cushions stack	soft
+cut board	wooden
+cutting board	wooden
+cycling trainer	
+darts	small, narrow, pointed
+decoration	
+desk	
+desk chair	
+device	
+diapers	
+dining chair	
+dining set	
+dining table	
+discs	
+dish	
+dish dryer	
+dishdrainer	
+dishes	
+dishwasher	
+dispenser	
+documents	
+dog	
+doll	small
+door	
+door /other room	
+door mat	
+doorframe	
+doorframe /other room	
+drain pipe	long
+drawer	boxlike
+drawers	boxlike
+drawers rack	
+dress	
+dresser	
+dressing table	low
+drinks	single
+drum	musical
+drying machine	
+drying rack	
+dumbbells	
+elevator	
+elliptical trainer	
+exhaust hood	
+exit sign	public
+extractor fan	
+fabric	
+fan	
+fence	
+festoon	
+figure	decorative
+file cabinet	
+fire extinguisher	
+fireplace	open
+firewood box	rectangular
+flag	
+flipchart	vertical
+floor	inside, lower, horizontal
+floor /other room	inside, lower, horizontal
+floor lamp	
+floor mat	thick, flat
+flower	
+flowers	
+flush	
+folded beach chairs	
+folder	
+folding chair	
+food	solid
+foosball table	
+footstool	low
+frame	
+fridge	
+fruit	reproductive
+fruit plate	
+fruits	reproductive
+furniture	
+garbage	
+garbage bin	
+garden umbrella	handheld, collapsible
+generator	electronic
+glass	
+glass wall	
+grass	leaved, green
+guitar	stringed
+gymnastic ball	round
+hair dryer	electric
+hand brush	
+hand dryer	electric
+hand washer	
+handbag	
+handhold	
+handle	
+handrail	
+hanger	
+hangers	
+hanging cabinet	
+headboard	vertical
+heater	
+helmet	protective
+hood	
+humidifier	
+hygiene products	whole, individual
+instrument	
+iron	
+ironing board	narrow
+item	whole, individual
+items	whole, individual
+jacket	short
+jalousie	
+jar	
+jug	large
+juicer	
+kettle	
+keyboard	
+kids bicycle	wheeled
+kids chair	
+kids rocking chair	
+kids stool	simple
+kids table	
+kitchen appliance	
+kitchen cabinet	
+kitchen counter	
+kitchen hood	
+kitchen item	whole, individual
+kitchen object	tangible
+kitchen playset	
+kitchen rack	
+kitchen sink	
+kitchen sofa	upholstered
+kitchen towel	rectangular
+knife box	
+ladder	
+lamp	artificial
+laptop	portable
+laundry basket	
+letter	
+light	
+linen	
+locker	
+lockers	
+loft bed	
+lounger	
+luggage	
+machine	mechanical
+magazine	periodic
+magazine files	periodic
+magazine rack	
+magazine stand	
+mandarins	flat, loose, skinned
+mannequin	
+mask	protective
+mattress	large, thick
+medical device	
+menu	
+meter	
+microwave	
+milk	white, nutritious
+mirror	polished
+monitor	
+mop	
+multicooker	
+napkins	small
+newspaper	daily
+newspaper rack	
+nightstand	
+notebook	
+notebooks	small, compact, portable
+object	tangible
+objects	tangible
+office chair	
+office table	
+organizer	lightweight, electronic
+ottoman	low
+oven	
+oven glove	
+pack	convenient
+package	
+packs	convenient
+painting	
+pan	
+paper	daily
+paper cutter	
+paper holder	
+paper sign	nonverbal
+paper stack	daily
+paper towel	disposable
+paper towel dispenser	
+papers	daily
+partition	vertical
+pavement	
+pc	small, digital
+pepper	
+pet bed	soft
+photo frame	
+photos	
+piano	
+picture	
+pictures	
+pile	
+pile of books	physical
+pile of bottles	
+pile of candles	
+pile of folders	
+pile of papers	daily
+pile of pillows	
+pile of wires	
+pillar	
+pillow	
+pin board wall	flat
+pipe	tubular
+plank	stout
+plant	
+planter	decorative
+plants	
+plate	
+plates	
+platform	horizontal
+player	sized
+pocket	small
+podest	horizontal
+pooh	
+poster	
+pot	
+price tag	
+printer	
+projector	optical
+puf	
+puppet	
+rack	
+radiator	
+radio	electronic
+rag	small
+rail	horizontal
+railing	
+ramp	inclined
+recycle bin	
+refrigerator	white
+rocking chair	
+roll	
+rolled carpet	
+rolling cart	wheeled
+rolling pin	
+roof	protective
+round table	
+rowing machine	
+rubbish bin	
+rug	
+sack	
+salad	
+salt	white, crystalline
+sauce boat	
+scale	
+scarf	
+screen	
+seat	
+seat pad	
+sewing machine	textile
+shades	protective
+shampoo	
+sheets	
+shelf	
+shelf clutter	confused
+shelf of caps	fitting
+shelf unit	
+shelves	
+shirt	
+shoe	
+shoe box	rectangular
+shoe commode	
+shoe rack	
+shoe shelf	
+shoes	
+showcase	
+shower	
+shower curtain	
+shower door	
+shower floor	
+shower gel	thin
+shower wall	
+side table	
+sideboard	
+sidecouch	upholstered
+sidetable	
+sign	
+sink	
+sink counter	
+slanted wall	
+snowboard	
+soap	
+soap dish	
+soap dispenser	
+socket	
+sofa	upholstered
+sofa chair	
+sofa couch	upholstered
+speaker	acoustic
+spice	
+spices	
+sponge	porous
+spots	small
+squeezer	
+stair	
+stairs	
+stand	small
+star	
+statue	
+statuette	small
+stepladder	folding, portable
+stereo	
+stereo equipment	acoustic
+stick	long, thin
+stool	simple
+storage	
+storage bin	
+storage box	rectangular
+storage container	
+storage unit	
+stove	
+stroller	small
+stuffed animal	
+sugar packs	white
+suitcase	portable, rectangular
+switch	
+t-shirt	
+table	
+table lamp	
+table soccer	
+tablet	
+teapot	
+teddy bear	
+telephone	
+tennis raquet	
+tent	portable
+things	
+tile	flat, thin, rectangular
+tire	
+tissue pack	translucent
+toaster	
+toilet	
+toilet brush	whole, individual
+toilet paper	soft, thin, absorbent
+toilet paper dispenser	
+toilet paper holder	
+toiletry	
+tool wall	
+towel	rectangular
+towel basket	
+towels	rectangular
+toy	
+toy house	
+trash bin	
+trash can	
+trashcan	
+tray	open
+treadmill	
+tree	tall, perennial
+tree decoration	
+tube	
+tv	electronic
+tv stand	small
+tv table	
+typewriter	
+ukulele	small
+umbrella	handheld, collapsible
+upholstered wall	
+urinal	
+utensils	
+vacuum	electrical
+vacuum cleaner	electrical
+vase	open
+ventilation	mechanical
+ventilator	
+wall	architectural
+wall /other room	
+wall frame	
+wall plants	
+wall rack	
+wardrobe	tall
+wardrobe door	
+washbasin	
+washing basket	
+washing machine	
+washing powder	
+water	liquid, excretory
+water heater	
+watering can	
+weights	
+weigths	
+whiteboard	
+window	
+window board	horizontal
+window clutter	confused
+window frame	
+windows	
+windowsill	horizontal
+wood	hard, fibrous
+wood box	rectangular
+xbox

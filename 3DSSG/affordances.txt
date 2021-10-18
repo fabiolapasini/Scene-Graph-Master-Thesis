@@ -1,0 +1,528 @@
+air conditioner	cooling	turning on (off)	turning off (on)
+apron	wearing
+aquarium	decorating with
+armchair	sitting (empty)	laying on	sleeping	moving
+armoire	decorating with
+armor	decorating with
+audio system	listening to music (on)	turning off (on)	turning on (off)
+baby bed	laying on	sleeping
+baby changing table	changing on
+baby changing unit
+baby gym	exercising
+baby seat	sitting (empty)
+baby toys	decorating with	playing with
+backpack	carrying	placing	storing in	holding
+bag	carrying	holding	placing items in	storing in
+balcony	walking on	placing items on
+balcony door	walking through	closing (open)	opening (closed)
+ball	playing with
+bar	placing items on	drinking at
+bar stool	sitting (empty)
+barrel	placing items in
+barstool	sitting (empty)
+basin	washing dishes in
+basket	placing items in	moving
+bath cabinet	hanging	placing items on	placing items in (open)	storing in (open)
+bath counter	placing items on
+bath rack	placing items in	placing items on
+bath robe	wearing
+bathrobe	wearing	hanging
+bathroom items	washing in general	carrying	holding
+bathtub	taking a bath in
+bbq	eating	cooking
+beam
+bean bag	sitting (empty)	laying on
+beanbag	sitting (empty)	laying on	sleeping
+beautician	placing items in
+bed	sleeping	laying on	sitting (empty)	placing items on
+bed table	placing items on	placing items in
+bedside table	placing items on
+bench	sitting (empty)	placing items on	placing	moving
+beverage crate	placing items in	carrying
+bicycle	riding	placing
+bidet	using toilet	cleaning
+bike	riding
+bin	storing in	moving
+blackboard	writing on/in
+blanket	warming / making yourself comfortable	covering with	washing in general
+blinds	opening (half up/down, down)	closing (up, half up/down)	hanging
+board	writing on/in
+body loofah	washing with
+boiler	warming
+book	reading	storing in	storing on
+books	reading
+bookshelf	placing items on
+boots	wearing
+bottle	drinking from	carrying	holding
+bottles	drinking from	storing on	storing in
+bowl	placing items on	storing in
+box	carrying	placing items on (closed)	placing items in (open)	throwing away
+boxes	placing items in	placing items on	throwing away	moving
+bread	eating	cutting
+breadboard	cutting
+brochure	reading
+brush	cleaning	brushing with
+bucket	placing items in
+buggy	laying on	sleeping
+bulletin board	placing items on
+cabinet	placing items in	placing items on	closing (open)	opening (closed)
+cable
+cable rack	placing items in
+calendar	reading	hanging	storing on
+can	drinking from
+candle	lighting
+candles	burning	lighting
+candlestick	holding
+canopy	covering
+cap	wearing
+carpet	decorating with	cleaning
+carriage	sitting (empty)	moving
+cart	placing items in
+case	placing items in
+ceiling	placing items on
+ceiling /other room
+ceiling light	lighting	switching on (off)	switching off (on)
+chair	sitting (empty)	placing items on
+chairs	sitting (empty)	moving
+chandelier	lighting
+changing table	placing items on
+chest	placing items in	placing items on
+child chair	sitting (empty)
+child clothes	wearing
+children's table	placing items on
+cleaning agent	washing in general	cleaning
+cleaning brush	cleaning
+cleanser	washing in general
+clock	storing on	placing
+closet	placing items in
+closet door	walking through	closing (open)	opening (closed)
+cloth	wearing	washing clothes
+clothes	washing clothes	wearing	hanging	folding
+clothes dryer	placing items on	drying
+clothes rack	placing items in
+clutter
+coat	wearing	hanging
+coffee	drinking
+coffee machine	brewing coffee (on)	turning on (off)	turning off (on)
+coffee maker	brewing coffee (on)	turning off (on)	turning on (off)
+coffee table	placing items on	moving	cleaning
+column	decorating with
+commode	placing items in	placing items on	storing in
+computer	working on	turning on (off)	turning off (on)
+computer desk	sitting (empty)
+console	playing
+container	placing items in
+cooking pot	cooking
+corner bench	sitting (empty)
+cosmetics kit	placing items in
+couch	sitting (empty)	sleeping	laying on
+couch table	placing items on	moving	cleaning
+counter	placing items on	placing items in	moving
+cover	covering
+cradle	sleeping	laying on
+crate	placing items in
+crib	laying on	sleeping
+cube	placing items on	sitting (empty)
+cup	drinking from
+cupboard	placing items in
+cups	drinking from
+curtain	closing (open)	hanging	washing in general	opening (closed)
+curtain rail	holding
+cushion	laying on	carrying	sleeping	holding
+cushions stack	laying on
+cut board	cutting
+cutting board
+cycling trainer	exercising
+darts	playing
+decoration	covering with	throwing away	placing
+desk	placing items on	moving
+desk chair	sitting (empty)	placing items on
+device	working on
+diapers	cleaning with
+dining chair	sitting (empty)	placing items on
+dining set	eating at	drinking at
+dining table	placing items on	eating at
+discs	playing
+dish	washing in general
+dish dryer	drying
+dishdrainer	placing items on
+dishes	eating from
+dishwasher	washing dishes in
+dispenser	hanging
+documents	reading
+dog
+doll	playing with	decorating with
+door	closing (open)	opening (closed)	slamming
+door /other room	walking through	closing (open)	opening (closed)
+door mat	cleaning	walking on	decorating with
+doorframe	walking through	standing in
+doorframe /other room	walking through
+drain pipe
+drawer	placing items in	placing items on
+drawers	placing items in	placing items on
+drawers rack	placing items in
+dress	wearing	holding	hanging
+dresser	placing items in
+dressing table	placing items on	placing items in
+drinks	drinking	storing in
+drum	playing
+drying machine	drying	turning off (on)	turning on (off)
+drying rack	drying
+dumbbells	exercising
+elevator	moving	opening (closed)	closing (open)
+elliptical trainer	exercising
+exhaust hood	cooking	turning off (on)	turning on (off)
+exit sign	walking through
+extractor fan	cooking	turning off (on)	turning on (off)
+fabric	wearing
+fan	cooling	switching off (on)	switching on (off)
+fence	covering
+festoon	decorating with
+figure	decorating with
+file cabinet	placing items in
+fire extinguisher	extinguishing fire
+fireplace	decorating with	lighting	warming / making yourself comfortable
+firewood box	placing items in
+flag	decorating with
+flipchart	reading
+floor	placing items on	walking on
+floor /other room	walking on
+floor lamp	lighting
+floor mat	walking on	decorating with
+flower	decorating with	watering
+flowers	decorating with	watering
+flush
+folded beach chairs	sitting (empty)	opening (closed)	closing (open)
+folder	placing items in
+folding chair	sitting (open)	opening (closed)	closing (open)
+food	eating
+foosball table	playing
+footstool	placing feet on
+frame	moving	placing items in
+fridge	cooling	closing (open)	opening (closed)
+fruit	eating
+fruit plate	eating
+fruits	eating
+furniture	placing items on	placing items in	laying on
+garbage	throwing away	carrying
+garbage bin	throwing garbage into	placing items in
+garden umbrella	covering
+generator
+glass	drinking from
+glass wall
+grass	walking on
+guitar	playing
+gymnastic ball	throwing
+hair dryer	drying
+hand brush	brushing with	cleaning
+hand dryer	drying	turning off (on)	turning on (off)
+hand washer	washing with
+handbag	carrying	holding
+handhold	holding
+handle	holding
+handrail	holding
+hanger	placing items on
+hangers	hanging
+hanging cabinet	placing items in	closing (open)	opening (closed)
+headboard	hanging
+heater	switching on (off)	switching off (on)	warming / making yourself comfortable
+helmet	wearing
+hood
+humidifier	humidifying air
+hygiene products	washing in general
+instrument	playing
+iron	ironing
+ironing board	ironing
+item	carrying	moving	holding	hanging
+items	decorating with	hanging	carrying
+jacket	wearing
+jalousie	covering with	decorating with	closing (up, half up/down)	opening (down, half up/down)
+jar	placing items in
+jug	drinking from
+juicer	making juice
+kettle	heating water
+keyboard	typing on
+kids bicycle	riding
+kids chair	sitting (empty)
+kids rocking chair	sitting (empty)	sleeping
+kids stool	sitting (empty)
+kids table	placing items on	eating at
+kitchen appliance	cooking	turning on (off)	turning off (on)
+kitchen cabinet	placing items in	storing in	closing (open)	opening (closed)
+kitchen counter	placing items in	placing items on
+kitchen hood	cooking	turning on (off)	turning off (on)
+kitchen item	cooking
+kitchen object	cooking
+kitchen playset	playing with
+kitchen rack	placing items in
+kitchen sink	cleaning
+kitchen sofa	laying on	sleeping	sitting (empty)
+kitchen towel	cleaning	holding
+knife box	placing items in
+ladder	walking on
+lamp	moving	lighting	switching on (off)	switching off (on)
+laptop	working on	turning off (on)	turning on (off)
+laundry basket	placing items in
+letter
+light	turning on	turning off (on)
+linen	covering	laying on
+locker	placing items in
+lockers	placing items in	closing (open)	opening (closed)
+loft bed	sleeping	laying on	sitting (empty)
+lounger	sleeping	laying on	sitting (empty)
+luggage	carrying
+machine	turning on (off)	turning off (on)
+magazine	reading
+magazine files	reading
+magazine rack	placing items in
+magazine stand	placing items in
+mandarins	eating
+mannequin	decorating with
+mask	wearing
+mattress	sleeping	laying on
+medical device	turning on (off)	turning off (on)
+menu	reading
+meter	measuring
+microwave	heating (on)	turning off (on)	turning on (off)
+milk	drinking
+mirror	hanging	placing
+monitor	turning on (off)	turning off (on)	placing
+mop	cleaning with
+multicooker	cooking (on)
+napkins	drying
+newspaper	reading
+newspaper rack	placing items in
+nightstand	placing items on	storing in	placing items in	moving
+notebook	writing on/in
+notebooks	writing on/in
+object	carrying	holding	throwing away	moving
+objects	storing in	carrying	decorating with
+office chair	sitting (empty)	placing items on
+office table	sitting (empty)	placing items on
+organizer	placing items on	placing items in
+ottoman	sitting (empty)	placing feet on
+oven	baking (on)	switching off (on)	switching on (off)
+oven glove	cooking
+pack	carrying	placing items in
+package	placing items in
+packs	arranging	carrying
+painting	decorating with
+pan	cooking / frying
+paper	writing on/in
+paper cutter	cutting
+paper holder	placing items in
+paper sign	reading
+paper stack	placing items in
+paper towel	drying
+paper towel dispenser	placing items in
+papers	reading	throwing away
+partition
+pavement	walking on
+pc	turning on (off)	turning off (on)	working on
+pepper	eating
+pet bed	cleaning
+photo frame	placing items in	moving	holding
+photos	arranging	printing
+piano	playing
+picture	hanging	moving	placing
+pictures	decorating with
+pile	placing items in
+pile of books	storing in	storing on
+pile of bottles	throwing away
+pile of candles	storing on	lighting
+pile of folders	placing items in
+pile of papers	carrying	reading
+pile of pillows	laying on
+pile of wires	arranging
+pillar	cleaning
+pillow	laying on	holding	sleeping	carrying
+pin board wall
+pipe
+plank	throwing away	covering with
+plant	watering	moving
+planter	writing on/in	reading
+plants	decorating with	watering
+plate	eating
+plates	eating from
+platform	placing items on
+player	turning on (off)	turning off (on)	playing with
+pocket	placing items in
+podest	placing items in
+pooh	playing with
+poster	decorating with
+pot	placing items in	cooking
+price tag	carrying	holding
+printer	printing (on)	switching off (on)	switching on (off)
+projector	projecting	hanging
+puf	sitting (empty)	laying on
+puppet	decorating with	playing with
+rack	placing items in	placing items on
+radiator	turning on (off)	turning off (on)	placing items on
+radio	listening to music (on)
+rag	decorating with	cleaning	walking on
+rail	decorating with
+railing	leaning against
+ramp	decorating with
+recycle bin	throwing garbage into
+refrigerator	cooling	placing items in	closing (open)	opening (closed)
+rocking chair	sitting (empty)
+roll	holding	hanging	placing items in
+rolled carpet	decorating with	cleaning
+rolling cart	placing items in
+rolling pin	baking with
+roof	decorating with
+round table	eating at	placing items on
+rowing machine	exercising
+rubbish bin	throwing garbage into
+rug	decorating with	cleaning
+sack	carrying	placing items in
+salad	eating
+salt	eating
+sauce boat	placing items in
+scale	weighting
+scarf	wearing	washing clothes
+screen	watching
+seat	sitting (empty)
+seat pad	sitting (empty)
+sewing machine	sewing	turning off (on)	turning on (off)
+shades	covering	decorating with
+shampoo	washing in general
+sheets	covering
+shelf	placing items on	hanging
+shelf clutter	placing items on
+shelf of caps	placing items in
+shelf unit	placing items in	placing items on
+shelves	placing items on
+shirt	wearing
+shoe	wearing
+shoe box	placing items in
+shoe commode	placing items in
+shoe rack	placing items in
+shoe shelf	placing items in	placing items on
+shoes	cleaning	washing in general	wearing
+showcase	placing items in
+shower	showering
+shower curtain	covering	hanging	closing (open)	opening (closed)
+shower door	walking through	closing (open)	opening (closed)
+shower floor	walking on
+shower gel	washing in general
+shower wall	belonging to
+side table	placing items on	cleaning	moving
+sideboard	placing items in
+sidecouch	sitting (empty)	laying on	sleeping
+sidetable	eating at	placing feet on
+sign	carrying	holding
+sink	cleaning
+sink counter	cleaning	washing in general
+slanted wall
+snowboard	riding
+soap	washing in general
+soap dish	placing items on
+soap dispenser	washing with
+socket	plugging in
+sofa	sleeping	sitting (empty)	laying on	placing items on
+sofa chair	sitting (empty)
+sofa couch	sleeping	laying on	sitting (empty)
+speaker	listening to music (on)	turning off (on)	turning on (off)
+spice	eating
+spices	eating
+sponge	washing in general
+spots
+squeezer	using
+stair	walking on
+stairs	walking on
+stand	placing items in	placing items on	moving
+star	decorating with
+statue	decorating with
+statuette	decorating with
+stepladder
+stereo	switching on (off)	switching off (on)	listening to music (on)
+stereo equipment	listening to music (on)	switching off (on)	switching on (off)
+stick	carrying	storing in	storing on
+stool	sitting (empty)	placing items on
+storage	placing items in
+storage bin	placing items in
+storage box	placing items in
+storage container	placing items in
+storage unit	placing items in
+stove	cooking (on)	turning on (off)	turning off (on)
+stroller	laying on	sleeping
+stuffed animal	carrying	decorating with
+sugar packs	eating
+suitcase	placing items in	carrying
+switch	switching on (off)	switching off (on)
+t-shirt	wearing
+table	placing items on	cleaning	carrying
+table lamp	lighting	turning off (on)	turning on (off)
+table soccer	playing
+tablet	playing	turning on (off)	turning off (on)
+teapot	drinking
+teddy bear	playing with	decorating with
+telephone	calling
+tennis raquet	playing
+tent	covering
+things	storing in	storing in
+tile	decorating with
+tire
+tissue pack	wiping with
+toaster	toasting (on)
+toilet	using toilet (seat up)
+toilet brush	cleaning with
+toilet paper	wiping with
+toilet paper dispenser	cleaning
+toilet paper holder	holding
+toiletry	washing in general
+tool wall
+towel	hanging	washing in general
+towel basket	placing items in
+towels	hanging	wiping with
+toy	playing with	decorating with
+toy house	playing with	decorating with
+trash bin	throwing garbage into	moving
+trash can	storing in	placing items in
+trashcan	throwing garbage into
+tray	placing items on
+treadmill	exercising
+tree	watering	decorating with
+tree decoration	decorating with
+tube	taking a bath in
+tv	watching	turning on (off)	turning off (on)	moving
+tv stand	placing items on	moving
+tv table	placing items on
+typewriter	typing on
+ukulele	playing
+umbrella	covering
+upholstered wall
+urinal	using toilet
+utensils	cleaning	eating from
+vacuum	cleaning	switching off (on)	switching on (off)
+vacuum cleaner	cleaning	turning on (off)	turning off (on)
+vase	storing on	storing in	placing
+ventilation	cooling
+ventilator	cooling	turning on (off)	turning off (on)
+wall	leaning against	placing items on
+wall /other room
+wall frame	hanging
+wall plants	decorating with	watering
+wall rack	placing items on	placing items in
+wardrobe	placing items in	closing (open)	opening (closed)
+wardrobe door	opening (closed)	closing (open)
+washbasin	washing in general	cleaning
+washing basket	placing items in
+washing machine	washing clothes	turning on (off)	turning off (on)
+washing powder	washing in general
+water	drinking
+water heater	switching on (off)	switching off (on)
+watering can	watering
+weights	weighting	measuring
+weigths	weighting	measuring
+whiteboard	writing on/in	hanging
+window	opening (closed)	closing (open)	looking outside	throwing out of
+window board	placing items on
+window clutter	throwing away
+window frame
+windows	looking outside	throwing out of	closing (open)	opening (closed)
+windowsill	placing items on
+wood	burning
+wood box	placing items in
+xbox	playing
