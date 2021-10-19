@@ -9,6 +9,7 @@ class SAMPLE_METHODS(Enum):
     BBOX=1
     RADIUS=2
 
+
 def find_neighbors(points, segments, search_method:SAMPLE_METHODS, receptive_field:float=0.50, debug=False, selected_keys:list=None):
     # points = np.array(cloud.vertices.tolist())
     # segments = cloud.metadata['ply_raw']['vertex']['data']['objectId'].flatten()

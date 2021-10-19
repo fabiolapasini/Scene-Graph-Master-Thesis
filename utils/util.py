@@ -10,6 +10,7 @@ def set_random_seed(seed):
     random.seed(seed)
 
 
+# put a text in a list
 def read_txt_to_list(file):
     output = [] 
     with open(file, 'r') as f: 
@@ -23,6 +24,7 @@ def check_file_exist(path):
     if not os.path.exists(path):
             raise RuntimeError('Cannot open file. (',path,')')
 
+# this code was doubled
 '''def check_file_exist(path):
     if not os.path.exists(path):
             raise RuntimeError('Cannot open file. (',path,')')'''
@@ -88,7 +90,7 @@ def load_semseg(json_file, name_mapping_dict=None, mapping = True):
     return instance2labelName
 
 
-'''if __name__ == '__main__':
-    pth_catfile = 
+if __name__ == '__main__':
+    pth_catfile = '../3RScan/scans_name.txt'
     classNames = read_txt_to_list(pth_catfile)
-    print("classNames: " , classNames)'''
+    print("classNames: " , classNames)

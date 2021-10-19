@@ -9,6 +9,10 @@ from tqdm import tqdm
 from utils import util_ply, util_label, util, define
 from utils.util_search import SAMPLE_METHODS,find_neighbors
 
+
+# python3 gen_data.py --pth_out '../data/tmp' --target_scan '../3RScan/scans_name.txt'
+
+
 def Parser(add_help=True):
     parser = argparse.ArgumentParser(description='Process some integers.', formatter_class = argparse.ArgumentDefaultsHelpFormatter, add_help=add_help)
     parser.add_argument('--type', type=str, default='train', choices=['train', 'test', 'validation'], help="allow multiple rel pred outputs per pair",required=False)
