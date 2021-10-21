@@ -11,6 +11,9 @@ import torch.utils.data as data
 import multiprocessing as mp
 
 
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print("Running on", device)
+
 
 def dataset_loading_3RScan(root:str, pth_selection:str,split:str,class_choice:list=None):    
     pth_catfile = os.path.join(pth_selection, 'classes.txt')
