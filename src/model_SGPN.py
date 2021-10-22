@@ -217,6 +217,7 @@ class SGPNModel(BaseModel):
 if __name__ == '__main__':
     use_dataset = False     #True
     
+    #config = Config('../config_example.json')
     config = Config('../config_example.json')
     config.MODEL.USE_RGB=False
     config.MODEL.USE_NORMAL=False
@@ -280,6 +281,7 @@ if __name__ == '__main__':
             rel_points = rel_points.permute(0,2,1)'''
         logs, obj_pred, rel_pred = network.process(obj_points,rel_points,edges,obj_gt,rel_gt)
         logs += network.calculate_metrics([obj_pred,rel_pred], [obj_gt,rel_gt])
+
         # pred_cls = torch.max(obj_pred.detach(),1)[1]
         # acc_obj = (obj_gt == pred_cls).sum().item() / obj_gt.nelement()
         

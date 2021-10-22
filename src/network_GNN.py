@@ -9,7 +9,6 @@ import inspect
 from collections import OrderedDict
 import os
 import op_utils
-from copy import deepcopy
 
 
 class TripletEdgeNet(torch.nn.Module):
