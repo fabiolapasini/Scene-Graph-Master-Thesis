@@ -242,7 +242,10 @@ if __name__ == '__main__':
         n_rels = max_rels if n_rels > max_rels else n_rels
         obj_points = torch.rand([n_pts,3,128])
         rel_points = torch.rand([n_rels, 4, 256])
-        edges = torch.zeros(n_rels, 2,dtype=torch.long)
+        edges = torch.zeros(n_rels, 2, dtype=torch.long)
+
+        print("Edges size: ", edges.size())
+
         counter=0
         for i in range(n_pts):
             if counter >= edges.shape[0]: break

@@ -1,19 +1,22 @@
 if __name__ == '__main__' and __package__ is None:
     from os import sys
     sys.path.append('../')
-    
 
-import os, sys, torch, json, trimesh
-from utils import util_ply, util_data, util, define
+import os, torch, json, trimesh
+from utils import util_ply, util_data, util
 from data_processing import compute_weight_occurrences
 import numpy as np
 import torch.utils.data as data
 import multiprocessing as mp
 
-
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print("Running on", device)
 
+import platform
+if (platform.system() == "Windows"):
+    from utils import define_win as define
+elif (platform.system() != "Windows"):
+    from utils import define
 
 def dataset_loading_3RScan(root:str, pth_selection:str,split:str,class_choice:list=None):    
     pth_catfile = os.path.join(pth_selection, 'classes.txt')
@@ -130,9 +133,9 @@ class RIODatasetGraph(data.Dataset):
         self.for_eval = for_eval
         self.max_edges=max_edges
         
-        import resource
+        '''import resource
         rlimit = resource.getrlimit(resource.RLIMIT_NOFILE)
-        resource.setrlimit(resource.RLIMIT_NOFILE, (4096, rlimit[1]))
+        resource.setrlimit(resource.RLIMIT_NOFILE, (4096, rlimit[1]))'''
 
         #print(self.root)            # ../data/tmp/
         #print(len(self.root))       # 41
