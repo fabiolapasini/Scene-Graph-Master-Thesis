@@ -218,7 +218,7 @@ if __name__ == '__main__':
     use_dataset = False     #True
     
     #config = Config('../config_example.json')
-    config = Config('../config_example.json')
+    config = Config('../config_CVPR21.json')
     config.MODEL.USE_RGB=False
     config.MODEL.USE_NORMAL=False
     
