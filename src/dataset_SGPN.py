@@ -15,10 +15,10 @@ print("Running on", device)
 import platform
 if (platform.system() == "Windows"):
     from utils import define_win as define
-    print("On win")
+    print("Os: Windows")
 elif (platform.system() != "Windows"):
     from utils import define
-    print("On Ubuntu")
+    print("Os: Ubuntu")
 
 def dataset_loading_3RScan(root:str, pth_selection:str,split:str,class_choice:list=None):    
     pth_catfile = os.path.join(pth_selection, 'classes.txt')
