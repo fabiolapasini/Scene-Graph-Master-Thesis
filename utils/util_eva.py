@@ -66,8 +66,8 @@ def evaluate_topk_predicate(gt_edges, rels_pred, multi_rel_outputs, threshold=0.
         rel_pred = rels_pred[rel]
         sorted_conf, sorted_args = torch.sort(rel_pred, descending=True)  # 1D
         if k<1:
-            maxk=len(sorted_conf)
-            maxk=min(len(sorted_conf),maxk)
+            maxk = len(sorted_conf)
+            maxk = min(len(sorted_conf),maxk)
         else:
             maxk=k
         sorted_conf=sorted_conf[:maxk]
@@ -76,7 +76,7 @@ def evaluate_topk_predicate(gt_edges, rels_pred, multi_rel_outputs, threshold=0.
         temp_topk = []
         rels_target = gt_edges[rel][2]
         
-        if len(rels_target) == 0:# Ground truth is None
+        if len(rels_target) == 0: # Ground truth is None
             indices = torch.where(sorted_conf < threshold)[0]
             if len(indices) == 0:
                 index = len(sorted_conf)+1
@@ -93,6 +93,7 @@ def evaluate_topk_predicate(gt_edges, rels_pred, multi_rel_outputs, threshold=0.
         temp_topk = sorted(temp_topk)  # ascending I hope/think
         top_k += temp_topk
     return top_k
+
 
 def get_gt(objs_target, rels_target, edges, instance2mask,multi_rel_outputs):
     gt_edges = [] # initialize
@@ -117,9 +118,9 @@ def get_gt(objs_target, rels_target, edges, instance2mask,multi_rel_outputs):
             assert rels_target.ndim == 1
             if rels_target[edge_index] > 0:
                 target_rel.append(rels_target[edge_index].cpu().numpy().item())
-        gt_edges.append([target_eo, target_os, target_rel,
-                         idx2instance[idx_eo], idx2instance[idx_os]])
+                gt_edges.append([target_eo, target_os, target_rel, idx2instance[idx_eo], idx2instance[idx_os]])
     return gt_edges 
+
 
 def evaluate_topk(gt_rel, objs_pred, rels_pred, edges, multi_rel_outputs, threshold=0.5, k=40):
     top_k=list()
@@ -175,8 +176,7 @@ def evaluate_topk(gt_rel, objs_pred, rels_pred, edges, multi_rel_outputs, thresh
         top_k += temp_topk
     return top_k
 
-def evaluate_topk_recall(
-        top_k, top_k_obj, top_k_predicate, 
+def evaluate_topk_recall(top_k, top_k_obj, top_k_predicate,
         multi_rel_outputs,
         objs_pred:torch.tensor, objs_target:torch.tensor,
         rels_pred:torch.tensor, rels_target:torch.tensor, 
@@ -212,9 +212,8 @@ def get_mean_metric(confusion:np.array, VALID_CLASS_IDS:list, CLASS_LABELS:list)
         return sum
     return cal_mean(ious),cal_mean(precisions),cal_mean(recalls)
 
-def write_result_file(confusion:np.array, 
-                      filename:str,
-                      VALID_CLASS_IDS:list, CLASS_LABELS:list):
+############ Here we write the final graph on a file ############
+def write_result_file(confusion:np.array, filename:str, VALID_CLASS_IDS:list, CLASS_LABELS:list):
     ious=dict()
     precisions=dict()
     recalls=dict()
@@ -226,7 +225,6 @@ def write_result_file(confusion:np.array,
         label_id = VALID_CLASS_IDS[i]
         ious[label_name], precisions[label_name], recalls[label_name] \
             = get_metrics(label_id, confusion,VALID_CLASS_IDS)
-
 
     with open(filename, 'w') as f:
         def write_metric(name, values):
@@ -260,6 +258,7 @@ def write_result_file(confusion:np.array,
             
             f.write(' & {:>5.3f}\n'.format(sum))
             return sum
+
         mean_iou = write_metric("IoU", ious)
         mean_pre = write_metric("Precision", precisions)
         mean_rec = write_metric("Recall", recalls)
@@ -281,7 +280,8 @@ def write_result_file(confusion:np.array,
             f.write('\n')
     print ('wrote results to', filename)
     return [mean_iou, mean_pre,mean_rec]
-    
+
+
 def build_seg2name(pds:torch.tensor, idx2seg, names):
     '''
     pds: [n]
@@ -290,8 +290,9 @@ def build_seg2name(pds:torch.tensor, idx2seg, names):
     for n in range(len(pds)):
         s2n[str(idx2seg[n])] = names[pds[n]]  
     return s2n
-def build_edge2name(pds:torch.tensor,edges:torch.tensor,
-                    idx2seg:dict,names:list, none_name = "UN"):
+
+
+def build_edge2name(pds:torch.tensor, edges:torch.tensor, idx2seg:dict,names:list, none_name = "UN"):
     if edges.shape[0] == 2:
         edges = edges.t()
     
@@ -330,6 +331,7 @@ def build_edge2name_value(values:torch.tensor,edges:torch.tensor, idx2gtcls:dict
         nn2v[names[n_i]][names[n_j]].append(values[n].item())
     return nn2v
 
+
 class EvaPairWeight():
     def __init__(self,class_names:list):
         self.class_names = class_names
@@ -347,14 +349,16 @@ class EvaPairWeight():
     def reset(self):
         #self.c_mat = np.zeros([len(self.class_names),len(self.class_names)], dtype=np.float)
         self.c_mat = np.zeros([len(self.class_names), len(self.class_names)], float)
-        
+
+
 class EvaClassification():
-    def __init__(self,class_names:list, none_name:str = 'UN'):
+    def __init__(self, class_names:list, none_name:str = 'UN'):
         self.none_name = none_name
         self.unknown = len(class_names)
         self.class_names = class_names + [none_name]
         #self.c_mat = np.zeros([len(self.class_names),len(self.class_names)], dtype=np.float)
         self.c_mat = np.zeros([len(self.class_names), len(self.class_names)], float)
+
     def update(self, pd_indices:dict, gt_indices:dict, gt_only=False, pd_only=False):
         union_indices = set(pd_indices.keys()).union(gt_indices.keys())
         multi_pred = True
@@ -377,6 +381,7 @@ class EvaClassification():
                         assert isinstance(indices[idx], list)
                         idxes = [self.class_names.index(i) for i in indices[idx]]
                     return idxes
+
                 pd_indices_set = set(get_indices(pd_indices)).difference([self.unknown])
                 gt_indices_set = set(get_indices(gt_indices)).difference([self.unknown])
                 
@@ -408,7 +413,6 @@ class EvaClassification():
                         self.c_mat[self.unknown][idx] += 1
                 
                 
-                
     def get_recall(self):
         return self.c_mat.c_cmat.diagonal().sum() / self.c_mat.sum()
     def get_mean_metrics(self):
@@ -421,7 +425,8 @@ class EvaClassification():
                           target_names=self.class_names, 
                           title=title,
                           plot_text=False,)
-    
+
+
 class EvalSceneGraph():
     def __init__(self, obj_class_names:list, rel_class_names:list, multi_rel_outputs:float=0.5, k=100, multi_rel_prediction:bool=True):
         # params
@@ -498,12 +503,16 @@ class EvalSceneGraph():
                 self.top_k_triplet += evaluate_topk(gt_edges, obj_pds, rel_pds, edge_indices, 
                                       multi_rel_outputs=self.multi_rel_prediction,
                                       threshold=self.multi_rel_outputs, k=self.k) # class_labels, relationships_dict)
+
+
     def get_recall(self):
         return self.eva_o_cls.get_recall(), self.eva_r_cls.get_recall()
-    
+
+
     def get_mean_metrics(self):
         return self.eva_o_cls.get_mean_metrics(),self.eva_r_cls.get_mean_metrics()
-        
+
+
     def gen_text(self):
         c_cmat = self.eva_o_cls.c_mat
         r_cmat = self.eva_r_cls.c_mat
@@ -556,10 +565,10 @@ class EvalSceneGraph():
             txt += str(len(self.top_k_rel)) +'\n'
         return txt
 
+
     def write(self, path, model_name):
         pathlib.Path(path).mkdir(parents=True, exist_ok=True)
-        
-        
+
         with open(os.path.join(path,'predictions.json'),'w') as f:
             json.dump(self.predictions,f, indent=4)   
     

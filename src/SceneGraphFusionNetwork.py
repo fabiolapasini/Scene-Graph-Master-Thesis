@@ -4,7 +4,6 @@ if __name__ == '__main__' and __package__ is None:
 
 import os,torch,time
 from DataLoader import CustomDataLoader
-# from model_SGFN import SGFNModel
 from model_SGPN import SGPNModel
 from dataset_builder import build_dataset
 from torch.utils.tensorboard import SummaryWriter
@@ -26,7 +25,7 @@ class SGFN():
         self.mconfig = mconfig = config.MODEL
 
         ''' set dataset to SGFN if handcrafted edge descriptor is used '''
-        self.use_edge_descriptor=self.config.dataset.dataset_type == "SGFN"   #False in my case
+        self.use_edge_descriptor = self.config.dataset.dataset_type == "SGFN"   # False in my case
         
         ''' Build dataset '''
         dataset = None
@@ -95,10 +94,12 @@ class SGFN():
                     data = dataset.__getitem__(0)
                     obj_points, rel_points, edge_indices, *_ = self.data_processing(data[2:])
                     self.writter.add_graph(self.model,[obj_points,rel_points,edge_indices.t().contiguous()])
-        
+
+
     def load(self, best=False):
         return self.model.load(best)
-    
+
+
     def data_processing(self, items, max_edges=-1):
         if self.use_edge_descriptor:
             print("")
@@ -312,17 +313,20 @@ class SGFN():
        
     def cuda(self, *args):
         return [item.to(self.config.DEVICE) for item in args]
-    
+
+
     def log(self, logs, iteration):
         # Tensorboard
         if self.writter is not None:
             for i in logs:
                 if not i[0].startswith('Misc'):
                     self.writter.add_scalar(i[0], i[1], iteration)
-                    
+
+
     def save(self):
         self.model.save()
-        
+
+
     def validation(self, debug_mode = False):
         val_loader = CustomDataLoader(
             config = self.config,
@@ -333,14 +337,15 @@ class SGFN():
             shuffle=False
         )
 
-        eva_tool = util_eva.EvalSceneGraph(self.dataset_valid.classNames, self.dataset_valid.relationNames,
-                                  multi_rel_outputs=0.5, k=0, 
-                                  multi_rel_prediction=self.model.mconfig.multi_rel_outputs)
+        eva_tool = util_eva.EvalSceneGraph(self.dataset_valid.classNames,
+                                           self.dataset_valid.relationNames,
+                                          multi_rel_outputs=0.5, k=0,
+                                          multi_rel_prediction=self.model.mconfig.multi_rel_outputs)
        
         total = len(self.dataset_valid)
         progbar = op_utils.Progbar(total, width=20, stateful_metrics=['Misc/it'])
         
-        print('===   start evaluation   ===')
+        print('===   start evaluation 1   ===')
         self.model.eval()
         for i, items in enumerate(val_loader, 0):
             scan_id = items[0][0]
@@ -375,6 +380,8 @@ class SGFN():
                 else:
                     pred_obj_cls, pred_rel_cls, obj_feature, rel_feature, gcn_obj_feature, gcn_rel_feature, probs = \
                         self.model(obj_points, rel_points, edge_indices.t().contiguous(), return_meta_data=True)
+
+            print
                         
             ''' calculate metrics '''
             logs = self.model.calculate_metrics([pred_obj_cls, pred_rel_cls], [gt_obj_cls, gt_rel_cls])
@@ -447,7 +454,7 @@ class SGFN():
         total = len(self.dataset_eval)
         progbar = op_utils.Progbar(total, width=20, stateful_metrics=['Misc/it'])
         
-        print('===   start evaluation   ===')
+        print('===   start evaluation 2 ===')
         list_feature_maps = dict()
         list_feature_maps['node_feature'] = list()
         list_feature_maps['edge_feature'] = list()
@@ -472,7 +479,7 @@ class SGFN():
             if edge_indices.ndim == 1: 
                 # print('no edges found. skip this.')
                 continue
-            if obj_points.shape[0] < 2 : 
+            if obj_points.shape[0] < 2:
                 # print('need at least two nodes. skip this one. (got ',obj_points.shape,')')
                 continue
             if edge_indices.shape[0] == 0:
@@ -503,7 +510,6 @@ class SGFN():
             
             eva_tool.add(scan_id, pred_obj_cls, gt_obj_cls, pred_rel_cls, gt_rel_cls, instance2mask, edge_indices)
             
-            
             idx2seg=dict()
             for key,item in instance2mask.items():
                 idx2seg[item.item()-1] = key
@@ -511,6 +517,7 @@ class SGFN():
             [list_feature_maps['node_names'].append(self.dataset_eval.classNames[aa]) for aa in gt_obj_cls.tolist()]            
             list_feature_maps['node_feature'].append(obj_feature.detach().cpu())
             list_feature_maps['edge_feature'].append(rel_feature.detach().cpu())
+
             if gcn_obj_feature is not None:
                 list_feature_maps['gcn_node_feature'].append(gcn_obj_feature.detach().cpu())
             
@@ -599,13 +606,14 @@ class SGFN():
             args['label_type'] = self.dataset_valid.label_type
             json.dump(args, f, indent=2)
         pass'''
-            
-if __name__ == '__main__':
-    TEST_CUDA=True
-    TEST_EVAL=True
-    TEST_TRACE=False
 
-    config = Config('../config_example_2.json')
+
+if __name__ == '__main__':
+    TEST_CUDA = True
+    TEST_EVAL = True
+    TEST_TRACE = False
+
+    config = Config('../config_example.json')
     config.dataset.root = '../data/tmp/'
     config.MODEL.GCN_TYPE = 'TRIP' #'EAN'
     config.MODEL.multi_rel_outputs=False
@@ -619,7 +627,8 @@ if __name__ == '__main__':
     else:
         config.DEVICE = torch.device("cpu")
         
-    config.MODE = 'train' if not TEST_EVAL else 'eval'
+    # config.MODE = 'train' if not TEST_EVAL else 'eval'
+    config.MODE = 'eval'
     
     pg = SGFN(config)
     if TEST_TRACE:
