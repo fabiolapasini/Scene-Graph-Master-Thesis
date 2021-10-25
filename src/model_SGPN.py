@@ -216,9 +216,9 @@ class SGPNModel(BaseModel):
         
 if __name__ == '__main__':
     use_dataset = False     #True
-    
-    #config = Config('../config_example.json')
-    config = Config('../config_CVPR21.json')
+    # watch out! USE_CONTEXT = false makes the program non runnable!
+    config = Config('../config_example.json')
+
     config.MODEL.USE_RGB=False
     config.MODEL.USE_NORMAL=False
     
@@ -245,8 +245,6 @@ if __name__ == '__main__':
         rel_points = torch.rand([n_rels, 4, 256])
         edges = torch.zeros(n_rels, 2, dtype=torch.long)
 
-        print("Edges size: ", edges.size())
-
         counter=0
         for i in range(n_pts):
             if counter >= edges.shape[0]: break
@@ -272,14 +270,14 @@ if __name__ == '__main__':
                 if adj_rel_gt[i,j,c] < 0.5: continue
                 rel_gt[e,c] = 1
             
-        network.process(obj_points,rel_points,edges,obj_gt,rel_gt)
+        network.process(obj_points,rel_points,edges.t().contiguous(),obj_gt,rel_gt)
         
     for i in range(100):
         '''if use_dataset:
             scan_id, instance2mask, obj_points, rel_points, obj_gt, rel_gt, edges = dataset.__getitem__(i)
             obj_points = obj_points.permute(0,2,1)
             rel_points = rel_points.permute(0,2,1)'''
-        logs, obj_pred, rel_pred = network.process(obj_points,rel_points,edges,obj_gt,rel_gt)
+        logs, obj_pred, rel_pred, prob = network.process(obj_points,rel_points,edges.t().contiguous(),obj_gt,rel_gt)
         logs += network.calculate_metrics([obj_pred,rel_pred], [obj_gt,rel_gt])
 
         # pred_cls = torch.max(obj_pred.detach(),1)[1]

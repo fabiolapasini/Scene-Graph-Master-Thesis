@@ -94,5 +94,14 @@ class Config(dict):
 if __name__ == '__main__':    
     config = Config('../config_example.json')               # SGFN
     #config = Config('../CVPR21/config_CVPR21.json')        # SGFN
+
+    import platform
+    if (platform.system() == "Windows"):
+        config = Config('..\\config_example_2.json')
+        # config = Config('..\\config_CVPR21.json')
+    elif (platform.system() != "Windows"):
+        # config = Config('../config_example.json')
+        config = Config('../config_CVPR21.json')
+
     print(config.dataset.dataset_type)
     print(config)

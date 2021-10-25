@@ -91,6 +91,13 @@ def load_semseg(json_file, name_mapping_dict=None, mapping = True):
 
 
 if __name__ == '__main__':
-    pth_catfile = '../3RScan/scans_name.txt'
+    import platform
+
+    pth_catfile = ""
+    if (platform.system() == "Windows"):
+        pth_catfile = '..\\3RScan\\scans_name.txt'
+    elif (platform.system() != "Windows"):
+        pth_catfile = '../3RScan/scans_name.txt'
+
     classNames = read_txt_to_list(pth_catfile)
     print("classNames: " , classNames)

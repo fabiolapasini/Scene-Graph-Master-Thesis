@@ -1,8 +1,9 @@
-if __name__ == '__main__' and __package__ is None:
+'''if __name__ == '__main__' or __package__ is None:
     from os import sys
-    sys.path.append('../')
+    sys.path.append('../')'''
 
 import os, torch, json, trimesh
+os.sys.path.append('../')
 from utils import util_ply, util_data, util
 from data_processing import compute_weight_occurrences
 import numpy as np
@@ -335,6 +336,7 @@ class RIODatasetGraph(data.Dataset):
     
 if __name__ == '__main__':
     from config import Config
+
     config = Config('../config_example.json')
     config.dataset.root = '../data/tmp/'
     config.dataset.label_file = 'labels.instances.align.annotated.v2.ply' #'inseg.ply'
@@ -342,7 +344,12 @@ if __name__ == '__main__':
     config.dataset.load_cache=False
     use_rgb= False #True
     use_normal=True
-    dataset = RIODatasetGraph(config,split='validation_scans',load_cache=config.dataset.load_cache, use_rgb=use_rgb,use_normal=use_normal)
+    dataset = RIODatasetGraph(config,
+                              split='validation_scans',
+                              load_cache=config.dataset.load_cache,
+                              use_rgb=use_rgb,
+                              use_normal=use_normal)
+
     scan_id, instance2mask, obj_points, rel_points, cat, target_rels, edge_indices = dataset.__getitem__(0)
 
     ''' 
@@ -428,14 +435,15 @@ if __name__ == '__main__':
     |154                 wall:0.200||155             wardrobe:0.591|
     |156      washing machine:0.591||157       washing powder:0.000|
     |158               window:0.000||159           windowsill:0.000|
-
+    
     === 7 relationships ===
     | 0          attached to 0.172|| 1             build in 0.000|
     | 2         connected to 0.000|| 3           hanging on 0.231|
     | 4              part of 0.000|| 5          standing on 0.192|
     | 6         supported by 0.287|
     num of data: 12
-    
+
+
     '''
     
     pass
