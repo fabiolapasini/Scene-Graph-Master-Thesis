@@ -416,6 +416,7 @@ class SGFN():
                                                                  title='Object Confusion matrix',
                                                                  plot_text=False,
                                                                  plot = False)
+
         self.writter.add_figure('vali_obj_confusion_matrix', img_confusion_matrix, global_step=self.model.iteration)
         img_confusion_matrix = plot_confusion_matrix.plot_confusion_matrix(eva_tool.eva_r_cls.c_mat, 
                                         eva_tool.eva_r_cls.class_names,
