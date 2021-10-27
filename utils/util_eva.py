@@ -185,7 +185,7 @@ def evaluate_topk_recall(top_k, top_k_obj, top_k_predicate,
     gt_edges = get_gt(objs_target, rels_target, edges, instance2mask,multi_rel_outputs)
     top_k += evaluate_topk(gt_edges, objs_pred, rels_pred, edges, multi_rel_outputs) # class_labels, relationships_dict)
     top_k_obj += evaluate_topk_object(objs_target, objs_pred)
-    top_k_predicate += evaluate_topk_predicate(gt_edges, rels_pred,multi_rel_outputs)
+    top_k_predicate += evaluate_topk_predicate(gt_edges, rels_pred, multi_rel_outputs)
     return top_k, top_k_obj, top_k_predicate
 
 def get_mean_metric(confusion:np.array, VALID_CLASS_IDS:list, CLASS_LABELS:list):
@@ -449,7 +449,8 @@ class EvalSceneGraph():
         self.top_k_obj=list()
         self.top_k_rel=list()
         self.predictions=dict()
-        
+
+    # Here new problem
     def add(self,scan_id, obj_pds, obj_gts, rel_pds,rel_gts, seg2idx:dict, edge_indices):
         '''
         obj_pds: [n, n_cls]: log_softmax

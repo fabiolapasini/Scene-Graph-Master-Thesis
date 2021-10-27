@@ -87,8 +87,7 @@ class SGPNModel(BaseModel):
                                 flow=self.flow)
         
         # node feature classifier        
-        models['obj_predictor'] = PointNetCls(num_class, in_size=mconfig.point_feature_size,
-                                 batch_norm=with_bn,drop_out=True)
+        models['obj_predictor'] = PointNetCls(num_class, in_size=mconfig.point_feature_size, batch_norm=with_bn,drop_out=True)
         
         if mconfig.multi_rel_outputs:
             models['rel_predictor'] = PointNetRelClsMulti(
@@ -195,6 +194,12 @@ class SGPNModel(BaseModel):
     
 
     def calculate_metrics(self, preds, gts):
+
+        '''print("##################################")
+        print("preds: ", preds, " \npreds type: ", type(preds), " preds len: " , len(preds))
+        print("gts: ", gts, " \ngts type: ", type(gts), " gts len: " , len(gts))
+        print("##################################")'''
+
         assert(len(preds)==2)
         assert(len(gts)==2)
         obj_pred = preds[0].detach()
@@ -204,16 +209,21 @@ class SGPNModel(BaseModel):
         
         pred_cls = torch.max(obj_pred.detach(),1)[1]
         acc_obj = (obj_gt == pred_cls).sum().item() / obj_gt.nelement()
-        
-        pred_rel= rel_pred.detach() > 0.5
-        acc_rel = (rel_gt==pred_rel).sum().item() / rel_gt.nelement()
+
+        pred_rel = rel_pred.detach() > 0.5
+        #print("pred_rel len: ", len(pred_rel), " pred_rel type: ", type(pred_rel), "tensor pred_rel size: ", pred_rel.size(), "tensor pred_rel.t size: ", pred_rel.t()[0].size())
+        #print("rel_gt len: ", len(rel_gt), " rel_gt type: ", type(rel_gt), "tensor rel_gt size: ", rel_gt.size())
+
+        #acc_rel = (rel_gt == pred_rel.t()).sum().item() / rel_gt.nelement()
+        acc_rel = (rel_gt == pred_rel).sum().item() / rel_gt.nelement()
         
         logs = [("Accuracy/obj_cls",acc_obj), 
                 ("Accuracy/rel_cls",acc_rel)]
         return logs
     
 
-        
+
+# This code creates an empty folder in the root directory
 if __name__ == '__main__':
     use_dataset = False     #True
     # watch out! USE_CONTEXT = false makes the program non runnable!
@@ -269,7 +279,7 @@ if __name__ == '__main__':
             for c in range(num_rel_cls):
                 if adj_rel_gt[i,j,c] < 0.5: continue
                 rel_gt[e,c] = 1
-            
+
         network.process(obj_points,rel_points,edges.t().contiguous(),obj_gt,rel_gt)
         
     for i in range(100):
@@ -277,15 +287,16 @@ if __name__ == '__main__':
             scan_id, instance2mask, obj_points, rel_points, obj_gt, rel_gt, edges = dataset.__getitem__(i)
             obj_points = obj_points.permute(0,2,1)
             rel_points = rel_points.permute(0,2,1)'''
+
         logs, obj_pred, rel_pred, prob = network.process(obj_points,rel_points,edges.t().contiguous(),obj_gt,rel_gt)
         logs += network.calculate_metrics([obj_pred,rel_pred], [obj_gt,rel_gt])
 
         # pred_cls = torch.max(obj_pred.detach(),1)[1]
         # acc_obj = (obj_gt == pred_cls).sum().item() / obj_gt.nelement()
-        
+
         # rel_pred = rel_pred.detach() > 0.5
         # acc_rel = (rel_gt==(rel_pred>0)).sum().item() / rel_pred.nelement()
-        
+
         # print('{0:>3d} acc_obj: {1:>1.4f} acc_rel: {2:>1.4f} loss: {3:>2.3f}'.format(i,acc_obj,acc_rel,logs[0][1]))
         print('{:>3d} '.format(i),end='')
         for log in logs:

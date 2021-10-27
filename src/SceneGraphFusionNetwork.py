@@ -378,10 +378,7 @@ class SGFN():
                     '''pred_obj_cls, pred_rel_cls, obj_feature, rel_feature, gcn_obj_feature, gcn_rel_feature, probs = \
                             self.model(obj_points, edge_indices.t().contiguous(), descriptor, return_meta_data=True)'''
                 else:
-                    pred_obj_cls, pred_rel_cls, obj_feature, rel_feature, gcn_obj_feature, gcn_rel_feature, probs = \
-                        self.model(obj_points, rel_points, edge_indices.t().contiguous(), return_meta_data=True)
-
-            print
+                    pred_obj_cls, pred_rel_cls, obj_feature, rel_feature, gcn_obj_feature, gcn_rel_feature, probs = self.model(obj_points, rel_points, edge_indices.t().contiguous(), return_meta_data=True)
                         
             ''' calculate metrics '''
             logs = self.model.calculate_metrics([pred_obj_cls, pred_rel_cls], [gt_obj_cls, gt_rel_cls])
@@ -448,7 +445,6 @@ class SGFN():
             drop_last=False,
             shuffle=False
         )
-        from utils import util_eva
         eva_tool = util_eva.EvalSceneGraph(self.dataset_eval.classNames, self.dataset_eval.relationNames,
                                   multi_rel_outputs=0.5, k=100,multi_rel_prediction=self.model.mconfig.multi_rel_outputs)
         
@@ -497,7 +493,14 @@ class SGFN():
                         self.model(obj_points, rel_points, edge_indices.t().contiguous(), return_meta_data=True)
             
             ''' calculate metrics '''
-            logs = self.model.calculate_metrics([pred_obj_cls, pred_rel_cls], [gt_obj_cls, gt_rel_cls])
+            # preds = [pred_obj_cls, pred_rel_cls]
+            preds = [pred_obj_cls, pred_rel_cls.t()]
+            gts = [gt_obj_cls, gt_rel_cls]
+            '''
+            print("preds size", len(preds), " preds type: ", type(preds))   # preds size 2  preds type:  <class 'list'>
+            print("gts size", len(gts), " gts type: ", type(gts))           # gts size 2  gts type:  <class 'list'>
+            '''
+            logs = self.model.calculate_metrics(preds, gts)
             
             
             ignore_rel = False
@@ -508,7 +511,8 @@ class SGFN():
                     ignore_rel = True
             if ignore_rel:
                 pred_rel_cls = gt_rel_cls = None
-            
+
+            # new problem here
             eva_tool.add(scan_id, pred_obj_cls, gt_obj_cls, pred_rel_cls, gt_rel_cls, instance2mask, edge_indices)
             
             idx2seg=dict()
@@ -565,6 +569,7 @@ class SGFN():
                                                                  title='Object Confusion matrix',
                                                                  plot_text=False,
                                                                  plot = False)
+
         self.writter.add_figure('eval_obj_confusion_matrix', img_confusion_matrix, global_step=self.model.iteration)
         img_confusion_matrix = plot_confusion_matrix.plot_confusion_matrix(eva_tool.eva_r_cls.c_mat, 
                                         eva_tool.eva_r_cls.class_names,
@@ -587,8 +592,7 @@ class SGFN():
             else:
                 continue
             print(name)
-            self.writter.add_embedding(tmp,metadata=names,tag=self.model_name+'_'+name,
-                                       global_step=self.model.iteration)
+            self.writter.add_embedding(tmp,metadata=names,tag=self.model_name+'_'+name, global_step=self.model.iteration)
         
     '''def trace(self):
         op_utils.create_dir(self.trace_path)
@@ -610,7 +614,7 @@ class SGFN():
 
 
 if __name__ == '__main__':
-    TEST_CUDA = True
+    TEST_CUDA = False
     TEST_EVAL = True
     TEST_TRACE = False
 
@@ -637,4 +641,5 @@ if __name__ == '__main__':
     elif not TEST_EVAL:
         pg.train()
     else:
-        pg.eval(debug_mode = True)
+        # pg.eval(debug_mode = True)
+        pg.eval()
