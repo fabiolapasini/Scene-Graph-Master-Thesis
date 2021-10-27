@@ -40,8 +40,8 @@ def main():
         print('\nstart training...\n')
         model.train()
     if config.MODE == 'eval':
-        if model.load(config.LOADBEST) is False:
-            raise Exception('\nCannot find saved model!\n')
+        #if model.load(config.LOADBEST) is False:
+        #    raise Exception('\nCannot find saved model!\n')
         model.eval()
     if config.MODE == 'trace':
         if model.load(config.LOADBEST) is False:

@@ -53,18 +53,19 @@ class SGFN():
             num_rel_class = len(self.dataset_valid.relationNames)
             dataset = self.dataset_valid'''
 
-        try:
-            if config.VERBOSE: print('build test dataset')
-            self.dataset_eval = build_dataset(self.config,split_type='test_scans', shuffle_objs=False, 
-                                      multi_rel_outputs=mconfig.multi_rel_outputs,
-                                      use_rgb=mconfig.USE_RGB,
-                                      use_normal=mconfig.USE_NORMAL)
-            num_obj_class = len(self.dataset_eval.classNames)
-            num_rel_class = len(self.dataset_eval.relationNames)
-            dataset = self.dataset_eval
-        except:
-            print('canno build eval dataset.')
-            self.dataset_eval = None
+        #
+        #try:
+        if config.VERBOSE: print('build test dataset')
+        self.dataset_eval = build_dataset(self.config,split_type='test_scans', shuffle_objs=False,
+                                  multi_rel_outputs=mconfig.multi_rel_outputs,
+                                  use_rgb=mconfig.USE_RGB,
+                                  use_normal=mconfig.USE_NORMAL)
+        num_obj_class = len(self.dataset_eval.classNames)
+        num_rel_class = len(self.dataset_eval.relationNames)
+        dataset = self.dataset_eval
+        #except:
+        #    print('canno build eval dataset.')
+        #    self.dataset_eval = None
             
         ''' Build Model '''
         if self.use_edge_descriptor:
@@ -493,16 +494,15 @@ class SGFN():
                         self.model(obj_points, rel_points, edge_indices.t().contiguous(), return_meta_data=True)
             
             ''' calculate metrics '''
-            # preds = [pred_obj_cls, pred_rel_cls]
-            preds = [pred_obj_cls, pred_rel_cls.t()]
+            preds = [pred_obj_cls, pred_rel_cls]
+            #preds = [pred_obj_cls, pred_rel_cls.t()]
             gts = [gt_obj_cls, gt_rel_cls]
             '''
             print("preds size", len(preds), " preds type: ", type(preds))   # preds size 2  preds type:  <class 'list'>
             print("gts size", len(gts), " gts type: ", type(gts))           # gts size 2  gts type:  <class 'list'>
             '''
             logs = self.model.calculate_metrics(preds, gts)
-            
-            
+
             ignore_rel = False
             if 'scene' in scan_id:
                 if 'ignore_scannet_rel' in self.config.dataset:
@@ -513,6 +513,7 @@ class SGFN():
                 pred_rel_cls = gt_rel_cls = None
 
             # new problem here
+            #eva_tool.add(scan_id, pred_obj_cls, gt_obj_cls, pred_rel_cls.t(), gt_rel_cls, instance2mask, edge_indices)
             eva_tool.add(scan_id, pred_obj_cls, gt_obj_cls, pred_rel_cls, gt_rel_cls, instance2mask, edge_indices)
             
             idx2seg=dict()

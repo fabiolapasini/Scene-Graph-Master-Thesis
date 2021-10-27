@@ -61,7 +61,7 @@ def evaluate_topk_predicate(gt_edges, rels_pred, multi_rel_outputs, threshold=0.
     else:
         rels_pred = np.exp(rels_pred.detach().cpu()) # log_softmax -> softmax
     size_p = len(rels_pred)
-
+    print(size_p, len(gt_edges))
     for rel in range(size_p):
         rel_pred = rels_pred[rel]
         sorted_conf, sorted_args = torch.sort(rel_pred, descending=True)  # 1D
@@ -118,8 +118,9 @@ def get_gt(objs_target, rels_target, edges, instance2mask,multi_rel_outputs):
             assert rels_target.ndim == 1
             if rels_target[edge_index] > 0:
                 target_rel.append(rels_target[edge_index].cpu().numpy().item())
-                gt_edges.append([target_eo, target_os, target_rel, idx2instance[idx_eo], idx2instance[idx_os]])
-    return gt_edges 
+        gt_edges.append([target_eo, target_os, target_rel, idx2instance[idx_eo], idx2instance[idx_os]])
+
+    return gt_edges
 
 
 def evaluate_topk(gt_rel, objs_pred, rels_pred, edges, multi_rel_outputs, threshold=0.5, k=40):
@@ -451,16 +452,17 @@ class EvalSceneGraph():
         self.predictions=dict()
 
     # Here new problem
-    def add(self,scan_id, obj_pds, obj_gts, rel_pds,rel_gts, seg2idx:dict, edge_indices):
+    def add(self, scan_id, obj_pds, obj_gts, rel_pds, rel_gts, seg2idx:dict, edge_indices):
         '''
         obj_pds: [n, n_cls]: log_softmax
         obj_gts: [n, 1]: long tensor
         rel_pds: [m,n_cls]: torch.sigmoid(x) if multi_rel_outputs>0 else log_softmax
         rel_gts: [m,n_cls] if multi_rel_outputs>0 else [m,1]
         '''
+
         obj_pds=obj_pds.detach()
         if rel_pds is not None:
-            rel_pds=rel_pds.detach()
+            rel_pds = rel_pds.detach()
         o_pd = obj_pds.max(1)[1]
         # correct_array = o_pd.eq(obj_gts.data).cpu()
         
@@ -497,6 +499,8 @@ class EvalSceneGraph():
             
             if rel_pds is not None:
                 gt_edges = get_gt(obj_gts, rel_gts, edge_indices, seg2idx, self.multi_rel_prediction)
+
+                # Here the problem itself
                 self.top_k_rel += evaluate_topk_predicate(gt_edges, rel_pds, 
                                                           multi_rel_outputs = self.multi_rel_prediction, 
                                                           threshold=self.multi_rel_outputs, k = self.k)

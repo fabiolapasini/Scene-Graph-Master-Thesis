@@ -200,7 +200,6 @@ def data_preparation(points, instances, selected_instances, num_points, num_poin
             adj_matrix_onehot = torch.from_numpy(np.array(adj_matrix_onehot, dtype=rel_dtype))
         else:
             rel_dtype = np.int64
-        
         if multi_rel_outputs:
             gt_rels = torch.zeros(len(edge_indices), len(relationships),dtype = torch.float)
         else:

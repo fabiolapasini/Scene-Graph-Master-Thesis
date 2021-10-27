@@ -211,7 +211,7 @@ class SGPNModel(BaseModel):
         acc_obj = (obj_gt == pred_cls).sum().item() / obj_gt.nelement()
 
         pred_rel = rel_pred.detach() > 0.5
-        #print("pred_rel len: ", len(pred_rel), " pred_rel type: ", type(pred_rel), "tensor pred_rel size: ", pred_rel.size(), "tensor pred_rel.t size: ", pred_rel.t()[0].size())
+        #print("pred_rel len: ", len(pred_rel), " pred_rel type: ", type(pred_rel), "tensor pred_rel size: ", pred_rel.size(), "tensor pred_rel.t size: ", pred_rel.size())
         #print("rel_gt len: ", len(rel_gt), " rel_gt type: ", type(rel_gt), "tensor rel_gt size: ", rel_gt.size())
 
         #acc_rel = (rel_gt == pred_rel.t()).sum().item() / rel_gt.nelement()

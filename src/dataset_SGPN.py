@@ -283,6 +283,7 @@ class RIODatasetGraph(data.Dataset):
                          sample_in_runtime=self.sample_in_runtime,
                          num_nn=sample_num_nn, num_seed=sample_num_seed,
                          use_all = self.for_eval)
+
         return scan_id, instance2mask, obj_points, rel_points, gt_class, gt_rels, edge_indices
 
     def __len__(self):

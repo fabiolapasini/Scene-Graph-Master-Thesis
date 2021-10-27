@@ -1,0 +1,20 @@
+embeddings {
+  tensor_name: "example_node_feature:00000"
+  metadata_path: "00000/example_node_feature\\metadata.tsv"
+  tensor_path: "00000/example_node_feature\\tensors.tsv"
+}
+embeddings {
+  tensor_name: "example_edge_feature:00000"
+  metadata_path: "00000/example_edge_feature\\metadata.tsv"
+  tensor_path: "00000/example_edge_feature\\tensors.tsv"
+}
+embeddings {
+  tensor_name: "example_gcn_node_feature:00000"
+  metadata_path: "00000/example_gcn_node_feature\\metadata.tsv"
+  tensor_path: "00000/example_gcn_node_feature\\tensors.tsv"
+}
+embeddings {
+  tensor_name: "example_gcn_edge_feature:00000"
+  metadata_path: "00000/example_gcn_edge_feature\\metadata.tsv"
+  tensor_path: "00000/example_gcn_edge_feature\\tensors.tsv"
+}

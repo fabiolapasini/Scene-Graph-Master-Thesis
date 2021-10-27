@@ -1,7 +1,7 @@
 {
   "_MODEL": ["SGFN", "SGPN"],
   "MODEL": "SGPN",
-  "VERBOSE": false,
+  "VERBOSE": true,
   "SEED": 2020,
   "MAX_EPOCHES": 1,
   "LR": 0.001,
@@ -50,7 +50,7 @@
     "NONE_RATIO": 1.0
   },
   "dataset": {
-    "root": ["../data/tmp"],
+    "root": [".\\data\\tmp"],
     "selection": "",
     "ignore_scannet_rel": true,
     "is_v2": true,
