@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
+# python main.py --config C:\Users\fabio\Documents\GitHub\Scene-Graph-Master-Thesis\config_example.json --mode eval
+
 import os
 if __name__ == '__main__':
     os.sys.path.append('./src')
