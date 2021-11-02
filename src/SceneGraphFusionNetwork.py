@@ -97,7 +97,7 @@ class SGFN():
                     self.writter.add_graph(self.model,[obj_points,rel_points,edge_indices.t().contiguous()])
 
 
-    def load(self, best=False):
+    def load(self, best=True):
         return self.model.load(best)
 
 

@@ -15,9 +15,10 @@ class BaseModel(nn.Module):
         self.best_suffix = '_best.pth'
         self.suffix = '.pth'
         self.skip_names = ['loss']        
-        self.saving_pth = os.path.join(config.PATH,name)
+        self.saving_pth = os.path.join(config.PATH, name)
         Path(self.saving_pth).mkdir(parents=True, exist_ok=True)
-        self.config_path = os.path.join(self.saving_pth, 'config')
+        #self.config_path = os.path.join(self.saving_pth, 'config')
+        self.config_path = os.path.join(self.saving_pth, 'gcn')
         
 
     def saveConfig(self, path):
@@ -39,7 +40,7 @@ class BaseModel(nn.Module):
             except:
                 print('Target saving config file does not contain eva_iou!')
                 eva_iou = 0
-                
+
             return data['iteration'], eva_iou
         else:
             return 0, 0
@@ -73,7 +74,7 @@ class BaseModel(nn.Module):
         torch.save({'optimizer': self.optimizer.state_dict()}, os.path.join(self.saving_pth,'optimizer'+suffix))
 
 
-    def load(self, best=False):
+    def load(self, best=True):
         print('\nLoading %s model...' % self.name)
         loaded=True
         
@@ -97,7 +98,7 @@ class BaseModel(nn.Module):
             print('\tLoad checkpoint')
             suffix = self.suffix
         else:
-            print('\tNo saved model found')
+            print('\tNo saved model found in ', self.config_path+self.best_suffix)
             return False
 
         self.iteration, self.eva_iou = self.loadConfig(self.config_path + suffix)
