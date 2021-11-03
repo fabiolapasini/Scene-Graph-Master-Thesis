@@ -1,5 +1,5 @@
-ROOT_PATH = '/home/fabiola/Desktop/Tesi/Scene-Graph-Master-Thesis/' #'/path/to/repo/3DSSG/'
-DATA_PATH = '/home/fabiola/Desktop/Tesi/Scene-Graph-Master-Thesis/3RScan/' #'/path/to/3RScan/'
+ROOT_PATH = '../Scene-Graph-Master-Thesis/' #'/path/to/repo/3DSSG/'
+DATA_PATH = '../Scene-Graph-Master-Thesis/3RScan/' #'/path/to/3RScan/'
 
 FILE_PATH = ROOT_PATH+'files/'
 Scan3RJson_PATH = FILE_PATH+'3RScan.json'
