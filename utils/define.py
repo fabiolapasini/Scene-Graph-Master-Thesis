@@ -10,3 +10,5 @@ CLASS160_FILE = FILE_PATH+'classes160.txt'
 LABEL_FILE_NAME_RAW = 'labels.instances.annotated.v2.ply'
 LABEL_FILE_NAME = 'labels.instances.align.annotated.v2.ply'
 SEMSEG_FILE_NAME = 'semseg.v2.json'
+
+NAME_SAME_PART = 'same part'

@@ -35,13 +35,13 @@ def main():
     
     model = SGFN(config)                         
     
-    '''if config.MODE == 'train':
+    if config.MODE == 'train':
         try:
             model.load()
         except:
             print('unable to load previous model.')
         print('\nstart training...\n')
-        model.train()'''
+        model.train()
 
     if config.MODE == 'eval':
         if model.load(config.LOADBEST) is False:

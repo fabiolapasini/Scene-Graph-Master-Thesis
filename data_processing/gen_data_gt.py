@@ -1,22 +1,31 @@
 if __name__ == '__main__' and __package__ is None:
     from os import sys
     sys.path.append('../')
-from utils import util_ply
+
 import trimesh
 import open3d as o3d
 import numpy as np
-from utils import define, util
-from utils import util_ply, util_label, util, define
+from utils import util_ply, util_label, util
 from utils.util_search import SAMPLE_METHODS, find_neighbors
 from tqdm import tqdm
 from pathlib import Path
 import os,json    
 import argparse
 
+import platform
+if (platform.system() == "Windows"):
+    from utils import define_win as define
+elif (platform.system() != "Windows"):
+    from utils import define as define
 
-# python3 gen_data_gt.py --pth_out '../data/tmp' --target_scan '../3RScan/scans_name.txt'
+# Ubuntu:
+    # python3 gen_data_gt.py --pth_out '../Data' --target_scan '../3RScan/scans_name.txt'
+# Win:
+    # python gen_data_gt.py --type train --pth_out ..\Data --target_scan ..\3RScan\scans_name.txt
+    # python gen_data_gt.py --type test --pth_out ..\Data --target_scan ..\3RScan\scans_name.txt
+    # python gen_data_gt.py --type validation --pth_out ..\Data --target_scan ..\3RScan\scans_name.txt
 
-# this code creates a folder ../data/temp with inside: args.json  relationships_train.json classes.txt  relationships.txt 
+# this code creates a folder ..\\Data with inside: args.json  relationships_train.json classes.txt  relationships.txt
 # select the -- validation to create all the files needed
 
 

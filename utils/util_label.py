@@ -1,5 +1,9 @@
-try: import define
-except: from utils import define
+import platform
+if (platform.system() == "Windows"):
+    from utils import define_win as define
+elif (platform.system() != "Windows"):
+    from utils import define as define
+
 try: import util
 except: from utils import util
 
@@ -234,12 +238,10 @@ def getLabelMapping(label_type:str,pth_mapping:str = ""):
             label_name_mapping[k] = v if v in names else 'none'
         for k,v in Scan3R528.items():
             label_id_mapping[k] = 0 if v not in names else n_to_id[v]
-        
     elif label_type == 'scannet20':
         label_names = NYU40
         label_name_mapping = toNameNYU40
         label_id_mapping = toNYU40
-        
         label_names = {i+1:SCANNET20_Label_Names[i] for i in range(len(SCANNET20_Label_Names)) }
         for name, name40 in label_name_mapping.items():
             label_name_mapping[name] = name40 if name40 in label_names.values() else 'none'

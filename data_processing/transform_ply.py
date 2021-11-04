@@ -1,6 +1,7 @@
 if __name__ == '__main__' and __package__ is None:
     from os import sys
     sys.path.append('../')
+
 import os,argparse,json,time
 import numpy as np
 from shutil import copyfile

@@ -2,8 +2,12 @@ import os, trimesh
 import numpy as np
 try: from util import check_file_exist
 except: from utils.util import check_file_exist
-try: import define
-except: from utils import define
+
+import platform
+if (platform.system() == "Windows"):
+    from utils import define_win as define
+elif (platform.system() != "Windows"):
+    from utils import define as define
 
 
 # plydata passed as argument must be a trimesh file: <trimesh.Trimesh(vertices.shape=(59970, 3), faces.shape=(90747, 3))>
