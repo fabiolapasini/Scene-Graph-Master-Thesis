@@ -3,12 +3,12 @@
 # Some codes here are modified from SuperGluePretrainedNetwork https://github.com/magicleap/SuperGluePretrainedNetwork/blob/master/models/superglue.py
 #
 import torch
-from network_util import build_mlp, Gen_Index, Aggre_Index, MLP
-from networks_base import BaseNetwork
+from src.network_util import build_mlp, Gen_Index, Aggre_Index, MLP
+from src.networks_base import BaseNetwork
 import inspect
 from collections import OrderedDict
 import os
-import op_utils
+import src.op_utils
 
 
 class TripletEdgeNet(torch.nn.Module):
@@ -22,6 +22,7 @@ class TripletEdgeNet(torch.nn.Module):
     def forward(self, x_i, edge_feature,x_j):
         x_ = torch.cat([x_i,edge_feature,x_j],dim=1)    #.view(b, -1, 1)
         return self.nn(x_)
+
 
     def trace(self, pth = './tmp',name_prefix=''):
         params = inspect.signature(self.forward).parameters

@@ -12,9 +12,9 @@ import torch.utils.data
 from torch.autograd import Variable
 import numpy as np
 import torch.nn.functional as F
-from pointnet.graph import GraphTripleConvNet
-from networks_base import BaseNetwork
-import op_utils
+# from pointnet.graph import GraphTripleConvNet
+from src.networks_base import BaseNetwork
+import src.op_utils
 
 
 class STN3d(nn.Module):

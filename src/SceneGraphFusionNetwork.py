@@ -3,12 +3,12 @@ if __name__ == '__main__' and __package__ is None:
     sys.path.append('../')
 
 import os,torch,time
-from DataLoader import CustomDataLoader
-from model_SGPN import SGPNModel
-from dataset_builder import build_dataset
+from src.DataLoader import CustomDataLoader
+from src.model_SGPN import SGPNModel
+from src.dataset_builder import build_dataset
 from torch.utils.tensorboard import SummaryWriter
-from config import Config
-import op_utils
+from src.config import Config
+import src.op_utils
 from utils import plot_confusion_matrix
 from utils import util_eva
 
@@ -30,8 +30,7 @@ class SGFN():
         ''' Build dataset '''
         dataset = None
         if config.MODE  == 'train':
-            print("train")
-            '''if config.VERBOSE: print('build train dataset')
+            if config.VERBOSE: print('build train dataset')
             self.dataset_train = build_dataset(self.config,split_type='train_scans', shuffle_objs=True,
                                                multi_rel_outputs=mconfig.multi_rel_outputs,
                                                use_rgb=mconfig.USE_RGB,
@@ -40,18 +39,17 @@ class SGFN():
             self.w_cls_obj=self.w_cls_rel=None
             if self.config.WEIGHTING:
                 self.w_cls_obj=self.dataset_train.w_cls_obj
-                self.w_cls_rel=self.dataset_train.w_cls_rel'''
+                self.w_cls_rel=self.dataset_train.w_cls_rel
                 
         if config.MODE  == 'train' or config.MODE  == 'trace':
-            print("train and trace")
-            '''if config.VERBOSE: print('build valid dataset')
+            if config.VERBOSE: print('build valid dataset')
             self.dataset_valid = build_dataset(self.config,split_type='validation_scans', shuffle_objs=False, 
                                       multi_rel_outputs=mconfig.multi_rel_outputs,
                                       use_rgb=mconfig.USE_RGB,
                                       use_normal=mconfig.USE_NORMAL)
             num_obj_class = len(self.dataset_valid.classNames)
             num_rel_class = len(self.dataset_valid.relationNames)
-            dataset = self.dataset_valid'''
+            dataset = self.dataset_valid
 
         #
         #try:
@@ -84,7 +82,7 @@ class SGFN():
             self.writter = SummaryWriter(pth_log)
             
             # Plot data graph to tensorboard
-            all_logs = op_utils.get_tensorboard_logs(pth_log)
+            all_logs = src.op_utils.get_tensorboard_logs(pth_log)
             if len(all_logs) == 1:
                 if self.use_edge_descriptor:
                     print(" ")
@@ -124,7 +122,7 @@ class SGFN():
             return obj_points, rel_points, edge_indices, gt_class, gt_rels
 
 
-    ''' def train(self):
+    def train(self):
         # create data loader 
         drop_last = True
         
@@ -147,7 +145,7 @@ class SGFN():
             print('No training data was provided! Check \'TRAIN_FLIST\' value in the configuration file.')
             return
         
-        progbar = op_utils.Progbar(total, width=20, stateful_metrics=['Misc/epo', 'Misc/it'])
+        progbar = src.op_utils.Progbar(total, width=20, stateful_metrics=['Misc/epo', 'Misc/it'])
         
         if self.model.iteration >= max_iteration:
             keep_training = False
@@ -175,7 +173,7 @@ class SGFN():
                 if iteration >= self.model.iteration:
                     break
                 epoch+=1
-                progbar = op_utils.Progbar(total, width=20, stateful_metrics=['Misc/epo', 'Misc/it'])
+                progbar = src.op_utils.Progbar(total, width=20, stateful_metrics=['Misc/epo', 'Misc/it'])
                 loader = iter(train_loader)
             
         # Train
@@ -305,11 +303,11 @@ class SGFN():
             
             if epoch > self.config.MAX_EPOCHES:
                 break
-            progbar = op_utils.Progbar(total, width=20, stateful_metrics=['Misc/epo', 'Misc/it'])
+            progbar = src.op_utils.Progbar(total, width=20, stateful_metrics=['Misc/epo', 'Misc/it'])
             loader = iter(train_loader)
         self.save()
         print('')
-        self.eval()'''
+        self.eval()
 
        
     def cuda(self, *args):
@@ -344,7 +342,7 @@ class SGFN():
                                           multi_rel_prediction=self.model.mconfig.multi_rel_outputs)
        
         total = len(self.dataset_valid)
-        progbar = op_utils.Progbar(total, width=20, stateful_metrics=['Misc/it'])
+        progbar = src.op_utils.Progbar(total, width=20, stateful_metrics=['Misc/it'])
         
         print('===   start evaluation 1   ===')
         self.model.eval()
@@ -450,7 +448,7 @@ class SGFN():
                                   multi_rel_outputs=0.5, k=100,multi_rel_prediction=self.model.mconfig.multi_rel_outputs)
         
         total = len(self.dataset_eval)
-        progbar = op_utils.Progbar(total, width=20, stateful_metrics=['Misc/it'])
+        progbar = src.op_utils.Progbar(total, width=20, stateful_metrics=['Misc/it'])
         
         print('===   start evaluation 2 ===')
         list_feature_maps = dict()
@@ -554,7 +552,7 @@ class SGFN():
 
         print(eva_tool.gen_text())
         pth_out = os.path.join(self.results_path,str(self.model.iteration))
-        op_utils.create_dir(pth_out)
+        src.op_utils.create_dir(pth_out)
         
         result_metrics = eva_tool.write(pth_out, self.model_name)
         # result_metrics = {'hparam/'+key: value for key,value in result_metrics.items()}
@@ -594,9 +592,10 @@ class SGFN():
                 continue
             print(name)
             self.writter.add_embedding(tmp,metadata=names,tag=self.model_name+'_'+name, global_step=self.model.iteration)
-        
-    '''def trace(self):
-        op_utils.create_dir(self.trace_path)
+
+
+    def trace(self):
+        src.op_utils.create_dir(self.trace_path)
         args = self.model.trace(self.trace_path)
         with open(os.path.join(self.trace_path, 'classes.txt'), 'w') as f:
             for c in self.dataset_valid.classNames:
@@ -611,16 +610,16 @@ class SGFN():
         with open(os.path.join(self.trace_path, 'args.json'), 'w') as f:
             args['label_type'] = self.dataset_valid.label_type
             json.dump(args, f, indent=2)
-        pass'''
+        pass
 
 
 if __name__ == '__main__':
     TEST_CUDA = False
-    TEST_EVAL = True
+    TEST_EVAL = False
     TEST_TRACE = False
 
     config = Config('../config_example.json')
-    config.dataset.root = '../data/tmp/'
+    config.dataset.root = '../Data/'
     config.MODEL.GCN_TYPE = 'TRIP' #'EAN'
     config.MODEL.multi_rel_outputs=False
     config['NAME'] = 'test'
@@ -634,7 +633,7 @@ if __name__ == '__main__':
         config.DEVICE = torch.device("cpu")
         
     # config.MODE = 'train' if not TEST_EVAL else 'eval'
-    config.MODE = 'eval'
+    config.MODE = 'train'
     
     pg = SGFN(config)
     if TEST_TRACE:

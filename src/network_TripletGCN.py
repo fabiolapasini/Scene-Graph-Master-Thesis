@@ -3,7 +3,7 @@
 from typing import Optional
 import torch
 from torch import Tensor
-from networks_base import BaseNetwork, mySequential
+from src.networks_base import BaseNetwork, mySequential
 from torch_geometric.nn.conv import MessagePassing
 from torch_scatter import scatter
 

@@ -7,12 +7,12 @@ if __name__ == '__main__' and __package__ is None:
 import torch
 import torch.optim as optim
 import torch.nn.functional as F
-from model_base import BaseModel
-from network_PointNet import PointNetfeat, PointNetCls, PointNetRelCls, PointNetRelClsMulti
-from network_TripletGCN import TripletGCNModel
-from network_GNN import GraphEdgeAttenNetworkLayers
-from config import Config
-import op_utils
+from src.model_base import BaseModel
+from src.network_PointNet import PointNetfeat, PointNetCls, PointNetRelCls, PointNetRelClsMulti
+from src.network_TripletGCN import TripletGCNModel
+from src.network_GNN import GraphEdgeAttenNetworkLayers
+from src.config import Config
+import src.op_utils
 
 
 class SGPNModel(BaseModel):
@@ -107,7 +107,7 @@ class SGPNModel(BaseModel):
                 model = torch.nn.DataParallel(model, config.GPU)
             self.add_module(name, model)
             params += list(model.parameters())
-            print(name,op_utils.pytorch_count_params(model))
+            print(name, src.op_utils.pytorch_count_params(model))
         print('')
         
         self.optimizer = optim.Adam(

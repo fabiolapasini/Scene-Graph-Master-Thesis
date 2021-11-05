@@ -14,7 +14,7 @@
   "VALID_INTERVAL": 5,
   "LOG_INTERVAL": 10,
   "LOG_IMG_INTERVAL": 100,
-  "WORKERS": 4,
+  "WORKERS": 0,
   "_EDGE_BUILD_TYPE": ["FC", "KNN"],
   "EDGE_BUILD_TYPE": "KNN",
   "WEIGHTING": true,
@@ -50,7 +50,7 @@
     "NONE_RATIO": 1.0
   },
   "dataset": {
-    "root": [".\\data\\tmp"],
+    "root": [".\\Data\\"],
     "selection": "",
     "ignore_scannet_rel": true,
     "is_v2": true,

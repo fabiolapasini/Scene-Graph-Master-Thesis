@@ -140,8 +140,8 @@ class RIODatasetGraph(data.Dataset):
         rlimit = resource.getrlimit(resource.RLIMIT_NOFILE)
         resource.setrlimit(resource.RLIMIT_NOFILE, (4096, rlimit[1]))'''
 
-        #print(self.root)            # ../data/tmp/
-        #print(len(self.root))       # 41
+        # print(self.root)            # ../Data
+        # print(len(self.root))       # 41
         
         if isinstance(self.root, list):
             with open(os.path.join(self.root[0],'args.json'), 'r') as f:
@@ -339,7 +339,7 @@ if __name__ == '__main__':
     from config import Config
 
     config = Config('../config_example.json')
-    config.dataset.root = '../data/tmp/'
+    config.dataset.root = '../Data/'
     config.dataset.label_file = 'labels.instances.align.annotated.v2.ply' #'inseg.ply'
     config.dataset_type = 'SGPN'
     config.dataset.load_cache=False

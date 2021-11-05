@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from dataset_SGPN import RIODatasetGraph
+from src.dataset_SGPN import RIODatasetGraph
 #from dataset_SGFN import SGFNDataset
 
 def build_dataset(config, split_type, shuffle_objs, multi_rel_outputs, use_rgb, use_normal):
@@ -48,5 +48,5 @@ if __name__ == '__main__':
     from config import Config
 
     config = Config('../config_example.json')
-    config.dataset.root = '../data/tmp/'
+    config.dataset.root = '../Data/'
     build_dataset(config, split_type = 'validation_scans', shuffle_objs=True, multi_rel_outputs=False,use_rgb=True,use_normal=True)

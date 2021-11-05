@@ -211,13 +211,13 @@ def read_classes(read_file):  # load list of relationships
 
 
 if __name__ == '__main__':
-    pth_out = 'C:\\Users\\fabio\\Documents\\GitHub\\Scene-Graph-Master-Thesis\\example\\results\\0\\graph'
+    pth_out = 'C:\\Users\\fabio\\Documents\\GitHub\\Scene-Graph-Master-Thesis\\example\\results\\2\\graph'
     pd_only=False
     gt_only=True
 
     SCAN_PATH = 'C:\\Users\\fabio\\Documents\GitHub\\Scene-Graph-Master-Thesis\\3RScan\\'  # '/path/to/3RScan/'
-    DATA_PATH = 'C:\\Users\\fabio\\Documents\\GitHub\\Scene-Graph-Master-Thesis\\data\\tmp\\'
-    RESULT_PATH = 'C:\\Users\\fabio\\Documents\\GitHub\\Scene-Graph-Master-Thesis\\example\\results\\0\\'  # '/path/to/result/'
+    DATA_PATH = 'C:\\Users\\fabio\\Documents\\GitHub\\Scene-Graph-Master-Thesis\\Data\\'
+    RESULT_PATH = 'C:\\Users\\fabio\\Documents\\GitHub\\Scene-Graph-Master-Thesis\\example\\results\\2\\'  # '/path/to/result/'
     RESULT_PATH = os.path.join(RESULT_PATH, 'predictions.json')
 
     '''

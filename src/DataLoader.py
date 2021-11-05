@@ -1,4 +1,3 @@
-import torch
 from torch.utils.data import DataLoader
 from torch.utils.data.dataloader import _SingleProcessDataLoaderIter, _MultiProcessingDataLoaderIter
 import numpy as np

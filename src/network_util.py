@@ -7,7 +7,7 @@ Created on Sat Oct 10 16:46:24 2020
 
 import torch
 from torch_geometric.nn.conv import MessagePassing
-from networks_base import mySequential
+from src.networks_base import mySequential
 
 
 # here it is interesting the part concerning message_passing, try to understand it better

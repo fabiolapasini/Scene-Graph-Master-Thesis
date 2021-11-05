@@ -18,7 +18,7 @@ class BaseModel(nn.Module):
         self.saving_pth = os.path.join(config.PATH, name)
         Path(self.saving_pth).mkdir(parents=True, exist_ok=True)
         #self.config_path = os.path.join(self.saving_pth, 'config')
-        self.config_path = os.path.join(self.saving_pth, 'gcn')
+        self.config_path = os.path.join(self.saving_pth, ' ')
         
 
     def saveConfig(self, path):
