@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
-import numpy as np
 import itertools
+import numpy as np
+np.seterr(divide='ignore', invalid='ignore')
 
 
 def plot_confusion_matrix(cm,
@@ -71,8 +72,7 @@ def plot_confusion_matrix(cm,
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
     plt.title(title)
     plt.colorbar()
-    
-    
+
     
     if target_names is not None:
         tick_marks = np.arange(len(target_names))

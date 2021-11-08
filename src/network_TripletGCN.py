@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
 from typing import Optional
 import torch
 from torch import Tensor
@@ -8,7 +9,7 @@ from torch_geometric.nn.conv import MessagePassing
 from torch_scatter import scatter
 
 
-def MLP(channels: list, do_bn=True, on_last=False):
+'''def MLP(channels: list, do_bn=True, on_last=False):
     """ Multi-layer perceptron """
     n = len(channels)
     layers = []
@@ -20,8 +21,10 @@ def MLP(channels: list, do_bn=True, on_last=False):
             if do_bn:
                 layers.append(torch.nn.BatchNorm1d(channels[i]))
             layers.append(torch.nn.ReLU())
-    return mySequential(*layers)
+    return mySequential(*layers)'''
 
+
+# TRIP ###########################################
 
 def build_mlp(dim_list, activation='relu', do_bn=False, dropout=0, on_last=False):
    layers = []
@@ -91,6 +94,7 @@ class TripletGCNModel(BaseNetwork):
                 node_feature = torch.nn.functional.relu(node_feature)
                 edge_feature = torch.nn.functional.relu(edge_feature)
         return node_feature, edge_feature
+##############################################
     
     
 if __name__ == '__main__':
@@ -101,6 +105,7 @@ if __name__ == '__main__':
     num_node = 3
     num_edge = 4
     heads = 2       # this value here is not used anywhere
+
     x = torch.rand(num_node, dim_node)
     edge_feature = torch.rand([num_edge,dim_edge],dtype=torch.float)
     edge_index =torch.randint(0, num_node, [num_edge,2])

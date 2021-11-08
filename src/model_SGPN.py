@@ -71,7 +71,8 @@ class SGPNModel(BaseModel):
         #                                 dim_node = mconfig.point_feature_size,
         #                                 dim_edge = mconfig.point_feature_size,
         #                                 dim_hidden = mconfig.gcn_hidden_feature_size)
-        
+
+        #########################################################################################################################
         if mconfig.GCN_TYPE == "TRIP":
             models['gcn'] = TripletGCNModel(num_layers=mconfig.N_LAYERS,
                                             dim_node = mconfig.point_feature_size,
@@ -85,6 +86,12 @@ class SGPNModel(BaseModel):
                                 self.mconfig.NUM_HEADS,
                                 self.mconfig.GCN_AGGR,
                                 flow=self.flow)
+
+        elif mconfig.GCN_TYPE == 'DGCNN':
+            print("DGCNN")
+            # models['gcn'] = .....
+
+        #########################################################################################################################
         
         # node feature classifier        
         models['obj_predictor'] = PointNetCls(num_class, in_size=mconfig.point_feature_size, batch_norm=with_bn,drop_out=True)
@@ -127,6 +134,8 @@ class SGPNModel(BaseModel):
                 gcn_obj_feature, gcn_rel_feature = self.gcn(obj_feature, rel_feature, edges)
             elif self.mconfig.GCN_TYPE == 'EAN':
                 gcn_obj_feature, gcn_rel_feature, probs = self.gcn(obj_feature, rel_feature, edges)
+            '''elif self.mconfig.GCN_TYPE == 'DGCNN':
+                gcn_obj_feature, gcn_rel_feature = self.gcn(obj_feature, rel_feature, edges)'''
             
             if self.mconfig.OBJ_PRED_FROM_GCN:
                 obj_cls = self.obj_predictor(gcn_obj_feature)
@@ -223,9 +232,9 @@ class SGPNModel(BaseModel):
     
 
 
-# This code creates an empty folder in the root directory
+# This code creates an empty folder in the root directory name model_SGPN
 if __name__ == '__main__':
-    use_dataset = False     #True
+    use_dataset = False
     # watch out! USE_CONTEXT = false makes the program non runnable!
     config = Config('../config_example.json')
 

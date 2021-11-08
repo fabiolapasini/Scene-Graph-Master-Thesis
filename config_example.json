@@ -3,7 +3,7 @@
   "MODEL": "SGPN",
   "VERBOSE": true,
   "SEED": 2020,
-  "MAX_EPOCHES": 1,
+  "MAX_EPOCHES": 50,
   "LR": 0.001,
   "W_DECAY": false,
   "AMSGRAD":false,

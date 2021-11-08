@@ -21,6 +21,7 @@ elif (platform.system() != "Windows"):
     from utils import define
     print("Os: Ubuntu")
 
+
 def dataset_loading_3RScan(root:str, pth_selection:str,split:str,class_choice:list=None):    
     pth_catfile = os.path.join(pth_selection, 'classes.txt')
     classNames = util.read_txt_to_list(pth_catfile)
@@ -102,6 +103,7 @@ def load_mesh(path,label_file,use_rgb,use_normal):
     else:
         raise NotImplementedError('')'''
     return result
+
 
 class RIODatasetGraph(data.Dataset):
     def __init__(self,
@@ -334,7 +336,8 @@ class RIODatasetGraph(data.Dataset):
             objs[scan["scan"]+"_"+str(scan['split'])] = objects
 
         return rel, objs, scans, nns
-    
+
+
 if __name__ == '__main__':
     from config import Config
 
@@ -343,7 +346,7 @@ if __name__ == '__main__':
     config.dataset.label_file = 'labels.instances.align.annotated.v2.ply' #'inseg.ply'
     config.dataset_type = 'SGPN'
     config.dataset.load_cache=False
-    use_rgb= False #True
+    use_rgb= False
     use_normal=True
     dataset = RIODatasetGraph(config,
                               split='validation_scans',

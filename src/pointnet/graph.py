@@ -16,7 +16,7 @@
 
 import torch
 import torch.nn as nn
-from pointnet.layers import build_mlp
+from layers import build_mlp
 
 """
 Johnson's PyTorch modules for dealing with graphs.

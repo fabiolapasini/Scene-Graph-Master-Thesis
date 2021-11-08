@@ -2,12 +2,14 @@ from torch.utils.data import DataLoader
 from torch.utils.data.dataloader import _SingleProcessDataLoaderIter, _MultiProcessingDataLoaderIter
 import numpy as np
 
+
 class CustomSingleProcessDataLoaderIter(_SingleProcessDataLoaderIter):
     def __init__(self,loader):
         super().__init__(loader)
     def IndexIter(self):
         return self._sampler_iter
-    
+
+
 class CustomMultiProcessingDataLoaderIter(_MultiProcessingDataLoaderIter):
     def __init__(self,loader):
         super().__init__(loader)

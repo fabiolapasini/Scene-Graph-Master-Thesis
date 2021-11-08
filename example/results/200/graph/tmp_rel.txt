@@ -1,42 +1,42 @@
 IoU scores
-attached to   (0 ): 0.000   (     0/13    )
+attached to   (0 ): 0.692   (     9/13    )
 build in      (1 ): nan
 connected to  (2 ): nan
 hanging on    (3 ): 0.000   (     0/4     )
 part of       (4 ): nan
-standing on   (5 ): 0.000   (     0/4     )
+standing on   (5 ): 0.750   (     3/4     )
 supported by  (6 ): nan
-Average           : 0.000
-0.000 & nan & nan & 0.000 & nan & 0.000 & nan & 0.000
+Average           : 0.481
+0.692 & nan & nan & 0.000 & nan & 0.750 & nan & 0.481
 Precision scores
-attached to   (0 ): nan
+attached to   (0 ): 1.000   (     9/9     )
 build in      (1 ): nan
 connected to  (2 ): nan
 hanging on    (3 ): nan
 part of       (4 ): nan
-standing on   (5 ): nan
+standing on   (5 ): 1.000   (     3/3     )
 supported by  (6 ): nan
-Average           : 0.000
-nan & nan & nan & nan & nan & nan & nan & 0.000
+Average           : 1.000
+1.000 & nan & nan & nan & nan & 1.000 & nan & 1.000
 Recall scores
-attached to   (0 ): 0.000   (     0/13    )
+attached to   (0 ): 0.692   (     9/13    )
 build in      (1 ): nan
 connected to  (2 ): nan
 hanging on    (3 ): 0.000   (     0/4     )
 part of       (4 ): nan
-standing on   (5 ): 0.000   (     0/4     )
+standing on   (5 ): 0.750   (     3/4     )
 supported by  (6 ): nan
-Average           : 0.000
-0.000 & nan & nan & 0.000 & nan & 0.000 & nan & 0.000
-accuracy      : 0.950   (399.000000/420.000000)
+Average           : 0.481
+0.692 & nan & nan & 0.000 & nan & 0.750 & nan & 0.481
+accuracy      : 0.976   (410.000000/420.000000)
 
 
 confusion matrix
 			0       1       2       3       4       5       6       
-attached to   (0 )	0.000	0.000	0.000	0.000	0.000	0.000	0.000
+attached to   (0 )	9.000	0.000	0.000	0.000	0.000	0.000	0.000
 build in      (1 )	0.000	0.000	0.000	0.000	0.000	0.000	0.000
 connected to  (2 )	0.000	0.000	0.000	0.000	0.000	0.000	0.000
 hanging on    (3 )	0.000	0.000	0.000	0.000	0.000	0.000	0.000
 part of       (4 )	0.000	0.000	0.000	0.000	0.000	0.000	0.000
-standing on   (5 )	0.000	0.000	0.000	0.000	0.000	0.000	0.000
+standing on   (5 )	0.000	0.000	0.000	0.000	0.000	3.000	0.000
 supported by  (6 )	0.000	0.000	0.000	0.000	0.000	0.000	0.000

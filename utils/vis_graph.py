@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
 """
 Created on Thu Oct  1 13:12:44 2020
-
 @author: sc
 """
+
 if __name__ == '__main__' and __package__ is None:
     from os import sys
     sys.path.append('../')
@@ -186,7 +187,7 @@ def process_pd(nodes,edges):
     ns = dict()
     es = dict()
     for k, v in nodes.items():
-        if isinstance(v,dict):# full output
+        if isinstance(v,dict):      # full output
             vv = max(v.items(), key=operator.itemgetter(1))[0]
             ns[k] = vv
         else:
@@ -201,7 +202,7 @@ def process_pd(nodes,edges):
     return ns, es
 
 
-def read_classes(read_file):  # load list of relationships
+def read_classes(read_file):        # load list of relationships
     relationships = [] 
     with open(read_file, 'r') as f: 
         for line in f: 
@@ -211,31 +212,13 @@ def read_classes(read_file):  # load list of relationships
 
 
 if __name__ == '__main__':
-    pth_out = 'C:\\Users\\fabio\\Documents\\GitHub\\Scene-Graph-Master-Thesis\\example\\results\\2\\graph'
-    pd_only=False
-    gt_only=True
-
+    pth_out = 'C:\\Users\\fabio\\Documents\\GitHub\\Scene-Graph-Master-Thesis\\example\\results\\100\\graph\\'
     SCAN_PATH = 'C:\\Users\\fabio\\Documents\GitHub\\Scene-Graph-Master-Thesis\\3RScan\\'  # '/path/to/3RScan/'
     DATA_PATH = 'C:\\Users\\fabio\\Documents\\GitHub\\Scene-Graph-Master-Thesis\\Data\\'
-    RESULT_PATH = 'C:\\Users\\fabio\\Documents\\GitHub\\Scene-Graph-Master-Thesis\\example\\results\\2\\'  # '/path/to/result/'
+    RESULT_PATH = 'C:\\Users\\fabio\\Documents\\GitHub\\Scene-Graph-Master-Thesis\\example\\results\\100\\'  # '/path/to/result/'
     RESULT_PATH = os.path.join(RESULT_PATH, 'predictions.json')
-
-    '''
-    pth_data= '/home/sc/research/PersistentSLAM/python/3DSSG/data_processing/NYU40_InSeg_subset'
-    pth_pd = '/home/sc/research/PersistentSLAM/c++/GraphSLAM/bin/test_prediction.json'
-    pth_pd = '/home/sc/research/PersistentSLAM/python/3DSSG/results/scannet_predictions/exp9_8_1/predictions.json'
-    # pth_pd = '/home/sc/research/PersistentSLAM/python/3DSSG/tmp.json'
-    pth_pd = '/home/sc/research/PersistentSLAM/python/3DSSG/results/test.json'
-    pth_pd = '/home/sc/research/PersistentSLAM/c++/GraphSLAM/results/exp10_5_3rscan_fusion/0a4b8ef6-a83a-21f2-8672-dce34dd0d7ca/' 
-    pth_pd = os.path.join(pth_pd,'predictions.json')
-    # pth_pd = '/home/sc/research/PersistentSLAM/python/3DSSG/experiments/exp8_0_6/results/23882/predictions.json'
-    # pth_pd = '/home/sc/research/PersistentSLAM/python/3DSSG/experiments/exp9_0_1/results/8300/predictions.json'
-    # pth_pd =  '/home/sc/research/PersistentSLAM/python/3DSSG/experiments/exp9_0_3/results/7452/predictions.json'
-    pth_data_3rscan  = '/home/sc/research/PersistentSLAM/python/3DSSG/data/3RScan_ScanNet20_InSeg_Full'
-    pth_data_scannet = '/home/sc/research/PersistentSLAM/python/3DSSG/data/ScanNet_ScanNet20_InSeg_Full'
-    pth_scannet=''
-    pth_3rscan ='' 
-    '''
+    pd_only = False
+    gt_only = False
     
     ''' load predictions '''
     with open(RESULT_PATH, 'r') as f:
@@ -270,7 +253,7 @@ if __name__ == '__main__':
 
 
     gts, classNames, predicateNames = load_both(DATA_PATH)
-    print(gts)
+    # print(gts)
     '''gts_, classNames_, predicateNames_ = load_both(pth_data_scannet)
     classNames=list(set(classNames).union(classNames_))
     predicateNames=list(set(predicateNames).union(predicateNames_))
@@ -284,9 +267,11 @@ if __name__ == '__main__':
 
     eva_o_cls = util_eva.EvaClassification(classNames)
     eva_r_cls = util_eva.EvaClassification(predicateNames)
+
     for scan_id, prediction in predictions.items():
-        # scan_id = scan_id.rsplit('_',1)[0]
-        # if scan_id != '87e6cf79-9d1a-289f-845c-abe4deb8642f': continue
+        """ in all the predictions.json file the scan id is the name f the scan follwed by '_0' """
+        scan_id = scan_id.rsplit('_',1)[0]
+        # if scan_id != '0a4b8ef6-a83a-21f2-8672-dce34dd0d7ca': continue
         print('scan_id: ', scan_id)
         gt_scan = gts[scan_id]
         
@@ -297,7 +282,7 @@ if __name__ == '__main__':
             node_pds, edge_pds = prediction['nodes'],prediction['edges']
             node_gts, edge_gts = process_gt(gt_scan['objects'],gt_scan['relationships'])
             
-        node_pds,edge_pds = process_pd(node_pds,edge_pds)
+        node_pds, edge_pds = process_pd(node_pds, edge_pds)
             
         # check nodes and edges
         # node_ids = [int(id) for id in nodes.keys()]
@@ -329,7 +314,7 @@ if __name__ == '__main__':
     eva_r_cls.draw('rel cmarix')
     c_cmat = eva_o_cls.c_mat
     r_cmat = eva_r_cls.c_mat
-    util_eva.write_result_file(c_cmat, pth_out +'tmp_cls.txt', [], classNames)
-    util_eva.write_result_file(r_cmat, pth_out +'tmp_rel.txt', [], predicateNames)
+    util_eva.write_result_file(c_cmat, pth_out + 'tmp_cls.txt', [], classNames)
+    util_eva.write_result_file(r_cmat, pth_out + 'tmp_rel.txt', [], predicateNames)
 
 

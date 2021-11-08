@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from src.dataset_SGPN import RIODatasetGraph
-#from dataset_SGFN import SGFNDataset
+# from dataset_SGFN import SGFNDataset
 
 def build_dataset(config, split_type, shuffle_objs, multi_rel_outputs, use_rgb, use_normal):
 

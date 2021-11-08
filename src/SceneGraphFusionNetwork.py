@@ -2,7 +2,7 @@ if __name__ == '__main__' and __package__ is None:
     from os import sys
     sys.path.append('../')
 
-import os,torch,time
+import os, torch, time
 from src.DataLoader import CustomDataLoader
 from src.model_SGPN import SGPNModel
 from src.dataset_builder import build_dataset
@@ -43,7 +43,7 @@ class SGFN():
                 
         if config.MODE  == 'train' or config.MODE  == 'trace':
             if config.VERBOSE: print('build valid dataset')
-            self.dataset_valid = build_dataset(self.config,split_type='validation_scans', shuffle_objs=False, 
+            self.dataset_valid = build_dataset(self.config, split_type='validation_scans', shuffle_objs=False,
                                       multi_rel_outputs=mconfig.multi_rel_outputs,
                                       use_rgb=mconfig.USE_RGB,
                                       use_normal=mconfig.USE_NORMAL)
@@ -51,7 +51,6 @@ class SGFN():
             num_rel_class = len(self.dataset_valid.relationNames)
             dataset = self.dataset_valid
 
-        #
         #try:
         if config.VERBOSE: print('build test dataset')
         self.dataset_eval = build_dataset(self.config,split_type='test_scans', shuffle_objs=False,
@@ -61,14 +60,15 @@ class SGFN():
         num_obj_class = len(self.dataset_eval.classNames)
         num_rel_class = len(self.dataset_eval.relationNames)
         dataset = self.dataset_eval
-        #except:
-        #    print('canno build eval dataset.')
+
+        # except:
+        #    print('cannot build eval dataset.')
         #    self.dataset_eval = None
             
         ''' Build Model '''
         if self.use_edge_descriptor:
             print(" ")
-            #self.model = SGFNModel(config,self.model_name,num_obj_class, num_rel_class).to(config.DEVICE)
+            # self.model = SGFNModel(config,self.model_name,num_obj_class, num_rel_class).to(config.DEVICE)
         else:
             # raise NotImplementedError('not yet cleaned.')
             self.model = SGPNModel(config,self.model_name,num_obj_class, num_rel_class).to(config.DEVICE)
@@ -493,12 +493,7 @@ class SGFN():
             
             ''' calculate metrics '''
             preds = [pred_obj_cls, pred_rel_cls]
-            #preds = [pred_obj_cls, pred_rel_cls.t()]
             gts = [gt_obj_cls, gt_rel_cls]
-            '''
-            print("preds size", len(preds), " preds type: ", type(preds))   # preds size 2  preds type:  <class 'list'>
-            print("gts size", len(gts), " gts type: ", type(gts))           # gts size 2  gts type:  <class 'list'>
-            '''
             logs = self.model.calculate_metrics(preds, gts)
 
             ignore_rel = False
@@ -510,8 +505,6 @@ class SGFN():
             if ignore_rel:
                 pred_rel_cls = gt_rel_cls = None
 
-            # new problem here
-            #eva_tool.add(scan_id, pred_obj_cls, gt_obj_cls, pred_rel_cls.t(), gt_rel_cls, instance2mask, edge_indices)
             eva_tool.add(scan_id, pred_obj_cls, gt_obj_cls, pred_rel_cls, gt_rel_cls, instance2mask, edge_indices)
             
             idx2seg=dict()

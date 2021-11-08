@@ -2,6 +2,10 @@
 # -*- coding: utf-8 -*-
 
 # python main.py --config C:\Users\fabio\Documents\GitHub\Scene-Graph-Master-Thesis\config_example.json --mode train
+# python main.py --config C:\Users\fabio\Documents\GitHub\Scene-Graph-Master-Thesis\config_example.json --mode eval --loadbest 1
+
+# to run the tensorboard on internet
+# tensorboard --logdir C:\\Users\\fabio\\Documents\\GitHub\\Scene-Graph-Master-Thesis\\logs\\example
 
 import os
 if __name__ == '__main__':
@@ -32,6 +36,7 @@ def main():
         
     '''if config.MODE == 'trace':
         config.DEVICE = torch.device("cpu")  '''
+
     if config.VERBOSE:
         print(config)
     
@@ -41,13 +46,14 @@ def main():
     model = SGFN(config)                         
     
     if config.MODE == 'train':
-        try:
+        '''try:
             model.load()
         except:
             print('unable to load previous model.')
-        print('\nstart training...\n')
+        print('\nstart training...\n')'''
         model.train()
 
+    # u can load the best model as long as the current config are the same as the best model config
     if config.MODE == 'eval':
         if model.load(config.LOADBEST) is False:
             raise Exception('\nCannot find saved model!\n')
@@ -60,8 +66,8 @@ def main():
         print('done')'''
     
 def load_config():
-    r"""loads model config
-
+    r"""
+    loads model config
     """
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--config', type=str, default='config_example.json', help='configuration file name. Relative path under given path (default: config.yml)')
@@ -89,5 +95,6 @@ def load_config():
     config.MODE = args.mode
 
     return config
+
 if __name__ == '__main__':
     main()

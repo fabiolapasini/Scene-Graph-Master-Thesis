@@ -17,8 +17,7 @@ class BaseModel(nn.Module):
         self.skip_names = ['loss']        
         self.saving_pth = os.path.join(config.PATH, name)
         Path(self.saving_pth).mkdir(parents=True, exist_ok=True)
-        #self.config_path = os.path.join(self.saving_pth, 'config')
-        self.config_path = os.path.join(self.saving_pth, ' ')
+        self.config_path = os.path.join(self.saving_pth, 'config')
         
 
     def saveConfig(self, path):

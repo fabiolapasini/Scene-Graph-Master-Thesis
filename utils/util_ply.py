@@ -125,7 +125,7 @@ def load_rgb(path, target_name = define.LABEL_FILE_NAME):
 
 
 if __name__ == '__main__':
-    PATH = define.DATA_PATH + "/0a4b8ef6-a83a-21f2-8672-dce34dd0d7ca/"
+    PATH = define.DATA_PATH + "\\0a4b8ef6-a83a-21f2-8672-dce34dd0d7ca"
     NAME =  'labels.instances.align.annotated.v2.ply'
 
     plydata = trimesh.load(PATH+NAME, process=False)

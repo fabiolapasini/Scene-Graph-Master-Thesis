@@ -189,7 +189,7 @@ class PointNetfeat(BaseNetwork):
         name = name_prefix+'_'+self.name
         input_ = (x)
         dynamic_axes = {names_i[0]:{0:'n_node', 2:'n_pts'}}
-        op_utils.export(self, input_, os.path.join(pth, name), 
+        src.op_utils.export(self, input_, os.path.join(pth, name),
                         input_names=names_i, output_names=names_o, 
                         dynamic_axes = dynamic_axes)
         
@@ -246,7 +246,7 @@ class PointNetCls(BaseNetwork):
         names_o = ['y']
         name = name_prefix+'_'+self.name
         input_ = (x)
-        op_utils.export(self, input_, os.path.join(pth, name), 
+        src.op_utils.export(self, input_, os.path.join(pth, name),
                         input_names=names_i, output_names=names_o, 
                         dynamic_axes = {names_i[0]:{0:'n_node', 1:'n_pts'}})
         names = dict()
@@ -300,7 +300,7 @@ class PointNetRelCls(BaseNetwork):
         names_o = ['y']
         name = name_prefix+'_'+self.name
         input_ = (x)
-        op_utils.export(self, input_, os.path.join(pth, name), 
+        src.op_utils.export(self, input_, os.path.join(pth, name),
                         input_names=names_i, output_names=names_o, 
                         dynamic_axes = {names_i[0]:{0:'n_node', 1:'n_pts'}})
         names = dict()
@@ -309,6 +309,7 @@ class PointNetRelCls(BaseNetwork):
         names['model_'+name]['input']=names_i
         names['model_'+name]['output']=names_o
         return names
+
 
 class PointNetRelClsMulti(BaseNetwork):
     def __init__(self, k=2, in_size=1024, batch_norm = True, drop_out = True,
@@ -354,7 +355,7 @@ class PointNetRelClsMulti(BaseNetwork):
         names_i = ['x']
         names_o = ['y']
         name = name_prefix+'_'+self.name
-        op_utils.export(self, (x), os.path.join(pth, name), 
+        src.op_utils.export(self, (x), os.path.join(pth, name),
                         input_names=names_i, output_names=names_o, 
                         dynamic_axes = {names_i[0]:{0:'n_node', 2:'n_pts'}})
         
@@ -603,6 +604,7 @@ class PointNetRelClsMulti(BaseNetwork):
 
 #         return objs_cls, full_rels_cls, target_rels, relpn_loss
 
+
 def feature_transform_regularizer(trans):
     d = trans.size()[1]
     batchsize = trans.size()[0]
@@ -611,6 +613,7 @@ def feature_transform_regularizer(trans):
         I = I.cuda()
     loss = torch.mean(torch.norm(torch.bmm(trans, trans.transpose(2,1)) - I, dim=(1,2)))
     return loss
+
 
 if __name__ == '__main__':
     # this doesn't work, what am I supposed to put instead of ./tmp?

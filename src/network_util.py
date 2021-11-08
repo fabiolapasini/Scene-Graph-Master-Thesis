@@ -10,9 +10,6 @@ from torch_geometric.nn.conv import MessagePassing
 from src.networks_base import mySequential
 
 
-# here it is interesting the part concerning message_passing, try to understand it better
-
-
 def MLP(channels: list, do_bn=False, on_last=False, drop_out=None):
     """ Multi-layer perceptron """
     n = len(channels)
@@ -107,7 +104,7 @@ if __name__ == '__main__':
     edge_index = torch.LongTensor([[0,1,2,1,0], [2,1,1,1,1]])
     for i in range(5):
         tmp[i] = -i
-    aggr = Aggre_Index(flow=flow,aggr='max')        # type of aggregation, could be sum, max, everage
+    aggr = Aggre_Index(flow=flow, aggr='max')        # type of aggregation, could be sum, max, everage
     xx = aggr(tmp, edge_index,dim_size=x.shape[0])
     print(x)
     print(xx)

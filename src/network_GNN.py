@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Some codes here are modified from SuperGluePretrainedNetwork https://github.com/magicleap/SuperGluePretrainedNetwork/blob/master/models/superglue.py
-#
+
 import torch
 from src.network_util import build_mlp, Gen_Index, Aggre_Index, MLP
 from src.networks_base import BaseNetwork
@@ -11,7 +11,7 @@ import os
 import src.op_utils
 
 
-class TripletEdgeNet(torch.nn.Module):
+'''class TripletEdgeNet(torch.nn.Module):
     def __init__(self,dim_node,dim_edge,use_bn=False):
         super().__init__()
         self.name = 'TripletEdgeNet'
@@ -23,7 +23,6 @@ class TripletEdgeNet(torch.nn.Module):
         x_ = torch.cat([x_i,edge_feature,x_j],dim=1)    #.view(b, -1, 1)
         return self.nn(x_)
 
-
     def trace(self, pth = './tmp',name_prefix=''):
         params = inspect.signature(self.forward).parameters
         params = OrderedDict(params)
@@ -34,17 +33,19 @@ class TripletEdgeNet(torch.nn.Module):
         x_2 = torch.rand(1, self.dim_node)
         self(x_1,e,x_2)
         name = name_prefix+'_'+self.name
-        op_utils.export(self, (x_1,e,x_2), os.path.join(pth, name), 
+        src.op_utils.export(self, (x_1,e,x_2), os.path.join(pth, name),
                         input_names=names_i, output_names=names_o, 
                         dynamic_axes = {names_i[0]:{0:'n_edge'},names_i[1]:{0:'n_edge'},names_i[2]:{0:'n_edge'}})
                         
         names = dict()
         names['model_'+name] = dict()
         names['model_'+name]['path'] = name
-        names['model_'+name]['input']=names_i
-        names['model_'+name]['output']=names_o
-        return names
+        names['model_'+name]['input'] = names_i
+        names['model_'+name]['output'] = names_o
+        return names'''
 
+
+# EAN ########################################
 
 class MultiHeadedEdgeAttention(torch.nn.Module):
     def __init__(self, num_heads: int, dim_node: int, dim_edge: int, dim_atten: int, use_bn=False, attention = 'fat', use_edge:bool = True, **kwargs):
@@ -108,7 +109,7 @@ class MultiHeadedEdgeAttention(torch.nn.Module):
         x2 = torch.rand(1, self.dim_node)
         self(x1,e,x2)
         name = name_prefix+'_'+self.name
-        op_utils.export(self, (x1,e,x2), os.path.join(pth, name), 
+        src.op_utils.export(self, (x1,e,x2), os.path.join(pth, name),
                         input_names=names_i, output_names=names_o, 
                         dynamic_axes = {names_i[0]:{0:'n_edge'}, names_i[1]:{0:'n_edge'}, names_i[2]:{0:'n_edge'}})
         
@@ -119,7 +120,7 @@ class MultiHeadedEdgeAttention(torch.nn.Module):
         names['model_'+name]['output']=names_o
         return names
      
-     
+# (G)EAN
 class GraphEdgeAttenNetwork(BaseNetwork):
     def __init__(self, num_heads, dim_node, dim_edge, dim_atten, aggr= 'max', use_bn=False, flow='target_to_source',attention = 'fat',use_edge:bool=True, **kwargs):
         super().__init__() #  "Max" aggregation.
@@ -169,7 +170,7 @@ class GraphEdgeAttenNetwork(BaseNetwork):
         names_o = ['x_out']
         name_nn = name_prefix+'_'+self.name+'_prop'
         cated=torch.cat([x, xx], dim=1)
-        op_utils.export(self.prop, (cated), os.path.join(pth, name_nn), input_names=names_i, output_names=names_o, dynamic_axes = {names_i[0]:{0:'n_node'}})
+        src.op_utils.export(self.prop, (cated), os.path.join(pth, name_nn), input_names=names_i, output_names=names_o, dynamic_axes = {names_i[0]:{0:'n_node'}})
         names_nn = dict()
         names_nn['model_'+name_nn] = dict()
         names_nn['model_'+name_nn]['path'] = name_nn
@@ -222,8 +223,9 @@ class GraphEdgeAttenNetworkLayers(torch.nn.Module):
             else:
                 probs.append(None)
         return node_feature, edge_feature, probs
-    
-        
+
+##############################################
+
 
 if __name__ == '__main__':
     TEST_FORWARD=False
@@ -256,11 +258,11 @@ if __name__ == '__main__':
     # this will create a folder inside src called tmp with two files inside it (MultiHeadedEdgeAttention and TripletEdgeNet)
     if TEST_TRACE:
         pth = './tmp'
-        op_utils.create_dir(pth)
+        src.op_utils.create_dir(pth)
         num_heads=1
         dim_node=128
         dim_edge=128
         dim_atten=128
         use_bn=False
         MultiHeadedEdgeAttention(num_heads, dim_node, dim_edge, dim_atten).trace()
-        TripletEdgeNet(dim_node, dim_edge).trace()
+        # TripletEdgeNet(dim_node, dim_edge).trace()

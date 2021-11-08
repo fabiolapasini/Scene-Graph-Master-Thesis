@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from config import Config
-from dataset_SGPN import RIODatasetGraph
+from src.config import Config
+from src.dataset_SGPN import RIODatasetGraph
 
 def build_dataset(config, split_type, shuffle_objs, multi_rel_outputs, use_rgb, use_normal):
 

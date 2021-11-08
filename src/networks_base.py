@@ -4,6 +4,7 @@ if __name__ == '__main__' and __package__ is None:
 
 import torch.nn as nn
 
+
 class BaseNetwork(nn.Module):
     def __init__(self):
         super(BaseNetwork, self).__init__()

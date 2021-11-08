@@ -149,15 +149,16 @@ def build_cnn(arch, normalization='batch', activation='relu', padding='same',
   - cnn: An nn.Sequential
   - channels: Number of output channels
   """
-  #print(arch)
+
+  # print(arch)
   if isinstance(arch, str):
     arch = arch.split(',')
   cur_C = 3
   if len(arch) > 0 and arch[0][0] == 'I':
     cur_C = int(arch[0][1:])
     arch = arch[1:]
-  #print(arch)
-  #if len(arch) > 0 and arch[0][0] == 'I':
+  # print(arch)
+  # if len(arch) > 0 and arch[0][0] == 'I':
   #  arch = arch[1:]
   first_conv = True
   flat = False
@@ -216,8 +217,7 @@ def build_cnn(arch, normalization='batch', activation='relu', padding='same',
   return nn.Sequential(*layers), cur_C
 
 
-def build_mlp(dim_list, activation='relu', batch_norm='none',
-              dropout=0, final_nonlinearity=True):
+def build_mlp(dim_list, activation='relu', batch_norm='none', dropout=0, final_nonlinearity=True):
   layers = []
   for i in range(len(dim_list) - 1):
     dim_in, dim_out = dim_list[i], dim_list[i + 1]
