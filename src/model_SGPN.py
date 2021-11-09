@@ -9,7 +9,9 @@ import torch.optim as optim
 import torch.nn.functional as F
 from src.model_base import BaseModel
 from src.network_PointNet import PointNetfeat, PointNetCls, PointNetRelCls, PointNetRelClsMulti
+# TRIP:
 from src.network_TripletGCN import TripletGCNModel
+# EAN:
 from src.network_GNN import GraphEdgeAttenNetworkLayers
 from src.config import Config
 import src.op_utils

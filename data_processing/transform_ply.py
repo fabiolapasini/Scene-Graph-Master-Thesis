@@ -2,12 +2,17 @@ if __name__ == '__main__' and __package__ is None:
     from os import sys
     sys.path.append('../')
 
-import os,argparse,json,time
+import os, argparse, json, time
 import numpy as np
 from shutil import copyfile
 from plyfile import PlyData
 import multiprocessing as mp
-from utils import define
+
+import platform
+if (platform.system() == "Windows"):
+    from utils import define_win as define
+elif (platform.system() != "Windows"):
+    from utils import define as define
 
 try:
     from sets import Set
@@ -30,7 +35,7 @@ def resave_ply(filename_in, filename_out, matrix):
     file = open(filename_in, 'rb')
     plydata = PlyData.read(file)
 
-    #print(plydata)
+    # print(plydata)
     ''' ply
         format ascii 1.0
         element vertex 59970
@@ -80,8 +85,8 @@ def read_transform_matrix():
                 if "transform" in scans:
                     rescan2ref[scans["reference"]] = np.matrix(scans["transform"]).reshape(4,4)
 
-                    #print(len(scans["transform"])) # list 16 element
-                    #print(rescan2ref[scans["reference"]].shape) #(4.4)
+                    # print(len(scans["transform"])) # list 16 element
+                    # print(rescan2ref[scans["reference"]].shape) #(4.4)
 
     return rescan2ref
 

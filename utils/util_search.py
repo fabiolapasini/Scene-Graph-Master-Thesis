@@ -6,6 +6,10 @@ import open3d as o3d
 from utils import util
 from enum import Enum
 
+
+# this code is used in gen_data_gt in the data processing part
+
+
 class SAMPLE_METHODS(Enum):
     BBOX=1
     RADIUS=2
@@ -22,7 +26,7 @@ def find_neighbors(points, segments, search_method:SAMPLE_METHODS, receptive_fie
         assert len(difference) == 0
         seg_ids = np.array(list(set(seg_ids).intersection(selected_keys)))
     
-    ''' Get all segments '''
+    # Get all segments
     trees = dict()
     segs_pts  = dict()
     bboxes = dict()
@@ -40,10 +44,10 @@ def find_neighbors(points, segments, search_method:SAMPLE_METHODS, receptive_fie
             seg_colors[index] = util.color_rgb(util.rand_24_bit())
 
     
-    ''' Building Box Method '''      
+    # Building Box Method      
     segs_neighbors = dict()
     if search_method == SAMPLE_METHODS.BBOX:
-        ''' Search neighbor of each segment '''
+        # Search neighbor of each segment
         for seg_idx in seg_ids:
             bbox_q = bboxes[seg_idx]
             seg_n = segs_neighbors[int(seg_idx)]=list()
@@ -76,5 +80,6 @@ def find_neighbors(points, segments, search_method:SAMPLE_METHODS, receptive_fie
                 return neighbors
             neighbors = list(f_nn(seg_id, trees, bboxes, segs_pts, receptive_field))
             neighbors = [int(n) for n in neighbors]
-            segs_neighbors[int(seg_idx)] = neighbors
+            segs_neighbors[int(seg_id)] = neighbors
     return segs_neighbors
+

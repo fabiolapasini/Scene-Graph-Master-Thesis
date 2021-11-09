@@ -22,7 +22,6 @@ def MLP(channels: list, do_bn=False, on_last=False, drop_out=None):
             if do_bn:
                 layers.append(torch.nn.BatchNorm1d(channels[i]))
             layers.append(torch.nn.ReLU())
-            
             if drop_out is not None:
                 layers.append(torch.nn.Dropout(drop_out))
     return mySequential(*layers)

@@ -24,11 +24,6 @@ def check_file_exist(path):
     if not os.path.exists(path):
             raise RuntimeError('Cannot open file. (',path,')')
 
-# this code was doubled
-'''def check_file_exist(path):
-    if not os.path.exists(path):
-            raise RuntimeError('Cannot open file. (',path,')')'''
-            
 
 def read_classes(read_file):
     obj_classes = [] 

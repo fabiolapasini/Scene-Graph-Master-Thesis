@@ -4,11 +4,13 @@
 from typing import Optional
 import torch
 from torch import Tensor
-from src.networks_base import BaseNetwork, mySequential
+from src.networks_base import BaseNetwork
 from torch_geometric.nn.conv import MessagePassing
 from torch_scatter import scatter
 
 
+# is function already exist (similar) in network_util
+'''from src.networks_base import mySequential'''
 '''def MLP(channels: list, do_bn=True, on_last=False):
     """ Multi-layer perceptron """
     n = len(channels)

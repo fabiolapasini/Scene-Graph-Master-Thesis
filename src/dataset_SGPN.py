@@ -123,10 +123,10 @@ class RIODatasetGraph(data.Dataset):
         
         self.root = self.mconfig.root
         self.root_3rscan = define.DATA_PATH
-        try:
+        '''try:
             self.root_scannet = define.SCANNET_DATA_PATH
         except:
-            self.root_scannet = None
+            self.root_scannet = None'''
 
         self.scans = []
         self.multi_rel_outputs = multi_rel_outputs
