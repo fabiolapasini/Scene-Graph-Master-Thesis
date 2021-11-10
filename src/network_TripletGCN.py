@@ -96,6 +96,7 @@ class TripletGCNModel(BaseNetwork):
                 node_feature = torch.nn.functional.relu(node_feature)
                 edge_feature = torch.nn.functional.relu(edge_feature)
         return node_feature, edge_feature
+
 ##############################################
     
     

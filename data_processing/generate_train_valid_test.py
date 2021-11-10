@@ -6,7 +6,12 @@ Created on Fri Oct  2 13:21:59 2020
 This problem build up the scan and rescan list.
 """
 
-# python generate_train_valid_test_splits.py --pth_out C:\\Users\\fabio\\Documents\GitHub\\Scene-Graph-Master-Thesis\\3RScan
+# python generate_train_valid_test.py --pth_out C:\\Users\\fabio\\Documents\GitHub\\Scene-Graph-Master-Thesis\\3RScan
+# train: 1064 validation: 114 test 157
+
+if __name__ == '__main__' and __package__ is None:
+    from os import sys
+    sys.path.append('../')
 
 from pathlib import Path
 import os 
@@ -15,7 +20,8 @@ import argparse
 import math
 import numpy as np
 from collections import defaultdict
-from utils.util import read_txt_to_list
+from utils import util
+
 
 import platform
 if (platform.system() == "Windows"):
@@ -113,19 +119,9 @@ def gen_splits(pth_3rscan_json, train_valid_percent = 0.8):
     return sample_train, sample_valid, test_list
 
 
-# this function is also in util.py
-'''def read_txt_to_list(file):
-    output = [] 
-    with open(file, 'r') as f: 
-        for line in f: 
-            entry = line.rstrip().lower() 
-            output.append(entry) 
-    return output'''
-
-
 def gen_splits_scannet(pth_train_txt,pth_test_txt, train_valid_percent=0.8):
-    train_list = read_txt_to_list(pth_train_txt)
-    test_list  = read_txt_to_list(pth_test_txt)
+    train_list = util.read_txt_to_list(pth_train_txt)
+    test_list  = util.read_txt_to_list(pth_test_txt)
     n_train = int(math.ceil(train_valid_percent*len(train_list)))
     
     sample_train = np.random.choice(range(len(train_list)),n_train,replace=False).tolist()
@@ -148,6 +144,10 @@ def save(path, scans):
 
 if __name__ == '__main__':
     args = Parser().parse_args()
+    train_scans = list()
+    validation_scans = list()
+    test_scans = list()
+
     if args.type == '3RScan':
         if args.with_rescan:
             train_scans, validation_scans, test_scans = gen_splits(define.Scan3RJson_PATH,args.p)

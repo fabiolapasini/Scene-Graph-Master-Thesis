@@ -252,8 +252,8 @@ if __name__ == '__main__':
         # model = EdgeAtten(num_head,dim_node,dim_edge,dim_atten)
         # model(query,edge,edge_index)
         num_layers=2
-        model = GraphEdgeAttenNetworkLayers(dim_node, dim_edge, dim_edge, num_layers,num_heads=num_head,attention=attention)
-        model(query,edge,edge_index)
+        model = GraphEdgeAttenNetworkLayers(dim_node, dim_edge, dim_edge, num_layers, num_heads=num_head, attention=attention)
+        model(query, edge, edge_index)
     
     # this will create a folder inside src called tmp with two files inside it (MultiHeadedEdgeAttention and TripletEdgeNet)
     if TEST_TRACE:

@@ -18,16 +18,19 @@ if (platform.system() == "Windows"):
 elif (platform.system() != "Windows"):
     from utils import define as define
 
+##########################################################################
+
 # Ubuntu:
     # python3 gen_data_gt.py --pth_out '../Data' --target_scan '../3RScan/scans_name.txt'
 # Win:
-    # python gen_data_gt.py --type train --pth_out ..\Data --target_scan ..\3RScan\scans_name.txt
-    # python gen_data_gt.py --type test --pth_out ..\Data --target_scan ..\3RScan\scans_name.txt
-    # python gen_data_gt.py --type validation --pth_out ..\Data --target_scan ..\3RScan\scans_name.txt
+    # python gen_data_gt.py --type train --pth_out ..\Data --target_scan ..\3RScan\strain_scans.txt
+    # python gen_data_gt.py --type test --pth_out ..\Data --target_scan ..\3RScan\test_scans.txt
+    # python gen_data_gt.py --type validation --pth_out ..\Data --target_scan ..\3RScan\validation_scans.txt
+
+##########################################################################
 
 # this code creates a folder ..\\Data with inside: args.json  relationships_train.json classes.txt  relationships.txt
 # select the -- validation to create all the files needed
-
 
 def Parser(add_help=True):
     parser = argparse.ArgumentParser(description='Process some integers.', formatter_class = argparse.ArgumentDefaultsHelpFormatter, add_help=add_help)
