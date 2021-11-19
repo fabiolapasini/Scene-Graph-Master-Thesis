@@ -419,6 +419,7 @@ class SGFN():
                                         title='Predicate Confusion Matrix',
                                         plot_text=False,
                                         plot = False)
+
         self.writter.add_figure('vali_rel_confusion_matrix', img_confusion_matrix, global_step=self.model.iteration)
        
         cls_, rel_ = eva_tool.get_mean_metrics()
@@ -611,9 +612,9 @@ if __name__ == '__main__':
     TEST_EVAL = False
     TEST_TRACE = False
 
-    config = Config('../config_example.json')
+    config = Config('../SGPN/config_SGPN.json')
     config.dataset.root = '../Data/'
-    config.MODEL.GCN_TYPE = 'TRIP' #'EAN'
+    config.MODEL.GCN_TYPE = 'TRIP'
     config.MODEL.multi_rel_outputs=False
     config['NAME'] = 'test'
     

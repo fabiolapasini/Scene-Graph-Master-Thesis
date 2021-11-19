@@ -9,12 +9,14 @@ import torch.optim as optim
 import torch.nn.functional as F
 from src.model_base import BaseModel
 from src.network_PointNet import PointNetfeat, PointNetCls, PointNetRelCls, PointNetRelClsMulti
-# TRIP:
-from src.network_TripletGCN import TripletGCNModel
-# EAN:
-from src.network_GNN import GraphEdgeAttenNetworkLayers
 from src.config import Config
 import src.op_utils
+
+# TRIP:
+from src.network_TripletGCN import TripletGCNModel
+# from src.experiments_TripletGCN import TripletGCNModel
+# EAN:
+from src.network_GNN import GraphEdgeAttenNetworkLayers
 
 
 class SGPNModel(BaseModel):
@@ -57,26 +59,12 @@ class SGPNModel(BaseModel):
             input_transform=False,
             feature_transform=mconfig.feature_transform,
             out_size=mconfig.edge_feature_size)
-        
-        # GCN        
-        # models['gcn'] = GraphTripleConvNet(input_dim_obj=mconfig.point_feature_size, 
-        #                         num_layers=mconfig.N_LAYERS, 
-        #                         residual=mconfig.RESIDUAL, 
-        #                         pooling=mconfig.POOLING,            
-        #                         input_dim_pred=mconfig.point_feature_size,
-        #                         hidden_dim=mconfig.gcn_hidden_feature_size) 
 
-        # if mconfig.GCN_TYPE != 'TRIP':
-        #     raise RuntimeError('PointNetGCNModel only support TRIP GCN type')
-
-        # models['gcn'] = TripletGCNModel(num_layers=mconfig.N_LAYERS,
-        #                                 dim_node = mconfig.point_feature_size,
-        #                                 dim_edge = mconfig.point_feature_size,
-        #                                 dim_hidden = mconfig.gcn_hidden_feature_size)
 
         #########################################################################################################################
+
         if mconfig.GCN_TYPE == "TRIP":
-            models['gcn'] = TripletGCNModel(num_layers=mconfig.N_LAYERS,
+            models['gcn'] = TripletGCNModel(num_layers = mconfig.N_LAYERS,
                                             dim_node = mconfig.point_feature_size,
                                             dim_edge = mconfig.edge_feature_size,
                                             dim_hidden = mconfig.gcn_hidden_feature_size)
@@ -91,26 +79,85 @@ class SGPNModel(BaseModel):
 
         elif mconfig.GCN_TYPE == 'DGCNN':
             print("DGCNN")
-            # models['gcn'] = .....
+            '''models['gcn'] = DGCNNModel(num_layers=mconfig.N_LAYERS,
+                                        dim_node=mconfig.point_feature_size,
+                                        dim_edge=mconfig.edge_feature_size,
+                                        dim_hidden=mconfig.gcn_hidden_feature_size)'''
+
+        elif mconfig.GCN_TYPE == 'GIN':
+            print("GIN")
+            '''models['gcn'] = GINNet(num_layers=mconfig.N_LAYERS,
+                                        dim_node=mconfig.point_feature_size,
+                                        dim_edge=mconfig.edge_feature_size,
+                                        dim_hidden=mconfig.gcn_hidden_feature_size)'''
+
+        elif mconfig.GCN_TYPE == 'GSAGE':
+            print("GSAGE")
+            '''models['gcn'] = GraphSAGE(num_layers=mconfig.N_LAYERS,
+                                        dim_node=mconfig.point_feature_size,
+                                        dim_edge=mconfig.edge_feature_size,
+                                        dim_hidden=mconfig.gcn_hidden_feature_size)'''
 
         #########################################################################################################################
-        
+
+
         # node feature classifier        
-        models['obj_predictor'] = PointNetCls(num_class, in_size=mconfig.point_feature_size, batch_norm=with_bn,drop_out=True)
+        models['obj_predictor'] = PointNetCls(num_class, in_size=mconfig.point_feature_size, batch_norm=with_bn, drop_out=True)
         
         if mconfig.multi_rel_outputs:
+            print("multi_rel_outputs")
             models['rel_predictor'] = PointNetRelClsMulti(
                 num_rel, 
                 in_size=mconfig.edge_feature_size, 
-                batch_norm=with_bn,drop_out=True)
+                batch_norm=with_bn,
+                drop_out=True)
         else:
             models['rel_predictor'] = PointNetRelCls(
                 num_rel, 
                 in_size=mconfig.edge_feature_size, 
-                batch_norm=with_bn,drop_out=True)
+                batch_norm=with_bn,
+                drop_out=True)
             
         params = list()
         print('==trainable parameters==')
+        print(models)
+        '''
+        'gcn': TripletGCNModel(
+          (gconvs): ModuleList(
+            (0): TripletGCN(
+              (nn1): Sequential(
+                (0): Linear(in_features=768, out_features=512, bias=True)
+                (1): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                (2): ReLU()
+                (3): Linear(in_features=512, out_features=1280, bias=True)
+                (4): BatchNorm1d(1280, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                (5): ReLU()
+              )
+              (nn2): Sequential(
+                (0): Linear(in_features=512, out_features=512, bias=True)
+                (1): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                (2): ReLU()
+                (3): Linear(in_features=512, out_features=256, bias=True)
+              )
+            )
+            (1): TripletGCN(
+              (nn1): Sequential(
+                (0): Linear(in_features=768, out_features=512, bias=True)
+                (1): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                (2): ReLU()
+                (3): Linear(in_features=512, out_features=1280, bias=True)
+                (4): BatchNorm1d(1280, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                (5): ReLU()
+              )
+              (nn2): Sequential(
+                (0): Linear(in_features=512, out_features=512, bias=True)
+                (1): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+                (2): ReLU()
+                (3): Linear(in_features=512, out_features=256, bias=True)
+              )
+            )
+          )
+        '''
         for name, model in models.items():
             if len(config.GPU) > 1:
                 model = torch.nn.DataParallel(model, config.GPU)
@@ -136,8 +183,14 @@ class SGPNModel(BaseModel):
                 gcn_obj_feature, gcn_rel_feature = self.gcn(obj_feature, rel_feature, edges)
             elif self.mconfig.GCN_TYPE == 'EAN':
                 gcn_obj_feature, gcn_rel_feature, probs = self.gcn(obj_feature, rel_feature, edges)
-            '''elif self.mconfig.GCN_TYPE == 'DGCNN':
-                gcn_obj_feature, gcn_rel_feature = self.gcn(obj_feature, rel_feature, edges)'''
+    ###########################################################################################
+            '''
+            elif self.mconfig.GCN_TYPE == 'DGCNN':
+                gcn_obj_feature, gcn_rel_feature = self.gcn(obj_feature, rel_feature, edges)
+            elif self.mconfig.GCN_TYPE == 'GIN':
+                gcn_obj_feature, gcn_rel_feature = self.gcn(obj_feature, rel_feature, edges)
+            '''
+     ###########################################################################################
             
             if self.mconfig.OBJ_PRED_FROM_GCN:
                 obj_cls = self.obj_predictor(gcn_obj_feature)
@@ -146,7 +199,7 @@ class SGPNModel(BaseModel):
             rel_cls = self.rel_predictor(gcn_rel_feature)
 
         else:
-            gcn_obj_feature=gcn_rel_feature=None
+            gcn_obj_feature = gcn_rel_feature = None
             obj_cls = self.obj_predictor(obj_feature)
             rel_cls = self.rel_predictor(rel_feature)
         
@@ -205,12 +258,6 @@ class SGPNModel(BaseModel):
     
 
     def calculate_metrics(self, preds, gts):
-
-        '''print("##################################")
-        print("preds: ", preds, " \npreds type: ", type(preds), " preds len: " , len(preds))
-        print("gts: ", gts, " \ngts type: ", type(gts), " gts len: " , len(gts))
-        print("##################################")'''
-
         assert(len(preds)==2)
         assert(len(gts)==2)
         obj_pred = preds[0].detach()
@@ -222,10 +269,6 @@ class SGPNModel(BaseModel):
         acc_obj = (obj_gt == pred_cls).sum().item() / obj_gt.nelement()
 
         pred_rel = rel_pred.detach() > 0.5
-        #print("pred_rel len: ", len(pred_rel), " pred_rel type: ", type(pred_rel), "tensor pred_rel size: ", pred_rel.size(), "tensor pred_rel.t size: ", pred_rel.size())
-        #print("rel_gt len: ", len(rel_gt), " rel_gt type: ", type(rel_gt), "tensor rel_gt size: ", rel_gt.size())
-
-        #acc_rel = (rel_gt == pred_rel.t()).sum().item() / rel_gt.nelement()
         acc_rel = (rel_gt == pred_rel).sum().item() / rel_gt.nelement()
         
         logs = [("Accuracy/obj_cls",acc_obj), 
@@ -237,8 +280,7 @@ class SGPNModel(BaseModel):
 # This code creates an empty folder in the root directory name model_SGPN
 if __name__ == '__main__':
     use_dataset = False
-    # watch out! USE_CONTEXT = false makes the program non runnable!
-    config = Config('../config_example.json')
+    config = Config('../SGPN/config_SGPN.json')
 
     config.MODEL.USE_RGB=False
     config.MODEL.USE_NORMAL=False
@@ -246,16 +288,10 @@ if __name__ == '__main__':
     if not use_dataset:
         num_obj_cls=40
         num_rel_cls=26
-    '''else:
-        from src.dataset_builder import build_dataset
-        config.dataset.dataset_type = 'rio_graph'
-        dataset =build_dataset(config, 'validation_scans', True, multi_rel_outputs=True, use_rgb=False, use_normal=False)
-        num_obj_cls = len(dataset.classNames)
-        num_rel_cls = len(dataset.relationNames)'''
 
     # build model
     mconfig = config.MODEL
-    network = SGPNModel(config,'SGPNModel',num_obj_cls,num_rel_cls)
+    network = SGPNModel(config, 'SGPNModel', num_obj_cls, num_rel_cls)
 
     if not use_dataset:
         max_rels = 80    
@@ -276,14 +312,12 @@ if __name__ == '__main__':
                 edges[counter,1]=i
                 counter +=1
     
-    
         obj_gt = torch.randint(0, num_obj_cls-1, (n_pts,))
         rel_gt = torch.randint(0, num_rel_cls-1, (n_rels,))
     
         # rel_gt
         adj_rel_gt = torch.rand([n_pts, n_pts, num_rel_cls])
         rel_gt = torch.zeros(n_rels, num_rel_cls, dtype=torch.float)
-        
         
         for e in range(edges.shape[0]):
             i,j = edges[e]
@@ -294,21 +328,8 @@ if __name__ == '__main__':
         network.process(obj_points,rel_points,edges.t().contiguous(),obj_gt,rel_gt)
         
     for i in range(100):
-        '''if use_dataset:
-            scan_id, instance2mask, obj_points, rel_points, obj_gt, rel_gt, edges = dataset.__getitem__(i)
-            obj_points = obj_points.permute(0,2,1)
-            rel_points = rel_points.permute(0,2,1)'''
-
         logs, obj_pred, rel_pred, prob = network.process(obj_points,rel_points,edges.t().contiguous(),obj_gt,rel_gt)
         logs += network.calculate_metrics([obj_pred,rel_pred], [obj_gt,rel_gt])
-
-        # pred_cls = torch.max(obj_pred.detach(),1)[1]
-        # acc_obj = (obj_gt == pred_cls).sum().item() / obj_gt.nelement()
-
-        # rel_pred = rel_pred.detach() > 0.5
-        # acc_rel = (rel_gt==(rel_pred>0)).sum().item() / rel_pred.nelement()
-
-        # print('{0:>3d} acc_obj: {1:>1.4f} acc_rel: {2:>1.4f} loss: {3:>2.3f}'.format(i,acc_obj,acc_rel,logs[0][1]))
         print('{:>3d} '.format(i),end='')
         for log in logs:
             print('{0:} {1:>2.3f} '.format(log[0],log[1]),end='')

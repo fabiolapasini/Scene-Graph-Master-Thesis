@@ -1,5 +1,5 @@
 if __name__ == '__main__' and __package__ is None:
-    from os import sys#, path
+    from os import sys
     sys.path.append('../')
 
 import torch.nn as nn

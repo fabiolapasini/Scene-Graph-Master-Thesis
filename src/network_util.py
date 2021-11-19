@@ -27,26 +27,27 @@ def MLP(channels: list, do_bn=False, on_last=False, drop_out=None):
     return mySequential(*layers)
 
 
-def build_mlp(dim_list, activation='relu', do_bn=False, dropout=0, on_last=False):
-   layers = []
-   for i in range(len(dim_list) - 1):
-     dim_in, dim_out = dim_list[i], dim_list[i + 1]
-     layers.append(torch.nn.Linear(dim_in, dim_out))
-     final_layer = (i == len(dim_list) - 2)
-     if not final_layer or on_last:
-       if do_bn:
-         layers.append(torch.nn.BatchNorm1d(dim_out))
-       if activation == 'relu':
-         layers.append(torch.nn.ReLU())
-       elif activation == 'leakyrelu':
-         layers.append(torch.nn.LeakyReLU())
-     if dropout > 0:
-       layers.append(torch.nn.Dropout(p=dropout))
-   return torch.nn.Sequential(*layers)
+# this creates a multi layer perceptron, basically a sequence of Linear and Relu and batch normalization layer
+def build_mlp(dim_list, activation='relu', batch_norm=False, dropout=0, final_nonlinearity=False):
+    layers = []
+    for i in range(len(dim_list) - 1):
+        dim_in = dim_list[i]
+        dim_out = dim_list[i + 1]
+        layers.append(torch.nn.Linear(dim_in, dim_out))
+        final_layer = (i == len(dim_list) - 2)
+        if not final_layer or final_nonlinearity:
+            if batch_norm:
+                layers.append(torch.nn.BatchNorm1d(dim_out))
+            if activation == 'relu':
+                layers.append(torch.nn.ReLU())
+            elif activation == 'leakyrelu':
+                layers.append(torch.nn.LeakyReLU())
+            if dropout > 0:
+                layers.append(torch.nn.Dropout(p=dropout))
+    return torch.nn.Sequential(*layers)
 
 
 class Gen_Index(MessagePassing):
-    """ A sequence of scene graph convolution layers  """
     def __init__(self,flow="source_to_target"):
         super().__init__(flow=flow)
         
@@ -58,7 +59,7 @@ class Gen_Index(MessagePassing):
         return x_i, x_j
 
     def message(self, x_i, x_j):
-        return x_i,x_j
+        return x_i, x_j
 
 
 class Aggre_Index(MessagePassing):
@@ -85,7 +86,7 @@ if __name__ == '__main__':
     x[0,:] = 0
     x[1,:] = 1
     x[2,:] = 2
-    x_i,x_j = g(x,edge_index)
+    x_i, x_j = g(x, edge_index)
     print('x_i',x_i)
     print('x_j',x_j)
 

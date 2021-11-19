@@ -46,6 +46,6 @@ def build_dataset(config, split_type, shuffle_objs, multi_rel_outputs, use_rgb, 
 
 
 if __name__ == '__main__':
-    config = Config('../config_example.json')
+    config = Config('../SGPN/config_SGPN.json')
     config.dataset.root = '../data/example_data'
     build_dataset(config, split_type = 'train_scans', shuffle_objs=True, multi_rel_outputs=False,use_rgb=True,use_normal=True)

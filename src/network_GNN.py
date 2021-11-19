@@ -11,39 +11,6 @@ import os
 import src.op_utils
 
 
-'''class TripletEdgeNet(torch.nn.Module):
-    def __init__(self,dim_node,dim_edge,use_bn=False):
-        super().__init__()
-        self.name = 'TripletEdgeNet'
-        self.dim_node=dim_node
-        self.dim_edge=dim_edge
-        self.nn = build_mlp([dim_node*2+dim_edge,2*(dim_node+dim_edge),dim_edge], do_bn= use_bn, on_last=False)
-
-    def forward(self, x_i, edge_feature,x_j):
-        x_ = torch.cat([x_i,edge_feature,x_j],dim=1)    #.view(b, -1, 1)
-        return self.nn(x_)
-
-    def trace(self, pth = './tmp',name_prefix=''):
-        params = inspect.signature(self.forward).parameters
-        params = OrderedDict(params)
-        names_i = [name for name in params.keys()]
-        names_o = ['y']
-        x_1 = torch.rand(1, self.dim_node)
-        e = torch.rand(1, self.dim_edge)
-        x_2 = torch.rand(1, self.dim_node)
-        self(x_1,e,x_2)
-        name = name_prefix+'_'+self.name
-        src.op_utils.export(self, (x_1,e,x_2), os.path.join(pth, name),
-                        input_names=names_i, output_names=names_o, 
-                        dynamic_axes = {names_i[0]:{0:'n_edge'},names_i[1]:{0:'n_edge'},names_i[2]:{0:'n_edge'}})
-                        
-        names = dict()
-        names['model_'+name] = dict()
-        names['model_'+name]['path'] = name
-        names['model_'+name]['input'] = names_i
-        names['model_'+name]['output'] = names_o
-        return names'''
-
 
 # EAN ########################################
 
@@ -123,7 +90,7 @@ class MultiHeadedEdgeAttention(torch.nn.Module):
 # (G)EAN
 class GraphEdgeAttenNetwork(BaseNetwork):
     def __init__(self, num_heads, dim_node, dim_edge, dim_atten, aggr= 'max', use_bn=False, flow='target_to_source',attention = 'fat',use_edge:bool=True, **kwargs):
-        super().__init__() #  "Max" aggregation.
+        super().__init__()
         self.name = 'edgeatten'
         self.dim_node=dim_node
         self.dim_edge=dim_edge
