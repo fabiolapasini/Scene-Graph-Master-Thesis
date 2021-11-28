@@ -89,44 +89,5 @@ if __name__ == '__main__':
     y = net(x, edge_feature, edge_index)
     print(net)
     # print(y)
-
-    '''
-        TripletGCNModel(
-          (gconvs): ModuleList(
-            (0): TripletGCN(
-              (nn1): Sequential(
-                (0): Linear(in_features=128, out_features=128, bias=True)
-                (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-                (2): ReLU()
-                (3): Linear(in_features=128, out_features=320, bias=True)
-                (4): BatchNorm1d(320, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-                (5): ReLU()
-              )
-              (nn2): Sequential(
-                (0): Linear(in_features=128, out_features=128, bias=True)
-                (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-                (2): ReLU()
-                (3): Linear(in_features=128, out_features=32, bias=True)
-              )
-            )
-            (1): TripletGCN(
-              (nn1): Sequential(
-                (0): Linear(in_features=128, out_features=128, bias=True)
-                (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-                (2): ReLU()
-                (3): Linear(in_features=128, out_features=320, bias=True)
-                (4): BatchNorm1d(320, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-                (5): ReLU()
-              )
-              (nn2): Sequential(
-                (0): Linear(in_features=128, out_features=128, bias=True)
-                (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-                (2): ReLU()
-                (3): Linear(in_features=128, out_features=32, bias=True)
-              )
-            )
-          )
-        )
-    '''
     
     pass

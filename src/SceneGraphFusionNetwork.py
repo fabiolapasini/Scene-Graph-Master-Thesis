@@ -234,9 +234,9 @@ class SGFN():
                 tick = time.time()
                 eva_tool.add(scan_id, pred_obj_cls, gt_obj_cls, pred_rel_cls, gt_rel_cls, instance2mask, edge_indices)
                 if probs is not None:
-                    if self.model.mconfig.GCN_TYPE == 'EGCN':
+                    if self.model.mconfig.GCN_TYPE == 'EGCN': #'EGCN':
                         for l in range(self.model.mconfig.N_LAYERS):                
-                            eva_tool_prob[l].update(probs[l].mean(dim=1), edge_indices,gt_obj_cls)
+                            eva_tool_prob[l].update(probs[l].mean(dim=1), edge_indices, gt_obj_cls)
                             
                 # calculate metrics
                 cls_, rel_ = eva_tool.get_mean_metrics()

@@ -7,7 +7,7 @@ from torch import Tensor
 from torch_geometric.nn.conv import MessagePassing, SAGEConv, GINConv, GCNConv
 from torch_scatter import scatter
 from torch.nn import functional
-from networks_base import BaseNetwork
+from src.networks_base import BaseNetwork
 from torch.nn import Sequential, Linear, ReLU, BatchNorm1d
 
 
@@ -47,14 +47,11 @@ class TripletGCN_0(MessagePassing):
         new_x_i = x[:,:self.dim_hidden]
         new_e   = x[:,self.dim_hidden:(self.dim_hidden+self.dim_edge)]
         new_x_j = x[:,(self.dim_hidden+self.dim_edge):]
-        x = new_x_i+new_x_j
+        x = new_x_i + new_x_j
         return [x, new_e]
     
-    def aggregate(self, x: Tensor,
-                  index: Tensor,
-                  ptr: Optional[Tensor] = None,
-                  dim_size: Optional[int] = None) -> Tensor:
-        x[0] = scatter( x[0], index, dim=self.node_dim, dim_size=dim_size, reduce=self.aggr )
+    def aggregate(self, x: Tensor,index: Tensor,ptr: Optional[Tensor] = None,dim_size: Optional[int] = None) -> Tensor:
+        x[0] = scatter(x[0], index, dim=self.node_dim, dim_size=dim_size, reduce=self.aggr )
         return x
     
 
@@ -231,8 +228,6 @@ class GraphTripleConvNet(nn.Module):
 
 #################################################################################
 
-
-
 class TripletGCN_1(MessagePassing):
     def __init__(self, dim_node, dim_edge, dim_hidden, aggr='add'):
         super().__init__(aggr=aggr)
@@ -272,6 +267,7 @@ class TripletGCN_1(MessagePassing):
                   dim_size: Optional[int] = None) -> Tensor:
         x[0] = scatter(x[0], index, dim=self.node_dim, dim_size=dim_size, reduce=self.aggr)
         return x
+
 
 
 class TripletGCNModel_1(BaseNetwork):

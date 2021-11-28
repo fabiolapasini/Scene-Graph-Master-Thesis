@@ -1,0 +1,46 @@
+IoU scores
+attached to   (0 ): 0.731   (    19/26    )
+build in      (1 ): nan
+connected to  (2 ): nan
+hanging on    (3 ): 0.375   (     3/8     )
+part of       (4 ): nan
+standing on   (5 ): 0.750   (     6/8     )
+supported by  (6 ): nan
+UN            (7 ): 0.983   (   798/812   )
+Average           : 0.710
+0.731 & nan & nan & 0.375 & nan & 0.750 & nan & 0.983 & 0.710
+Precision scores
+attached to   (0 ): 1.000   (    19/19    )
+build in      (1 ): nan
+connected to  (2 ): nan
+hanging on    (3 ): 1.000   (     3/3     )
+part of       (4 ): nan
+standing on   (5 ): 1.000   (     6/6     )
+supported by  (6 ): nan
+UN            (7 ): 0.983   (   798/812   )
+Average           : 0.996
+1.000 & nan & nan & 1.000 & nan & 1.000 & nan & 0.983 & 0.996
+Recall scores
+attached to   (0 ): 0.731   (    19/26    )
+build in      (1 ): nan
+connected to  (2 ): nan
+hanging on    (3 ): 0.375   (     3/8     )
+part of       (4 ): nan
+standing on   (5 ): 0.750   (     6/8     )
+supported by  (6 ): nan
+UN            (7 ): 1.000   (   798/798   )
+Average           : 0.714
+0.731 & nan & nan & 0.375 & nan & 0.750 & nan & 1.000 & 0.714
+accuracy      : 0.983   (826.000000/840.000000)
+
+
+confusion matrix
+			0       1       2       3       4       5       6       7       
+attached to   (0 )	19.000	0.000	0.000	0.000	0.000	0.000	0.000	7.000
+build in      (1 )	0.000	0.000	0.000	0.000	0.000	0.000	0.000	0.000
+connected to  (2 )	0.000	0.000	0.000	0.000	0.000	0.000	0.000	0.000
+hanging on    (3 )	0.000	0.000	0.000	3.000	0.000	0.000	0.000	5.000
+part of       (4 )	0.000	0.000	0.000	0.000	0.000	0.000	0.000	0.000
+standing on   (5 )	0.000	0.000	0.000	0.000	0.000	6.000	0.000	2.000
+supported by  (6 )	0.000	0.000	0.000	0.000	0.000	0.000	0.000	0.000
+UN            (7 )	0.000	0.000	0.000	0.000	0.000	0.000	0.000	798.000
