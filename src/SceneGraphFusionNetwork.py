@@ -51,7 +51,7 @@ class SGFN():
             num_rel_class = len(self.dataset_valid.relationNames)
             dataset = self.dataset_valid
 
-        #try:
+        # try:
         if config.VERBOSE: print('build test dataset')
         self.dataset_eval = build_dataset(self.config,split_type='test_scans', shuffle_objs=False,
                                   multi_rel_outputs=mconfig.multi_rel_outputs,
@@ -71,7 +71,7 @@ class SGFN():
             # self.model = SGFNModel(config,self.model_name,num_obj_class, num_rel_class).to(config.DEVICE)
         else:
             # raise NotImplementedError('not yet cleaned.')
-            self.model = SGPNModel(config,self.model_name,num_obj_class, num_rel_class).to(config.DEVICE)
+            self.model = SGPNModel(config, self.model_name, num_obj_class, num_rel_class).to(config.DEVICE)
         
         self.samples_path = os.path.join(config.PATH, self.model_name, 'samples')
         self.results_path = os.path.join(config.PATH, self.model_name, 'results')
@@ -193,7 +193,8 @@ class SGFN():
                 # get data
                 tick = time.time()                
                 if self.use_edge_descriptor:
-                    obj_points, edge_indices, gt_obj_cls, gt_rel_cls, descriptor = self.data_processing(items[2:])
+                    print("")
+                    '''obj_points, edge_indices, gt_obj_cls, gt_rel_cls, descriptor = self.data_processing(items[2:])'''
                 else:
                     obj_points, rel_points, edge_indices, gt_obj_cls, gt_rel_cls = self.data_processing(items[2:])                    
                 tock = time.time()
@@ -219,12 +220,18 @@ class SGFN():
                     
                 tick = time.time()
                 if self.use_edge_descriptor:
-                    logs, pred_obj_cls, pred_rel_cls, probs = self.model.process(obj_points, edge_indices.t().contiguous(), descriptor,
+                    print("")
+                    '''logs, pred_obj_cls, pred_rel_cls, probs = self.model.process(obj_points, edge_indices.t().contiguous(), descriptor,
                                                                       gt_obj_cls, gt_rel_cls,
                                                                       weights_obj=self.dataset_train.w_cls_obj, 
                                                                       weights_rel=w_rel,
-                                                                      ignore_none_rel = ignore_none_rel)
+                                                                      ignore_none_rel = ignore_none_rel)'''
                 else:
+                    # Here we are passing some parameters that are going to be passed in the forward method of the SGPN algo (in this else statement)
+                    # print("obj_points shape: ", obj_points.size())      # obj_points shape:  torch.Size([28, 3, 128])
+                    # print("rel_points shape: ", rel_points.size())      # rel_points shape:  torch.Size([420, 4, 256])
+                    # print("edges shape: ", edges.size)                  # edges shape:  torch.Size([420, 2])
+
                     logs, pred_obj_cls, pred_rel_cls, probs = self.model.process(obj_points, rel_points, edge_indices.t().contiguous(), 
                                                                       gt_obj_cls, gt_rel_cls,
                                                                       weights_obj=self.dataset_train.w_cls_obj, 
@@ -234,7 +241,7 @@ class SGFN():
                 tick = time.time()
                 eva_tool.add(scan_id, pred_obj_cls, gt_obj_cls, pred_rel_cls, gt_rel_cls, instance2mask, edge_indices)
                 if probs is not None:
-                    if self.model.mconfig.GCN_TYPE == 'EGCN': #'EGCN':
+                    if self.model.mconfig.GCN_TYPE == 'EGCN':
                         for l in range(self.model.mconfig.N_LAYERS):                
                             eva_tool_prob[l].update(probs[l].mean(dim=1), edge_indices, gt_obj_cls)
                             
@@ -369,7 +376,7 @@ class SGFN():
             if edge_indices.shape[0] == 0:
                 # print('no edges! skip')
                 continue
-                
+
             tick = time.time()
             with torch.no_grad():
                 if self.use_edge_descriptor:
@@ -378,7 +385,7 @@ class SGFN():
                             self.model(obj_points, edge_indices.t().contiguous(), descriptor, return_meta_data=True)'''
                 else:
                     pred_obj_cls, pred_rel_cls, obj_feature, rel_feature, gcn_obj_feature, gcn_rel_feature, probs = self.model(obj_points, rel_points, edge_indices.t().contiguous(), return_meta_data=True)
-                        
+
             ''' calculate metrics '''
             logs = self.model.calculate_metrics([pred_obj_cls, pred_rel_cls], [gt_obj_cls, gt_rel_cls])
             

@@ -10,6 +10,38 @@ from collections import OrderedDict
 import os
 import src.op_utils
 
+'''class TripletEdgeNet(torch.nn.Module):
+    def __init__(self,dim_node,dim_edge,use_bn=False):
+        super().__init__()
+        self.name = 'TripletEdgeNet'
+        self.dim_node=dim_node
+        self.dim_edge=dim_edge
+        self.nn = build_mlp([dim_node*2+dim_edge,2*(dim_node+dim_edge),dim_edge],
+                          do_bn= use_bn, on_last=False)
+    def forward(self, x_i, edge_feature,x_j):
+        x_ = torch.cat([x_i,edge_feature,x_j],dim=1)#.view(b, -1, 1)
+        return self.nn(x_)
+    def trace(self, pth = './tmp',name_prefix=''):
+        params = inspect.signature(self.forward).parameters
+        params = OrderedDict(params)
+        names_i = [name for name in params.keys()]
+        names_o = ['y']
+        x_1 = torch.rand(1, self.dim_node)
+        e = torch.rand(1, self.dim_edge)
+        x_2 = torch.rand(1, self.dim_node)
+        self(x_1,e,x_2)
+        name = name_prefix+'_'+self.name
+        src.op_utils.export(self, (x_1,e,x_2), os.path.join(pth, name),
+                        input_names=names_i, output_names=names_o,
+                        dynamic_axes = {names_i[0]:{0:'n_edge'},
+                                        names_i[1]:{0:'n_edge'},
+                                        names_i[2]:{0:'n_edge'}})
+        names = dict()
+        names['model_'+name] = dict()
+        names['model_'+name]['path'] = name
+        names['model_'+name]['input']=names_i
+        names['model_'+name]['output']=names_o
+        return names'''
 
 
 # EAN ########################################
@@ -28,22 +60,25 @@ class MultiHeadedEdgeAttention(torch.nn.Module):
         self.d_o = d_o = dim_atten // num_heads
         self.num_heads = num_heads
         self.use_edge = use_edge
-        self.nn_edge = build_mlp([dim_node*2+dim_edge,(dim_node+dim_edge),dim_edge], do_bn= use_bn, on_last=False)
+        # creation o MLP ge()    ?? node_feature = 512, edge_feature = 256 ??  -> paper: mlp(1280, 768, 256)
+        self.nn_edge = build_mlp([dim_node*2+dim_edge, dim_node+dim_edge, dim_edge], batch_norm= use_bn, final_nonlinearity=False)        # my: mlp(768, 512, 256)
         
         DROP_OUT_ATTEN = None
         if 'DROP_OUT_ATTEN' in kwargs:
             DROP_OUT_ATTEN = kwargs['DROP_OUT_ATTEN']
-            # print('drop out in',self.name,'with value',DROP_OUT_ATTEN)
         
         self.attention = attention
         assert self.attention in ['fat']
         
         if self.attention == 'fat':
+            # creation of MLP ga()
             if use_edge:
-                self.nn = MLP([d_n+d_e, d_n+d_e, d_o],do_bn=use_bn,drop_out = DROP_OUT_ATTEN)
+                self.nn = MLP([d_n+d_e, d_n+d_e, d_o], do_bn=use_bn, drop_out = DROP_OUT_ATTEN)
             else:
-                self.nn = MLP([d_n, d_n*2, d_o],do_bn=use_bn,drop_out = DROP_OUT_ATTEN)
-                
+                self.nn = MLP([d_n, d_n*2, d_o], do_bn=use_bn, drop_out = DROP_OUT_ATTEN)
+
+            # Multiplying x1 by the WQ weight matrix produces q1, the "query" vector associated with that word.
+            # We create a "query", a "key", and a "value" projection of each word in the input sentence.
             self.proj_edge  = build_mlp([dim_edge,dim_edge])
             self.proj_query = build_mlp([dim_node,dim_node])
             self.proj_value = build_mlp([dim_node,dim_atten])
@@ -52,21 +87,23 @@ class MultiHeadedEdgeAttention(torch.nn.Module):
         
     def forward(self, query, edge, value):
         batch_dim = query.size(0)
-        edge_feature = self.nn_edge( torch.cat([query,edge,value],dim=1) )#.view(b, -1, 1)
-        
+        edge_feature = self.nn_edge( torch.cat([query,edge,value],dim=1) ) #.view(b, -1, 1)
+
+        # Attention function
         if self.attention == 'fat':
+            # The key, query, and value are computed as linear projections (and reshape) of deep features of the graph neural network
             value = self.proj_value(value)
             query = self.proj_query(query).view(batch_dim, self.d_n, self.num_heads)
             edge = self.proj_edge(edge).view(batch_dim, self.d_e, self.num_heads)
             if self.use_edge:
-                prob = self.nn(torch.cat([query,edge],dim=1)) # b, dim, head    
+                prob = self.nn(torch.cat([query,edge],dim=1))                      # application of MLP ga() to the concatenation of query and key
             else:
-                prob = self.nn(query) # b, dim, head    
-            prob = prob.softmax(1)
-            x = torch.einsum('bm,bm->bm', prob.reshape_as(value), value)
-        return x, edge_feature, prob
+                prob = self.nn(query)
+            prob = prob.softmax(1)                                                 # get the softmax of prob
+            x = torch.einsum('bm,bm->bm', prob.reshape_as(value), value)           # attention  function applied to the node feature by a element-wise multiplication
+        return x, edge_feature, prob                                               # prob is the attention parameter
 
-    def trace(self, pth = './tmp',name_prefix=''):
+    '''def trace(self, pth = './tmp',name_prefix=''):
         params = inspect.signature(self.forward).parameters
         params = OrderedDict(params)
         names_i = [name for name in params.keys()]
@@ -85,7 +122,7 @@ class MultiHeadedEdgeAttention(torch.nn.Module):
         names['model_'+name]['path'] = name
         names['model_'+name]['input']=names_i
         names['model_'+name]['output']=names_o
-        return names
+        return names'''
      
 # (G)EAN
 class GraphEdgeAttenNetwork(BaseNetwork):
@@ -103,7 +140,8 @@ class GraphEdgeAttenNetwork(BaseNetwork):
             self.edgeatten = MultiHeadedEdgeAttention(
                 dim_node=dim_node,dim_edge=dim_edge,dim_atten=dim_atten,
                 num_heads=num_heads,use_bn=use_bn,attention=attention,use_edge=use_edge, **kwargs)
-            self.prop = build_mlp([dim_node+dim_atten, dim_node+dim_atten, dim_node], do_bn= use_bn, on_last=False)
+            # ?? node_feature = 512, edge_feature = 256 ??  -> paper: mlp(768, 768, 512) -> gv
+            self.prop = build_mlp([dim_node+dim_atten, dim_node+dim_atten, dim_node], batch_norm= use_bn, final_nonlinearity=False)
         else:
             raise NotImplementedError('')
 
@@ -114,9 +152,9 @@ class GraphEdgeAttenNetwork(BaseNetwork):
         xx, gcn_edge_feature, prob = self.edgeatten(x_i,edge_feature,x_j)
         xx = self.index_aggr(xx,edge_index, dim_size = x.shape[0])
         xx = self.prop(torch.cat([x,xx],dim=1))
-        return xx, gcn_edge_feature,prob
+        return xx, gcn_edge_feature, prob
     
-    def trace(self, pth = './tmp', name_prefix=''):
+    '''def trace(self, pth = './tmp', name_prefix=''):
         n_node=2
         n_edge=4
         x = torch.rand(n_node, self.dim_node)
@@ -151,8 +189,7 @@ class GraphEdgeAttenNetwork(BaseNetwork):
         names[name] = dict()
         names[name]['atten'] = names_atten
         names[name]['prop'] = names_nn
-        return names
-    
+        return names'''
 
 class GraphEdgeAttenNetworkLayers(torch.nn.Module):
     """ A sequence of scene graph convolution layers  """
@@ -183,7 +220,6 @@ class GraphEdgeAttenNetworkLayers(torch.nn.Module):
                 if self.drop_out:
                     node_feature = self.drop_out(node_feature)
                     edge_feature = self.drop_out(edge_feature)
-                
                 
             if prob is not None:
                 probs.append(prob.cpu().detach())
@@ -223,7 +259,7 @@ if __name__ == '__main__':
         model(query, edge, edge_index)
     
     # this will create a folder inside src called tmp with two files inside it (MultiHeadedEdgeAttention and TripletEdgeNet)
-    if TEST_TRACE:
+    '''if TEST_TRACE:
         pth = './tmp'
         src.op_utils.create_dir(pth)
         num_heads=1
@@ -232,4 +268,4 @@ if __name__ == '__main__':
         dim_atten=128
         use_bn=False
         MultiHeadedEdgeAttention(num_heads, dim_node, dim_edge, dim_atten).trace()
-        # TripletEdgeNet(dim_node, dim_edge).trace()
+        TripletEdgeNet(dim_node, dim_edge).trace()'''

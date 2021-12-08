@@ -12,7 +12,8 @@ from torch_scatter import scatter
 from typing import Optional
 
 
-# EAN ################################################################################
+# SHUNG CHEN-WO WAY TO DEAL WITH EDGES / NO-MS IMPLEMENTATION ################################################################################
+
 class MultiHeadedEdgeAttention_(torch.nn.Module):
     def __init__(self, dim_node: int, dim_edge: int, dim_atten: int, use_bn=False, **kwargs):
         super().__init__()
@@ -30,8 +31,6 @@ class MultiHeadedEdgeAttention_(torch.nn.Module):
         edge_feature = self.nn_edge(torch.cat([query,edge,value],dim=1) )
         return value, edge_feature
 
-
-# (G)EAN
 class GraphEdgeAttenNetwork_(BaseNetwork):
     def __init__(self, dim_node, dim_edge, dim_atten, aggr= 'max', use_bn=False, flow='target_to_source',use_edge:bool=True, **kwargs):
         super().__init__()
@@ -52,10 +51,7 @@ class GraphEdgeAttenNetwork_(BaseNetwork):
         xx = self.prop(torch.cat([x, xx], dim=1))
         return xx, gcn_edge_feature
 
-
 class GraphEdgeAttenNetworkLayers_(BaseNetwork):
-    """ A sequence of scene graph convolution layers  """
-
     def __init__(self, dim_node, dim_edge, dim_atten, num_layers, aggr='max', use_bn=False, flow='target_to_source', use_edge: bool = True, **kwargs):
         super().__init__()
         self.num_layers = num_layers
@@ -76,7 +72,7 @@ class GraphEdgeAttenNetworkLayers_(BaseNetwork):
 
         return node_feature, edge_feature
 
-################################################################################
+# END ###############################################################################
 
 
 if __name__ == '__main__':
@@ -95,51 +91,7 @@ if __name__ == '__main__':
     model = GraphEdgeAttenNetworkLayers_(dim_node, dim_edge, dim_hidden, num_layers)
     print("model", model)
 
-    '''
-    model GraphEdgeAttenNetworkLayers_(
-  (gconvs): ModuleList(
-    (0): GraphEdgeAttenNetwork_(
-      (index_get): Gen_Index()
-      (index_aggr): Aggre_Index()
-      (edgeatten): MultiHeadedEdgeAttention_(
-        (nn_edge): Sequential(
-          (0): Linear(in_features=768, out_features=512, bias=True)
-          (1): ReLU()
-          (2): Linear(in_features=512, out_features=256, bias=True)
-          (3): ReLU()
-        )
-        (proj_value): Sequential(
-          (0): Linear(in_features=256, out_features=256, bias=True)
-        )
-      )
-      (prop): Sequential(
-        (0): Linear(in_features=512, out_features=512, bias=True)
-        (1): ReLU()
-        (2): Linear(in_features=512, out_features=256, bias=True)
-      )
-    )
-    (1): GraphEdgeAttenNetwork_(
-      (index_get): Gen_Index()
-      (index_aggr): Aggre_Index()
-      (edgeatten): MultiHeadedEdgeAttention_(
-        (nn_edge): Sequential(
-          (0): Linear(in_features=768, out_features=512, bias=True)
-          (1): ReLU()
-          (2): Linear(in_features=512, out_features=256, bias=True)
-          (3): ReLU()
-        )
-        (proj_value): Sequential(
-          (0): Linear(in_features=256, out_features=256, bias=True)
-        )
-      )
-      (prop): Sequential(
-        (0): Linear(in_features=512, out_features=512, bias=True)
-        (1): ReLU()
-        (2): Linear(in_features=512, out_features=256, bias=True)
-      )
-    )
-  )
-)
-'''
+
+
 
 

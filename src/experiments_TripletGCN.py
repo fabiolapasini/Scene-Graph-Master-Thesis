@@ -11,7 +11,7 @@ from src.networks_base import BaseNetwork
 from torch.nn import Sequential, Linear, ReLU, BatchNorm1d
 
 
-# EXPERIMENTS ###########################################
+# EXPERIMENTS
 
 
 # COMMON ARCHITECTURE WITHOUT FOR LOOPS ###########################################
@@ -53,7 +53,6 @@ class TripletGCN_0(MessagePassing):
     def aggregate(self, x: Tensor,index: Tensor,ptr: Optional[Tensor] = None,dim_size: Optional[int] = None) -> Tensor:
         x[0] = scatter(x[0], index, dim=self.node_dim, dim_size=dim_size, reduce=self.aggr )
         return x
-    
 
 class TripletGCNModel_0(BaseNetwork):
     """ A sequence of scene graph convolution layers  """
@@ -201,7 +200,6 @@ class GraphTripleConv(nn.Module):
 
         return new_obj_vecs, new_p_vecs
 
-
 class GraphTripleConvNet(nn.Module):
     """ A sequence of scene graph convolution layers  """
 
@@ -226,8 +224,10 @@ class GraphTripleConvNet(nn.Module):
             obj_vecs, pred_vecs = gconv(obj_vecs, pred_vecs, edges)
         return obj_vecs, pred_vecs
 
-#################################################################################
+# END #############################################################################
 
+
+# SOMETHING ###########################################
 class TripletGCN_1(MessagePassing):
     def __init__(self, dim_node, dim_edge, dim_hidden, aggr='add'):
         super().__init__(aggr=aggr)
@@ -268,8 +268,6 @@ class TripletGCN_1(MessagePassing):
         x[0] = scatter(x[0], index, dim=self.node_dim, dim_size=dim_size, reduce=self.aggr)
         return x
 
-
-
 class TripletGCNModel_1(BaseNetwork):
     """ A sequence of scene graph convolution layers  """
 
@@ -292,8 +290,7 @@ class TripletGCNModel_1(BaseNetwork):
         node_feature, edge_feature = self.conv2(node_feature, edge_feature, edges_indices)
         return node_feature, edge_feature
 
-
-##############################################
+# END #############################################################################
     
     
 if __name__ == '__main__':

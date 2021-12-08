@@ -13,11 +13,18 @@ from src.config import Config
 import src.op_utils
 
 # TRIP:
-# from src.network_TripletGCN import TripletGCNModel
+from src.network_TripletGCN import TripletGCNModel          # Johana Wald / J&J implementation with MS
 # EAN:
-# from src.network_GNN import GraphEdgeAttenNetworkLayers
-# EXP:
-from src.experiments_network_GNN_mp import GCNnet
+from src.network_GNN import GraphEdgeAttenNetworkLayers     # GAT Shun Cheng-Wu implementation
+# EXP_trip:
+# from src.experiments_TripletGCN import TripletGCNModel_1    # some experiments on J&J and Johana nets
+# EXP
+from src.experiments_network_GNN_mp import GCNnet           # no Gat yes MS Shun Cheng-Wu way to deal with edges, Johana input
+# EXP_2
+# from src.experiments_network_GNN import GraphEdgeAttenNetworkLayers_           # no Gat yes MS Shun Cheng-Wu way to deal with edges
+
+# EAN_ms
+from src.network_GNN_ms import GEAN_ms                      # GAT with Message Passing class from Pytorch Geometric
 
 
 class SGPNModel(BaseModel):
@@ -64,21 +71,46 @@ class SGPNModel(BaseModel):
 
         #########################################################################################################################
 
-        '''if mconfig.GCN_TYPE == "TRIP":
+        if mconfig.GCN_TYPE == "TRIP":
             models['gcn'] = TripletGCNModel(num_layers = mconfig.N_LAYERS,
                                             dim_node = mconfig.point_feature_size,
                                             dim_edge = mconfig.edge_feature_size,
-                                            dim_hidden = mconfig.gcn_hidden_feature_size)'''
-        if mconfig.GCN_TYPE == "EXP":
-            models['gcn'] = GCNnet(num_layers = mconfig.N_LAYERS,
-                                            dim_node = mconfig.point_feature_size,
-                                            dim_edge = mconfig.edge_feature_size,
                                             dim_hidden = mconfig.gcn_hidden_feature_size)
-        '''elif mconfig.GCN_TYPE == 'EAN':
+
+        elif mconfig.GCN_TYPE == "EXP":
+            models['gcn'] = GCNnet(num_layers=mconfig.N_LAYERS,
+                                   dim_node=mconfig.point_feature_size,
+                                   dim_edge=mconfig.edge_feature_size,
+                                   dim_hidden=mconfig.gcn_hidden_feature_size)
+
+        elif mconfig.GCN_TYPE == 'EAN':
             models['gcn'] = GraphEdgeAttenNetworkLayers(self.mconfig.point_feature_size,
                                 self.mconfig.edge_feature_size,
                                 self.mconfig.DIM_ATTEN,
-                                self.mconfig.N_LAYERS, 
+                                self.mconfig.N_LAYERS,
+                                self.mconfig.NUM_HEADS,
+                                self.mconfig.GCN_AGGR,
+                                flow=self.flow)
+
+        elif mconfig.GCN_TYPE == 'EAN_ms':
+            models['gcn'] = GEAN_ms(self.mconfig.point_feature_size,
+                                self.mconfig.edge_feature_size,
+                                self.mconfig.DIM_ATTEN,
+                                self.mconfig.N_LAYERS,
+                                self.mconfig.NUM_HEADS,
+                                self.mconfig.GCN_AGGR)
+
+        '''elif mconfig.GCN_TYPE == "EXP_trip":
+            models['gcn'] = TripletGCNModel_1(num_layers=mconfig.N_LAYERS,
+                                   dim_node=mconfig.point_feature_size,
+                                   dim_edge=mconfig.edge_feature_size,
+                                   dim_hidden=mconfig.gcn_hidden_feature_size)
+
+        elif mconfig.GCN_TYPE == 'EXP_2':
+            models['gcn'] = GraphEdgeAttenNetworkLayers_(self.mconfig.point_feature_size,
+                                self.mconfig.edge_feature_size,
+                                self.mconfig.DIM_ATTEN,
+                                self.mconfig.N_LAYERS,
                                 self.mconfig.NUM_HEADS,
                                 self.mconfig.GCN_AGGR,
                                 flow=self.flow)'''
@@ -105,7 +137,7 @@ class SGPNModel(BaseModel):
             
         params = list()
         print('==trainable parameters==')
-        print(models)
+        # print(models)
         for name, model in models.items():
             if len(config.GPU) > 1:
                 model = torch.nn.DataParallel(model, config.GPU)
@@ -125,8 +157,12 @@ class SGPNModel(BaseModel):
         obj_feature = self.obj_encoder(obj_points)
         rel_feature = self.rel_encoder(rel_points)
 
-    ###########################################################################################
-        probs=None        
+        # print("obj_points shape: ", obj_points.size())      # obj_points shape:  torch.Size([28, 3, 128])
+        # print("rel_points shape: ", rel_points.size())      # rel_points shape:  torch.Size([420, 4, 256])
+        # print("edges shape: ", edges.size)                  # edges shape:  torch.Size([420, 2])
+
+        ###########################################################################################
+        probs = None
         if self.mconfig.USE_GCN:
             if self.mconfig.GCN_TYPE == 'TRIP':
                 gcn_obj_feature, gcn_rel_feature = self.gcn(obj_feature, rel_feature, edges)
@@ -134,8 +170,10 @@ class SGPNModel(BaseModel):
                 gcn_obj_feature, gcn_rel_feature = self.gcn(obj_feature, rel_feature, edges)
             elif self.mconfig.GCN_TYPE == 'EAN':
                 gcn_obj_feature, gcn_rel_feature, probs = self.gcn(obj_feature, rel_feature, edges)
+            elif self.mconfig.GCN_TYPE == 'EAN_ms':
+                gcn_obj_feature, gcn_rel_feature, probs = self.gcn(obj_feature, rel_feature, edges)
 
-    ###########################################################################################
+        ###########################################################################################
             
             if self.mconfig.OBJ_PRED_FROM_GCN:
                 obj_cls = self.obj_predictor(gcn_obj_feature)
@@ -157,7 +195,7 @@ class SGPNModel(BaseModel):
     def process(self, obj_points, rel_points, edges, gt_obj_cls, gt_rel_cls, weights_obj=None, weights_rel=None):
         self.iteration +=1     
 
-        obj_pred, rel_pred, _, _, _, _, probs = self(obj_points, rel_points, edges,return_meta_data=True)
+        obj_pred, rel_pred, _, _, _, _, probs = self(obj_points, rel_points, edges, return_meta_data=True)
         
         # if self.mconfig.multi_rel_outputs:
         #     if self.mconfig.w_bg != 0:
@@ -241,9 +279,10 @@ if __name__ == '__main__':
     if not use_dataset:
         max_rels = 80    
         n_pts = 10
-        n_rels = n_pts*n_pts-n_pts
-        n_rels = max_rels if n_rels > max_rels else n_rels
-        obj_points = torch.rand([n_pts,3,128])
+        n_rels = 80 # n_pts*n_pts-n_pts
+        # n_rels = max_rels if n_rels > max_rels else n_rels
+
+        obj_points = torch.rand([n_pts, 3, 128])
         rel_points = torch.rand([n_rels, 4, 256])
         edges = torch.zeros(n_rels, 2, dtype=torch.long)
 

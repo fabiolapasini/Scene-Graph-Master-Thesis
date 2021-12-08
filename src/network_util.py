@@ -10,6 +10,7 @@ from torch_geometric.nn.conv import MessagePassing
 from src.networks_base import mySequential
 
 
+ # taken from superglue
 def MLP(channels: list, do_bn=False, on_last=False, drop_out=None):
     """ Multi-layer perceptron """
     n = len(channels)
@@ -66,7 +67,7 @@ class Aggre_Index(MessagePassing):
     def __init__(self,aggr='add', node_dim=-2,flow="source_to_target"):
         super().__init__(aggr=aggr, node_dim=node_dim, flow=flow)
 
-    def forward(self, x,edge_index,dim_size):
+    def forward(self, x, edge_index, dim_size):
         size = self.__check_input__(edge_index, None)
         coll_dict = self.__collect__(self.__user_args__, edge_index, size,{})
         coll_dict['dim_size'] = dim_size

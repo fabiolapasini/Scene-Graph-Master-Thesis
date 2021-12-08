@@ -17,14 +17,19 @@ class TripletGCN(MessagePassing):
     """ A single layer of scene graph convolution """
     def __init__(self, dim_node, dim_edge, dim_hidden, aggr='add', use_bn=True):
         super().__init__(aggr=aggr)
-        self.dim_node = dim_node            # input_dim
-        self.dim_edge = dim_edge            # output_dim
-        self.dim_hidden = dim_hidden        # hidden_dim
+        self.dim_node = dim_node
+        self.dim_edge = dim_edge
+        self.dim_hidden = dim_hidden
 
         net1_layers = [dim_node*2+dim_edge, dim_hidden, dim_hidden*2+dim_edge]
         self.nn1 = build_mlp(net1_layers, batch_norm= use_bn, final_nonlinearity=True)
         net2_layers = [dim_hidden, dim_hidden, dim_node]
         self.nn2 = build_mlp(net2_layers, batch_norm= use_bn)
+
+    def forward(self, x, edge_feature, edge_index):
+        gcn_x, gcn_e = self.propagate(edge_index, x=x, edge_feature=edge_feature)
+        x = self.nn2(gcn_x)
+        return x, gcn_e
 
     def message(self, x_i, x_j, edge_feature):
         x = torch.cat([x_i, edge_feature, x_j], dim=1)
@@ -32,13 +37,9 @@ class TripletGCN(MessagePassing):
         new_x_i = x[:, :self.dim_hidden]
         new_e = x[:, self.dim_hidden:(self.dim_hidden + self.dim_edge)]
         new_x_j = x[:, (self.dim_hidden + self.dim_edge):]
+        print("new new_e size: ", new_e.size())
         x = new_x_i + new_x_j
         return [x, new_e]
-
-    def forward(self, x, edge_feature, edge_index):
-        gcn_x, gcn_e = self.propagate(edge_index, x=x, edge_feature=edge_feature)
-        x = self.nn2(gcn_x)
-        return x, gcn_e
 
     def aggregate(self, x:Tensor, index:Tensor, ptr:Optional[Tensor]=None, dim_size:Optional[int]=None) -> Tensor:
         x[0] = scatter(x[0], index, dim=self.node_dim, dim_size=dim_size, reduce=self.aggr)
@@ -56,11 +57,10 @@ class TripletGCNModel(BaseNetwork):
         for _ in range(self.num_layers):
             self.gconvs.append(TripletGCN(**kwargs))
 
-    '''
-    node_feature = obj_vecs
-    edge_feature = pred_vecs
-    edges_indices = edges
-    '''
+    '''node_feature = obj_vecs (number of nodes, dimension of nodes)
+    edge_feature = pred_vecs (number of relations, dimension of edges)
+    edges_indices = edges (number of relations, 2, dtype=torch.long))'''
+
     def forward(self, node_feature, edge_feature, edges_indices):
         for i in range(self.num_layers):
             gconv = self.gconvs[i]
@@ -74,9 +74,9 @@ class TripletGCNModel(BaseNetwork):
     
 if __name__ == '__main__':
     num_layers = 2
-    dim_node = 32
-    dim_edge = 64
-    dim_hidden = 128
+    dim_node = 256
+    dim_edge = 256
+    dim_hidden = 512
     num_node = 3
     num_edge = 4
 
@@ -87,7 +87,5 @@ if __name__ == '__main__':
     
     net = TripletGCNModel(num_layers, dim_node=dim_node, dim_edge=dim_edge, dim_hidden=dim_hidden)
     y = net(x, edge_feature, edge_index)
-    print(net)
+    # print(net)
     # print(y)
-    
-    pass
