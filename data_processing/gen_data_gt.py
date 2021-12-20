@@ -36,7 +36,7 @@ def Parser(add_help=True):
     parser = argparse.ArgumentParser(description='Process some integers.', formatter_class = argparse.ArgumentDefaultsHelpFormatter, add_help=add_help)
     parser.add_argument('--scans', type=str,default='../3RScan/')
     parser.add_argument('--type', type=str, default='validation', choices=['train', 'test', 'validation'], help="allow multiple rel pred outputs per pair",required=False)
-    parser.add_argument('--pth_out', type=str,default='../data/tmp', help='pth to output directory',required=True)
+    parser.add_argument('--pth_out', type=str,default='../Data/', help='pth to output directory',required=True)
     parser.add_argument('--relation', type=str,default='relationships', choices=['relationships_extended', 'relationships'])
     parser.add_argument('--target_scan', type=str, default='', help='path to a txt file that contains a list of scan ids that you want to use.')
     parser.add_argument('--label_type', type=str,default='3RScan160', choices=['3RScan160'], help='label',required=False)

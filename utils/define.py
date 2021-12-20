@@ -1,4 +1,4 @@
-ROOT_PATH = '../Scene-Graph-Master-Thesis/' #'/path/to/repo/3DSSG/'
+ROOT_PATH = '../Scene-Graph-Master-Thesis/' #'/path/to/repo/root/'
 DATA_PATH = '../Scene-Graph-Master-Thesis/3RScan/' #'/path/to/3RScan/'
 FILE_PATH = ROOT_PATH+'files/'
 
@@ -10,3 +10,6 @@ LABEL_MAPPING_FILE = FILE_PATH+'3RScan.v2 Semantic Classes - Mapping.csv'
 LABEL_FILE_NAME_RAW = 'labels.instances.annotated.v2.ply'
 LABEL_FILE_NAME = 'labels.instances.align.annotated.v2.ply'
 SEMSEG_FILE_NAME = 'semseg.v2.json'
+
+
+
