@@ -1,0 +1,38 @@
+recall obj cls 0.21428571428571427
+recall rel cls 0.9392857142857143
+Recall@k for relationship triplets: 
+top-k R@1	 0.919047619047619
+top-k R@2	 0.95
+top-k R@3	 0.95
+top-k R@5	 0.95
+top-k R@6	 0.95
+top-k R@10	 0.9880952380952381
+top-k R@11	 0.9880952380952381
+top-k R@21	 1.0
+top-k R@50	 1.0
+top-k R@51	 1.0
+top-k R@91	 1.0
+top-k R@100	 1.0
+840
+Recall@k for objects: 
+top-k R@1	 0.21428571428571427
+top-k R@2	 0.7857142857142857
+top-k R@3	 0.9642857142857143
+top-k R@4	 1.0
+top-k R@5	 1.0
+top-k R@9	 1.0
+top-k R@10	 1.0
+top-k R@17	 1.0
+top-k R@33	 1.0
+top-k R@50	 1.0
+top-k R@81	 1.0
+top-k R@100	 1.0
+56
+Recall@k for predicates: 
+top-k R@1	 0.9571428571428572
+top-k R@2	 0.9976190476190476
+top-k R@3	 0.9988095238095238
+top-k R@4	 1.0
+top-k R@5	 1.0
+top-k R@10	 1.0
+840

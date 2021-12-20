@@ -21,7 +21,7 @@ from src.network_GNN import GraphEdgeAttenNetworkLayers     # GAT Shun Cheng-Wu 
 # EXP
 from src.experiments_network_GNN_mp import GCNnet           # no Gat yes MS Shun Cheng-Wu way to deal with edges, Johana input
 # EXP_2
-# from src.experiments_network_GNN import GraphEdgeAttenNetworkLayers_           # no Gat yes MS Shun Cheng-Wu way to deal with edges
+# from src.experiments_network_GNN import GraphEdgeAttenNetworkLayers_           # no Gat no MS Shun Cheng-Wu way to deal with edges
 
 # EAN_ms
 from src.network_GNN_ms import GEAN_ms                      # GAT with Message Passing class from Pytorch Geometric
@@ -92,7 +92,7 @@ class SGPNModel(BaseModel):
                                 self.mconfig.GCN_AGGR,
                                 flow=self.flow)
 
-        elif mconfig.GCN_TYPE == 'EAN_ms':
+        '''elif mconfig.GCN_TYPE == 'EAN_ms':
             models['gcn'] = GEAN_ms(self.mconfig.point_feature_size,
                                 self.mconfig.edge_feature_size,
                                 self.mconfig.DIM_ATTEN,
@@ -100,7 +100,7 @@ class SGPNModel(BaseModel):
                                 self.mconfig.NUM_HEADS,
                                 self.mconfig.GCN_AGGR)
 
-        '''elif mconfig.GCN_TYPE == "EXP_trip":
+        elif mconfig.GCN_TYPE == "EXP_trip":
             models['gcn'] = TripletGCNModel_1(num_layers=mconfig.N_LAYERS,
                                    dim_node=mconfig.point_feature_size,
                                    dim_edge=mconfig.edge_feature_size,
@@ -170,8 +170,8 @@ class SGPNModel(BaseModel):
                 gcn_obj_feature, gcn_rel_feature = self.gcn(obj_feature, rel_feature, edges)
             elif self.mconfig.GCN_TYPE == 'EAN':
                 gcn_obj_feature, gcn_rel_feature, probs = self.gcn(obj_feature, rel_feature, edges)
-            elif self.mconfig.GCN_TYPE == 'EAN_ms':
-                gcn_obj_feature, gcn_rel_feature, probs = self.gcn(obj_feature, rel_feature, edges)
+            #elif self.mconfig.GCN_TYPE == 'EAN_ms':
+            #    gcn_obj_feature, gcn_rel_feature, probs = self.gcn(obj_feature, rel_feature, edges)
 
         ###########################################################################################
             

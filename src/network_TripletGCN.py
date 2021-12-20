@@ -23,7 +23,7 @@ class TripletGCN(MessagePassing):
 
         net1_layers = [dim_node*2+dim_edge, dim_hidden, dim_hidden*2+dim_edge]
         self.nn1 = build_mlp(net1_layers, batch_norm= use_bn, final_nonlinearity=True)
-        net2_layers = [dim_hidden, dim_hidden, dim_node]
+        net2_layers = [dim_hidden, dim_hidden, dim_node]                                            # dim hidden is 2*dim node
         self.nn2 = build_mlp(net2_layers, batch_norm= use_bn)
 
     def forward(self, x, edge_feature, edge_index):

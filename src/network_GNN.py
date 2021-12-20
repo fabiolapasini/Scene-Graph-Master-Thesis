@@ -151,7 +151,7 @@ class GraphEdgeAttenNetwork(BaseNetwork):
         x_i, x_j = self.index_get(x, edge_index)
         xx, gcn_edge_feature, prob = self.edgeatten(x_i,edge_feature,x_j)
         xx = self.index_aggr(xx,edge_index, dim_size = x.shape[0])
-        xx = self.prop(torch.cat([x,xx],dim=1))
+        xx = self.prop(torch.cat([x,xx],dim=1))                                             # appling a MLP to the concatenation of the node and the neighbour
         return xx, gcn_edge_feature, prob
     
     '''def trace(self, pth = './tmp', name_prefix=''):

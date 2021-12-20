@@ -31,6 +31,7 @@ class MultiHeadedEdgeAttention_(torch.nn.Module):
         edge_feature = self.nn_edge(torch.cat([query,edge,value],dim=1) )
         return value, edge_feature
 
+
 class GraphEdgeAttenNetwork_(BaseNetwork):
     def __init__(self, dim_node, dim_edge, dim_atten, aggr= 'max', use_bn=False, flow='target_to_source',use_edge:bool=True, **kwargs):
         super().__init__()
@@ -50,6 +51,7 @@ class GraphEdgeAttenNetwork_(BaseNetwork):
         xx = self.index_aggr(xx, edge_index, dim_size = x.shape[0])
         xx = self.prop(torch.cat([x, xx], dim=1))
         return xx, gcn_edge_feature
+
 
 class GraphEdgeAttenNetworkLayers_(BaseNetwork):
     def __init__(self, dim_node, dim_edge, dim_atten, num_layers, aggr='max', use_bn=False, flow='target_to_source', use_edge: bool = True, **kwargs):
