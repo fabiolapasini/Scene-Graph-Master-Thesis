@@ -124,7 +124,8 @@ def main():
                         resave_ply(file_in, file_out, rescan2ref[scan_id])
                 counter += 1
         while pool._cache:
-            print('\r{} {:2.2%}'.format(process_text[1-len(pool._cache)], 1-len(pool._cache)/len(process_text)),flush=True,end='')
+            print(process_text[1 - len(pool._cache)], 1 - len(pool._cache) / len(process_text))
+           #  print('\r{} {:2.2%}'.format(process_text[1-len(pool._cache)], 1-len(pool._cache)/len(process_text)),flush=True,end='')
             time.sleep(0.5)
         if opt.thread > 1:
             result = result.get()
@@ -159,7 +160,8 @@ def main():
                     copyfile(file_in, file_out)
                 counter += 1
         while pool._cache:
-            print('\r{} {:2.2%}'.format(process_text[1-len(pool._cache)], 1-len(pool._cache)/len(process_text)),flush=True,end='')
+            print(process_text[1-len(pool._cache)], 1-len(pool._cache)/len(process_text))
+           #  print('\r{} {:2.2%}'.format(process_text[1-len(pool._cache)], 1-len(pool._cache)/len(process_text)),flush=True,end='')
             time.sleep(0.5)
         if result is not None:
             result = result.get()

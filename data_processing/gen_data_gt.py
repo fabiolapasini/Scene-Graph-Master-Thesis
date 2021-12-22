@@ -3,7 +3,8 @@ if __name__ == '__main__' and __package__ is None:
     sys.path.append('../')
 
 import trimesh
-import open3d as o3d
+from scipy.spatial import KDTree
+# import open3d as o3d
 import numpy as np
 from utils import util_ply, util_label, util
 from utils.util_search import SAMPLE_METHODS, find_neighbors
@@ -12,22 +13,12 @@ from pathlib import Path
 import os,json    
 import argparse
 
-import platform
-if (platform.system() == "Windows"):
-    from utils import define_win as define
-elif (platform.system() != "Windows"):
-    from utils import define as define
+from utils import define as define
 
 ##########################################################################
 
 # Ubuntu:
     # python3 gen_data_gt.py --pth_out '../Data' --target_scan '../3RScan/scans_name.txt'
-# Win:
-    # python gen_data_gt.py --type train --pth_out ..\Data --target_scan ..\3RScan\strain_scans.txt
-    # python gen_data_gt.py --type test --pth_out ..\Data --target_scan ..\3RScan\test_scans.txt
-    # python gen_data_gt.py --type validation --pth_out ..\Data --target_scan ..\3RScan\validation_scans.txt
-
-##########################################################################
 
 # this code creates a folder ..\\Data with inside: args.json  relationships_train.json classes.txt  relationships.txt
 # select the -- validation to create all the files needed
@@ -61,8 +52,8 @@ def Parser(add_help=True):
 
 name_same_segment = 'same part'
 
-
-def generate_groups(cloud:trimesh.points.PointCloud, distance:float=1, bbox_distance:float=0.75, min_seg_per_group = 5, segs_neighbors=None):
+def generate_groups(cloud:trimesh.points.PointCloud, distance:float=1, bbox_distance:float=0.75, min_seg_per_group = 5, segs_neighbors=None): 
+# def generate_groups(cloud, distance, bbox_distance, min_seg_per_group = 5, segs_neighbors=None):
     points = np.array(cloud.vertices.tolist())
     segments = cloud.metadata['ply_raw']['vertex']['data']['label'].flatten()
     seg_ids = np.unique(segments)
@@ -140,7 +131,7 @@ def generate_groups(cloud:trimesh.points.PointCloud, distance:float=1, bbox_dist
         bboxes = dict()
         for idx in seg_ids:
             segs[idx] = points[np.where(segments==idx)]
-            trees[idx] = o3d.geometry.KDTreeFlann(segs[idx].transpose())
+            trees[idx] = KDTree(segs[idx].transpose())
             bboxes[idx] = [segs[idx].min(0)-radknn,segs[idx].max(0)+radknn]
 
         # search neighbor for each segments
