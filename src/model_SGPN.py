@@ -7,13 +7,8 @@ if __name__ == '__main__' and __package__ is None:
 import torch
 import torch.optim as optim
 import torch.nn.functional as F
-<<<<<<< HEAD
-from model_base import BaseModel
-from network_PointNet import PointNetfeat, PointNetCls, PointNetRelCls, PointNetRelClsMulti
-=======
 from src.model_base import BaseModel
 from src.network_PointNet import PointNetfeat, PointNetCls, PointNetRelCls, PointNetRelClsMulti
->>>>>>> 64cf003fa3f36b39d9c6347a88db9b74a2919aab
 from config import Config
 import op_utils
 

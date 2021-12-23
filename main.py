@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# python main.py --config SGPN/config_SGPN.json --mode train
+# python3 main.py --config SGPN/config_SGPN.json --mode train
 # python main.py --config C:\Users\fabio\Documents\GitHub\Scene-Graph-Master-Thesis\SGPN\config_SGPN.json --mode eval --loadbest 1
 
 # to run the tensorboard on internet
@@ -11,8 +11,8 @@ import os
 if __name__ == '__main__':
     os.sys.path.append('src')
 
-from SceneGraphFusionNetwork import SGFN
-from config import Config
+from src.SceneGraphFusionNetwork import SGFN
+from src.config import Config
 from utils import util
 import torch
 import argparse
