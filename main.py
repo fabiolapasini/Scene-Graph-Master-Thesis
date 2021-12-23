@@ -15,8 +15,8 @@ if __name__ == '__main__':
     elif (platform.system() != "Windows"):
         os.sys.path.append('./src')
 
-from src.SceneGraphFusionNetwork import SGFN
-from src.config import Config
+from SceneGraphFusionNetwork import SGFN
+from config import Config
 from utils import util
 import torch
 import argparse

@@ -3,12 +3,12 @@ if __name__ == '__main__' and __package__ is None:
     sys.path.append('../')
 
 import os, torch, time
-from src.DataLoader import CustomDataLoader
-from src.model_SGPN import SGPNModel
-from src.dataset_builder import build_dataset
+from DataLoader import CustomDataLoader
+from model_SGPN import SGPNModel
+from dataset_builder import build_dataset
 from torch.utils.tensorboard import SummaryWriter
-from src.config import Config
-import src.op_utils
+from config import Config
+import op_utils
 from utils import plot_confusion_matrix
 from utils import util_eva
 

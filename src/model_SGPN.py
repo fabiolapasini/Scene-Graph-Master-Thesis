@@ -7,10 +7,10 @@ if __name__ == '__main__' and __package__ is None:
 import torch
 import torch.optim as optim
 import torch.nn.functional as F
-from src.model_base import BaseModel
-from src.network_PointNet import PointNetfeat, PointNetCls, PointNetRelCls, PointNetRelClsMulti
-from src.config import Config
-import src.op_utils
+from model_base import BaseModel
+from network_PointNet import PointNetfeat, PointNetCls, PointNetRelCls, PointNetRelClsMulti
+from config import Config
+import op_utils
 
 # TRIP:
 from src.network_TripletGCN import TripletGCNModel          # Johana Wald / J&J implementation with MS
