@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# python main.py --config C:\Users\fabio\Documents\GitHub\Scene-Graph-Master-Thesis\SGPN\config_SGPN.json --mode train
+# python main.py --config SGPN/config_SGPN.json --mode train
 # python main.py --config C:\Users\fabio\Documents\GitHub\Scene-Graph-Master-Thesis\SGPN\config_SGPN.json --mode eval --loadbest 1
 
 # to run the tensorboard on internet
@@ -9,11 +9,7 @@
 
 import os
 if __name__ == '__main__':
-    import platform
-    if (platform.system() == "Windows"):
-        os.sys.path.append('\src')
-    elif (platform.system() != "Windows"):
-        os.sys.path.append('./src')
+    os.sys.path.append('src')
 
 from SceneGraphFusionNetwork import SGFN
 from config import Config
@@ -38,7 +34,9 @@ def load_config():
     config_path = os.path.abspath(args.config)
 
     if not os.path.exists(config_path):
-        raise RuntimeError('Targer config file does not exist. {}' & config_path)
+        # raise RuntimeError('Targer config file does not exist. {}' & config_path)
+        # raise RuntimeError('Targer config file does not exist.')
+        print('Targer config file does not exist.')
 
     # load config file
     config = Config(config_path)

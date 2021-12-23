@@ -50,7 +50,7 @@
     "NONE_RATIO": 1.0
   },
   "dataset": {
-    "root": ["\gen_data\"],
+    "root": ["./gen_data/"],
     "selection": "",
     "ignore_scannet_rel": true,
     "is_v2": true,
