@@ -82,7 +82,7 @@ class SGFN():
             self.writter = SummaryWriter(pth_log)
             
             # Plot data graph to tensorboard
-            all_logs = src.op_utils.get_tensorboard_logs(pth_log)
+            all_logs = op_t.get_tensorboard_logs(pth_log)
             if len(all_logs) == 1:
                 if self.use_edge_descriptor:
                     print(" ")
@@ -145,7 +145,7 @@ class SGFN():
             print('No training data was provided! Check \'TRAIN_FLIST\' value in the configuration file.')
             return
         
-        progbar = src.op_utils.Progbar(total, width=20, stateful_metrics=['Misc/epo', 'Misc/it'])
+        progbar = op_t.Progbar(total, width=20, stateful_metrics=['Misc/epo', 'Misc/it'])
         
         if self.model.iteration >= max_iteration:
             keep_training = False
@@ -173,7 +173,7 @@ class SGFN():
                 if iteration >= self.model.iteration:
                     break
                 epoch+=1
-                progbar = src.op_utils.Progbar(total, width=20, stateful_metrics=['Misc/epo', 'Misc/it'])
+                progbar = op_t.Progbar(total, width=20, stateful_metrics=['Misc/epo', 'Misc/it'])
                 loader = iter(train_loader)
             
         # Train
@@ -310,7 +310,7 @@ class SGFN():
             
             if epoch > self.config.MAX_EPOCHES:
                 break
-            progbar = src.op_utils.Progbar(total, width=20, stateful_metrics=['Misc/epo', 'Misc/it'])
+            progbar = op_t.Progbar(total, width=20, stateful_metrics=['Misc/epo', 'Misc/it'])
             loader = iter(train_loader)
         self.save()
         print('')
@@ -349,7 +349,7 @@ class SGFN():
                                           multi_rel_prediction=self.model.mconfig.multi_rel_outputs)
        
         total = len(self.dataset_valid)
-        progbar = src.op_utils.Progbar(total, width=20, stateful_metrics=['Misc/it'])
+        progbar = op_t.Progbar(total, width=20, stateful_metrics=['Misc/it'])
         
         print('===   start evaluation 1   ===')
         self.model.eval()
@@ -456,7 +456,7 @@ class SGFN():
                                   multi_rel_outputs=0.5, k=100,multi_rel_prediction=self.model.mconfig.multi_rel_outputs)
         
         total = len(self.dataset_eval)
-        progbar = src.op_utils.Progbar(total, width=20, stateful_metrics=['Misc/it'])
+        progbar = op_t.Progbar(total, width=20, stateful_metrics=['Misc/it'])
         
         print('===   start evaluation 2 ===')
         list_feature_maps = dict()
@@ -553,7 +553,7 @@ class SGFN():
 
         print(eva_tool.gen_text())
         pth_out = os.path.join(self.results_path,str(self.model.iteration))
-        src.op_utils.create_dir(pth_out)
+        op_t.create_dir(pth_out)
         
         result_metrics = eva_tool.write(pth_out, self.model_name)
         # result_metrics = {'hparam/'+key: value for key,value in result_metrics.items()}
@@ -596,7 +596,7 @@ class SGFN():
 
 
     def trace(self):
-        src.op_utils.create_dir(self.trace_path)
+        op_t.create_dir(self.trace_path)
         args = self.model.trace(self.trace_path)
         with open(os.path.join(self.trace_path, 'classes.txt'), 'w') as f:
             for c in self.dataset_valid.classNames:
