@@ -10,7 +10,7 @@ import torch.nn.functional as F
 from src.model_base import BaseModel
 from src.network_PointNet import PointNetfeat, PointNetCls, PointNetRelCls, PointNetRelClsMulti
 from config import Config
-import op_utils
+import op_utils as op_t
 
 # TRIP:
 from src.network_TripletGCN import TripletGCNModel          # Johana Wald / J&J implementation with MS
@@ -128,7 +128,7 @@ class SGPNModel(BaseModel):
                 batch_norm=with_bn,
                 drop_out=True)
         else:
-            models['rel_predictor'] = PointNetRelCls(
+            models['rel(name, op_t.pytorch_count_params(model))_predictor'] = PointNetRelCls(
                 num_rel, 
                 in_size=mconfig.edge_feature_size, 
                 batch_norm=with_bn,
@@ -142,7 +142,7 @@ class SGPNModel(BaseModel):
                 model = torch.nn.DataParallel(model, config.GPU)
             self.add_module(name, model)
             params += list(model.parameters())
-            print(name, src.op_utils.pytorch_count_params(model))
+            print(name, op_t.pytorch_count_params(model))
         print('')
         
         self.optimizer = optim.Adam(

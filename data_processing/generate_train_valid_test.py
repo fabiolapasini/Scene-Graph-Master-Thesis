@@ -32,8 +32,8 @@ elif (platform.system() != "Windows"):
 
 def Parser():
     parser = argparse.ArgumentParser(description='Process some integers.', formatter_class = argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--p',type=float,default=0.9, help='split percentage.')
-    parser.add_argument('--pth_out',type=str,default='./',help='output path')
+    parser.add_argument('--p',type=float,default=0.8, help='split percentage.')
+    parser.add_argument('--pth_out',type=str,default='../3RScan',help='output path')
     parser.add_argument('--type',type=str,choices=['3RScan','ScanNet'],default='3RScan', help='type of dataset')
     parser.add_argument('--with_rescan', type=int, default=0, help='if >0, all rescan will be treated as new scans. the scans of the same room may appear in training and validation split.')
     return parser

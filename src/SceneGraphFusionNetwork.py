@@ -8,7 +8,7 @@ from model_SGPN import SGPNModel
 from dataset_builder import build_dataset
 from torch.utils.tensorboard import SummaryWriter
 from config import Config
-import op_utils
+import op_utils as op_t
 from utils import plot_confusion_matrix
 from utils import util_eva
 
@@ -51,19 +51,19 @@ class SGFN():
             num_rel_class = len(self.dataset_valid.relationNames)
             dataset = self.dataset_valid
 
-        # try:
-        if config.VERBOSE: print('build test dataset')
-        self.dataset_eval = build_dataset(self.config,split_type='test_scans', shuffle_objs=False,
-                                  multi_rel_outputs=mconfig.multi_rel_outputs,
-                                  use_rgb=mconfig.USE_RGB,
-                                  use_normal=mconfig.USE_NORMAL)
-        num_obj_class = len(self.dataset_eval.classNames)
-        num_rel_class = len(self.dataset_eval.relationNames)
-        dataset = self.dataset_eval
-
-        # except:
-        #    print('cannot build eval dataset.')
-        #    self.dataset_eval = None
+        # if running for one model comment the try except
+        try:
+            if config.VERBOSE: print('build test dataset')
+            self.dataset_eval = build_dataset(self.config,split_type='test_scans', shuffle_objs=False,
+                                      multi_rel_outputs=mconfig.multi_rel_outputs,
+                                      use_rgb=mconfig.USE_RGB,
+                                      use_normal=mconfig.USE_NORMAL)
+            num_obj_class = len(self.dataset_eval.classNames)
+            num_rel_class = len(self.dataset_eval.relationNames)
+            dataset = self.dataset_eval
+        except:
+            print('cannot build eval dataset.')
+            self.dataset_eval = None
             
         ''' Build Model '''
         if self.use_edge_descriptor:
