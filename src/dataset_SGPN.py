@@ -45,11 +45,13 @@ def dataset_loading_3RScan(root:str, pth_selection:str,split:str,class_choice:li
     with open(os.path.join(root, 'relationships_train.json'), "r") as read_file:
         data1 = json.load(read_file)
     with open(os.path.join(root, 'relationships_validation.json'), "r") as read_file:
+        data3 = json.load(read_file)
+    with open(os.path.join(root, 'relationships_test.json'), "r") as read_file:
         data2 = json.load(read_file)
     data = dict()
-    data['scans'] = data1['scans'] + data2['scans']
-    data['neighbors'] = {**data1['neighbors'], **data2['neighbors']}
-    return  classNames, relationNames, data, selected_scans
+    data['scans'] = data1['scans'] + data2['scans'] + data3['scans']
+    data['neighbors'] = {**data1['neighbors'], **data2['neighbors'], **data3['neighbors']}
+    return classNames, relationNames, data, selected_scans
 
 
 def gen_modelnet_id(root):
