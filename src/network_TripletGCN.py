@@ -37,7 +37,7 @@ class TripletGCN(MessagePassing):
         new_x_i = x[:, :self.dim_hidden]
         new_e = x[:, self.dim_hidden:(self.dim_hidden + self.dim_edge)]
         new_x_j = x[:, (self.dim_hidden + self.dim_edge):]
-        print("new new_e size: ", new_e.size())
+       # print("new new_e size: ", new_e.size())
         x = new_x_i + new_x_j
         return [x, new_e]
 
