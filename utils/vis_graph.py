@@ -212,10 +212,10 @@ def read_classes(read_file):        # load list of relationships
 
 
 if __name__ == '__main__':
-    pth_out = 'data_fabiola/Scene-Graph-Master-Thesis/SGPN/SGPN/results/399/graph\\'
-    SCAN_PATH = 'data_fabiola/Scene-Graph-Master-Thesis/3RScan/'  # '/path/to/3RScan/'
-    DATA_PATH = 'data_fabiola/Scene-Graph-Master-Thesis/Data/'
-    RESULT_PATH = 'data_fabiola/Scene-Graph-Master-ThesisSGPN/SGPN/results/399/'  # '/path/to/result/'
+    pth_out = '../SGPN/SGPN/results/188999/graph\\'
+    # SCAN_PATH = 'data_fabiola/Scene-Graph-Master-Thesis/3RScan/'  # '/path/to/3RScan/'
+    DATA_PATH = '../gen_data/'
+    RESULT_PATH = '../SGPN/SGPN/results/188999/'  # '/path/to/result/'
     RESULT_PATH = os.path.join(RESULT_PATH, 'predictions.json')
     pd_only = False
     gt_only = False
@@ -242,7 +242,10 @@ if __name__ == '__main__':
         pth_gt = pth+ 'relationships_train.json'
         gts_ = load_scans(pth_gt)
 
-        gts = {**gts,**gts_}
+        pth_gt = pth+ 'relationships_test.json'
+        gts__ = load_scans(pth_gt)
+
+        gts = {**gts,**gts_, **gts__}
 
         pth_class = os.path.join(pth,'classes.txt')
         pth_relation = os.path.join(pth,'relationships.txt')
@@ -271,7 +274,7 @@ if __name__ == '__main__':
     for scan_id, prediction in predictions.items():
         """ in all the predictions.json file the scan id is the name f the scan follwed by '_0' """
         scan_id = scan_id.rsplit('_',1)[0]
-        # if scan_id != '0a4b8ef6-a83a-21f2-8672-dce34dd0d7ca': continue
+        if scan_id != '0a4b8ef6-a83a-21f2-8672-dce34dd0d7ca': continue
         print('scan_id: ', scan_id)
         gt_scan = gts[scan_id]
         
