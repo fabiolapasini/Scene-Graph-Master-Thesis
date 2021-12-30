@@ -1,5 +1,7 @@
-.idea
+.idea/
 3RScan
 SGPN
 TRIP_train.out
 TRIP_train.out.save
+SGPN/logs/SGPN/*
+SGPN/SGPN/*
