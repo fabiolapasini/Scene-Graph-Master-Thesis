@@ -1,6 +1,7 @@
 .idea/
-3RScan
-SGPN
+3RScan/
+
+# ignore large files of output
 TRIP_train.out
 TRIP_train.out.save
 SGPN/logs/SGPN/*
