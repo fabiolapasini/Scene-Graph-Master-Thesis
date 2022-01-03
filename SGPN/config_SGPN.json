@@ -30,7 +30,7 @@
     "USE_REL_LOSS": true,
     "OBJ_PRED_FROM_GCN": true,
     "_GCN_TYPE": ["TRIP", "EAN", "EAN_ms", "EXP"],
-    "GCN_TYPE": "EAN",
+    "GCN_TYPE": "EAN_ms",
     "_ATTENTION" : ["fat"],
     "ATTENTION": "fat",
     "DROP_OUT_ATTEN": 0.5,
