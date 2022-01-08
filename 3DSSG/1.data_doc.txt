@@ -1,0 +1,67 @@
+http://campar.in.tum.de/files/3DSSG/README.md
+
+
+## Data Organization
+
+[3DSSG.zip](http://campar.in.tum.de/files/3DSSG/3DSSG.zip)
+
+|-- objects.json
+    List of all object instances (nodes) of our semantic graphs
+|-- relationships.json
+    List of all semantic relationships (edges) of our semantic graphs
+	
+|-- affordances.txt
+    Provides affordances for each of the 534 classes
+|-- attributes.txt
+    List of all 93 attributes together with their category
+|-- classes.txt
+    List of all 534 classes in 3RScan with corresponding lexcial description
+|-- relationships.txt
+    List of all 41 relationsihps
+|-- wordnet_attributes.txt
+    Extracted lexcial attributes of each of the 534 classes
+	
+
+**Object instances (nodes) (`objects.json`)**:
+{
+  "scans": [
+    {
+      ...
+    },
+    {
+      "scan": "531cff10-0021-28f6-8f94-80db8fdbbbee", 			// scan id from 3RScans scan
+      "objects": [
+        {
+          "global_id": "6", 									// global instance id from 3DSSG.zip/classes.txt
+          "id": "1", 											// instance id from 3RScans semseg.json
+          "label": "floor",
+          "ply_color": "#aec7e8", 								// ply color from 3RScans labels.instances.annotated.ply
+          "affordances": [ "placing items on", "walking on" ],
+          "attributes": {
+            "texture": [ "tiled" ],
+            "lexical": [ "inside", "lower", "horizontal" ],
+            "color": [ "brown" ],
+            "material": [ "ceramic" ],
+            "shape": [ "flat" ]
+          }
+		  
+		  
+		  
+**Object relationships (edges) (`relationships.json`)**:
+
+{
+  "scans": [
+    {
+      "relationships": [
+        [
+          8,  													// object: instance id from 3RScans semseg.json and objects.json objects["id"]
+          1,  													// object: instance id from 3RScans semseg.json and objects.json objects["id"]
+          15, 													// relationships id (from 3DSSG/relationships.txt)
+          "standing on"											// semantic relationship (from 3DSSG/relationships.txt)
+        ],
+        [ 9, 1, 14, "attached to" ],
+        [ 11, 14, 10, "higher than" ],
+        [ 35, 34, 13, "same as" ], 
+        ...
+      ],
+      "scan": "531cff10-0021-28f6-8f94-80db8fdbbbee"
