@@ -10,19 +10,18 @@ def set_random_seed(seed):
     random.seed(seed)
 
 
-# put a text in a list
-def read_txt_to_list(file):
-    output = [] 
-    with open(file, 'r') as f: 
-        for line in f: 
-            entry = line.rstrip().lower() 
-            output.append(entry) 
-    return output
-
-
 def check_file_exist(path):
     if not os.path.exists(path):
             raise RuntimeError('Cannot open file. (',path,')')
+
+# put a text in a list
+def read_txt_to_list(file):
+    output = []
+    with open(file, 'r') as f:
+        for line in f:
+            entry = line.rstrip().lower()
+            output.append(entry)
+    return output
 
 
 def read_classes(read_file):

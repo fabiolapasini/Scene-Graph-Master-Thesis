@@ -1,5 +1,3 @@
-
-
 '''if __name__ == '__main__' or __package__ is None:
     from os import sys
     sys.path.append('../')'''
@@ -18,15 +16,15 @@ print("Running on", device)
 import platform
 if (platform.system() == "Windows"):
     from utils import define_win as define
-    print("Os: Windows")
+    # print("Os: Windows")
 elif (platform.system() != "Windows"):
     from utils import define
-    print("Os: Ubuntu")
+    # print("Os: Ubuntu")
 
 
 def dataset_loading_3RScan(root:str, pth_selection:str,split:str,class_choice:list=None):    
     pth_catfile = os.path.join(pth_selection, 'classes.txt')
-    classNames = util.read_txt_to_list(pth_catfile)
+    classNames = util.read_classes(pth_catfile)
     
     pth_relationship = os.path.join(pth_selection, 'relationships.txt')
     util.check_file_exist(pth_relationship)
@@ -39,6 +37,8 @@ def dataset_loading_3RScan(root:str, pth_selection:str,split:str,class_choice:li
         selected_scans = selected_scans.union(util.read_txt_to_list(os.path.join(pth_selection,'validation_scans.txt')))
     elif split == 'test_scans':
         selected_scans = selected_scans.union(util.read_txt_to_list(os.path.join(pth_selection,'test_scans.txt')))
+        # print("selected scans: \n")
+        # print(len(selected_scans))    # 157 as th number of file in test_scans!
     else:
         raise RuntimeError('unknown split type:',split)
 
@@ -54,7 +54,7 @@ def dataset_loading_3RScan(root:str, pth_selection:str,split:str,class_choice:li
     return classNames, relationNames, data, selected_scans
 
 
-def gen_modelnet_id(root):
+'''def gen_modelnet_id(root):
     classes = []
     with open(os.path.join(root, 'train.txt'), 'r') as f:
         for line in f:
@@ -62,7 +62,7 @@ def gen_modelnet_id(root):
     classes = np.unique(classes)
     with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../misc/modelnet_id.txt'), 'w') as f:
         for i in range(len(classes)):
-            f.write('{}\t{}\n'.format(classes[i], i))
+            f.write('{}\t{}\n'.format(classes[i], i))'''
             
             
 def load_mesh(path,label_file,use_rgb,use_normal):
@@ -72,9 +72,11 @@ def load_mesh(path,label_file,use_rgb,use_normal):
             plydata = util_ply.load_rgb(path)
         else:
             plydata = trimesh.load(os.path.join(path,label_file), process=False)
-            
+        # print(plydata)    # <trimesh.Trimesh(vertices.shape=(59970, 3), faces.shape=(90747, 3))>
+
         points = np.array(plydata.vertices.tolist())
         instances = util_ply.read_labels(plydata).flatten()
+        # print(instances)                # [12 12 12 ...  5  5  5]
         
         if use_rgb:
             rgbs = np.array(plydata.visual.vertex_colors.tolist())[:,:3]
@@ -162,10 +164,14 @@ class RIODatasetGraph(data.Dataset):
                     selection = self.root[i]
                 l_classNames, l_relationNames, l_data, l_selected_scans = \
                     dataset_loading_3RScan(self.root[i], selection, split)
+                # print("Type of l_data:", type(l_data))    #  <class 'dict'>
                 
                 if classNames is None:
                     classNames, relationNames, data, selected_scans = \
                         l_classNames, l_relationNames, l_data, l_selected_scans
+                    # print("selected scans: \n")
+                    # print("Lenght selected scans", len(selected_scans))
+                    # print(selected_scans)
                 else:
                     classNames = set(classNames).union(l_classNames)
                     relationNames= set(relationNames).union(l_relationNames)
@@ -219,7 +225,7 @@ class RIODatasetGraph(data.Dataset):
         print('')
         
         self.relationship_json, self.objs_json, self.scans, self.nns = self.read_relationship_json(data, selected_scans)
-        print('num of data:',len(self.scans))
+        # print('#######  NUM OF SCANS ########### ',len(self.scans))
         assert(len(self.scans)>0)
         if sample_in_runtime:
             assert(self.nns is not None)
@@ -294,6 +300,10 @@ class RIODatasetGraph(data.Dataset):
         return len(self.scans)
     
     def read_relationship_json(self, data, selected_scans:list):
+        # count_invalid = 0
+        # count_valid = 0
+        # count_scans = 0
+
         rel = dict()
         objs = dict()
         scans = list()
@@ -302,6 +312,7 @@ class RIODatasetGraph(data.Dataset):
         if 'neighbors' in data:
             nns = data['neighbors']
         for scan in data['scans']:
+            # count_scans += 1
             if scan["scan"] == 'fa79392f-7766-2d5c-869a-f5d6cfb62fc6':
                 if self.mconfig.label_file == "labels.instances.align.annotated.v2.ply":
                     '''
@@ -311,8 +322,12 @@ class RIODatasetGraph(data.Dataset):
                     '''
                     continue
             if scan['scan'] not in selected_scans:
+                # count_invalid += 1
+                # print("Invalid scans on total scans:", count_invalid, " / ", count_scans)
                 continue
-                
+
+            # count_valid += 1
+            # print("valid scans on total scans:", count_valid , " / ", count_scans)
             relationships = []
             for realationship in scan["relationships"]:
                 relationships.append(realationship)
@@ -334,8 +349,6 @@ class RIODatasetGraph(data.Dataset):
             rel[scan["scan"] + "_" + str(scan["split"])] = relationships
             scans.append(scan["scan"] + "_" + str(scan["split"]))
             # print("lengh: ",  len(scans))
-
-            
             objs[scan["scan"]+"_"+str(scan['split'])] = objects
 
         return rel, objs, scans, nns

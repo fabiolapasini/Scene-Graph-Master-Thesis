@@ -31,7 +31,6 @@ def get_label(ply_in, dataset_type, label_type):
 
     elif dataset_type == 'ScanNet':        
         labels = data['label']
-
     elif dataset_type == '3RScan':
         if label_type == 'Segment':
             labels = data['objectId']
@@ -48,11 +47,10 @@ def get_label(ply_in, dataset_type, label_type):
     return labels
 
 
-def load_rgb(path, target_name = define.LABEL_FILE_NAME):
-    '''
-    path: path to the folder contains config.OBJ_NAME, config.MTL_NAME, config.TEXTURE_NAME,
-    config.LABEL_FILE_NAME and config.LABEL_FILE_NAME_RAW
-    '''
+'''def load_rgb(path, target_name = define.LABEL_FILE_NAME):
+    # path: path to the folder contains config.OBJ_NAME, config.MTL_NAME, config.TEXTURE_NAME,
+    # config.LABEL_FILE_NAME and config.LABEL_FILE_NAME_RAW
+
     dirname = path
     pth_label = os.path.join(dirname,target_name)
     if path.find('scene') >=0:    
@@ -121,7 +119,7 @@ def load_rgb(path, target_name = define.LABEL_FILE_NAME):
         label_mesh_align.metadata['ply_raw']['vertex']['data']['red']   = mesh.visual.vertex_colors[:,0]
         label_mesh_align.metadata['ply_raw']['vertex']['data']['green'] = mesh.visual.vertex_colors[:,1]
         label_mesh_align.metadata['ply_raw']['vertex']['data']['blue']  = mesh.visual.vertex_colors[:,2]
-    return label_mesh_align
+    return label_mesh_align'''
 
 
 if __name__ == '__main__':

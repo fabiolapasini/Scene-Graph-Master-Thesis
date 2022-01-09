@@ -94,11 +94,11 @@ def main():
             raise Exception('\nCannot find saved model!\n')
         model.eval()
 
-    if config.MODE == 'trace':
+    '''if config.MODE == 'trace':
         if model.load(config.LOADBEST) is False:
             raise Exception('\nCannot find saved model!\n')
         model.trace()
-        print('done')
+        print('done')'''
 
 
 if __name__ == '__main__':

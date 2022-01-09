@@ -35,21 +35,23 @@ class SGFN():
                                                multi_rel_outputs=mconfig.multi_rel_outputs,
                                                use_rgb=mconfig.USE_RGB,
                                                use_normal=mconfig.USE_NORMAL)
-            self.dataset_train.__getitem__(0)
+            # returns obj_points, rel_points, edge_indices... from dataset_SGPN and util_data
+            self.dataset_train.__getitem__(0)           # self.dataset_train[0]
             self.w_cls_obj=self.w_cls_rel=None
             if self.config.WEIGHTING:
                 self.w_cls_obj=self.dataset_train.w_cls_obj
                 self.w_cls_rel=self.dataset_train.w_cls_rel
-                
-        if config.MODE  == 'train' or config.MODE  == 'trace':
+
+        # if config.MODE  == 'train' or config.MODE  == 'trace':
+        if config.MODE == 'train':
             if config.VERBOSE: print('build valid dataset')
             self.dataset_valid = build_dataset(self.config, split_type='validation_scans', shuffle_objs=False,
                                       multi_rel_outputs=mconfig.multi_rel_outputs,
                                       use_rgb=mconfig.USE_RGB,
                                       use_normal=mconfig.USE_NORMAL)
-            num_obj_class = len(self.dataset_valid.classNames)
-            num_rel_class = len(self.dataset_valid.relationNames)
-            dataset = self.dataset_valid
+            # num_obj_class = len(self.dataset_valid.classNames)
+            # num_rel_class = len(self.dataset_valid.relationNames)
+            # dataset = self.dataset_valid
 
         # try:
         if config.VERBOSE: print('build test dataset')
@@ -72,9 +74,9 @@ class SGFN():
             # raise NotImplementedError('not yet cleaned.')
             self.model = SGPNModel(config, self.model_name, num_obj_class, num_rel_class).to(config.DEVICE)
         
-        self.samples_path = os.path.join(config.PATH, self.model_name, 'samples')
+        # self.samples_path = os.path.join(config.PATH, self.model_name, 'samples')
         self.results_path = os.path.join(config.PATH, self.model_name, 'results')
-        self.trace_path = os.path.join(config.PATH, self.model_name, 'traced')
+        # self.trace_path = os.path.join(config.PATH, self.model_name, 'traced')
         
         if config.MODE == 'train' or config.MODE == 'eval':
             pth_log = os.path.join(config.PATH, "logs", self.model_name)
@@ -594,7 +596,7 @@ class SGFN():
             self.writter.add_embedding(tmp,metadata=names,tag=self.model_name+'_'+name, global_step=self.model.iteration)
 
 
-    def trace(self):
+    '''def trace(self):
         op_t.create_dir(self.trace_path)
         args = self.model.trace(self.trace_path)
         with open(os.path.join(self.trace_path, 'classes.txt'), 'w') as f:
@@ -610,7 +612,7 @@ class SGFN():
         with open(os.path.join(self.trace_path, 'args.json'), 'w') as f:
             args['label_type'] = self.dataset_valid.label_type
             json.dump(args, f, indent=2)
-        pass
+        pass'''
 
 
 if __name__ == '__main__':

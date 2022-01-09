@@ -8,13 +8,13 @@ from torch_geometric.nn.conv import MessagePassing
 
 
 # put a text in a list, like the same functon in utils.util.py
-def read_txt_to_list(file):
+'''def read_txt_to_list(file):
     output = [] 
     with open(file, 'r') as f: 
         for line in f: 
             entry = line.rstrip().lower() 
             output.append(entry) 
-    return output
+    return output'''
 
 
 def rotation_matrix(axis, theta):
@@ -285,7 +285,7 @@ def check(x,y):
     [np.testing.assert_allclose(x[i].flatten(), y[i].flatten(), rtol=1e-03, atol=1e-05) for i in range(len(x))]
         
 
-def export(model:torch.nn.Module, inputs:list,pth:str, input_names:list, output_names:list, dynamic_axes:dict):
+'''def export(model:torch.nn.Module, inputs:list,pth:str, input_names:list, output_names:list, dynamic_axes:dict):
     import onnxruntime as ort
     inputs = inputs if isinstance(inputs, list) or isinstance(inputs, tuple) else [inputs]
     torch.onnx.export(model = model, args = tuple(inputs), f=pth,
@@ -305,7 +305,7 @@ def export(model:torch.nn.Module, inputs:list,pth:str, input_names:list, output_
         x = model(*inputs)
         ins = {input_names[i]: inputs[i].numpy() for i in range(len(inputs))}
         y = sess.run(None, ins)
-        check(x,y)
+        check(x,y)'''
 
 
 def get_tensorboard_logs(pth_log):

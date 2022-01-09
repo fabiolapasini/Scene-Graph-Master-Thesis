@@ -15,14 +15,14 @@ import op_utils as op_t
 # TRIP:
 from src.network_TripletGCN import TripletGCNModel          # Johana Wald / J&J implementation with MS
 # EAN:
-from src.network_GNN import GraphEdgeAttenNetworkLayers     # GAT Shun Cheng-Wu implementation
+from src.network_GAT import GraphEdgeAttenNetworkLayers     # GAT Shun Cheng-Wu implementation
 # EAN_ms
-from src.network_GNN_ms import GEAN_ms                          # GAT with Message Passing class from Pytorch Geometric
+from src.network_GAT_ms import GEAN_ms                          # GAT with Message Passing class from Pytorch Geometric
+# EXP
+from src.network_GCN import GCNnet           # no Gat yes MS Shun Cheng-Wu way to deal with edges, Johana input
 
 # EXP_trip:
 # from src.experiments_TripletGCN import TripletGCNModel_1    # some experiments on J&J and Johana nets
-# EXP
-# from src.experiments_network_GNN_mp import GCNnet           # no Gat yes MS Shun Cheng-Wu way to deal with edges, Johana input
 # EXP_2
 # from src.experiments_network_GNN import GraphEdgeAttenNetworkLayers_           # no Gat no MS Shun Cheng-Wu way to deal with edges
 
@@ -94,13 +94,13 @@ class SGPNModel(BaseModel):
                                 self.mconfig.NUM_HEADS,
                                 self.mconfig.GCN_AGGR)
 
-        ''' elif mconfig.GCN_TYPE == "EXP":
+        elif mconfig.GCN_TYPE == "EXP":
             models['gcn'] = GCNnet(num_layers=mconfig.N_LAYERS,
                                    dim_node=mconfig.point_feature_size,
                                    dim_edge=mconfig.edge_feature_size,
                                    dim_hidden=mconfig.gcn_hidden_feature_size)
         
-        elif mconfig.GCN_TYPE == "EXP_trip":
+        '''elif mconfig.GCN_TYPE == "EXP_trip":
             models['gcn'] = TripletGCNModel_1(num_layers=mconfig.N_LAYERS,
                                    dim_node=mconfig.point_feature_size,
                                    dim_edge=mconfig.edge_feature_size,
@@ -119,21 +119,25 @@ class SGPNModel(BaseModel):
 
 
         # node feature classifier        
-        models['obj_predictor'] = PointNetCls(num_class, in_size=mconfig.point_feature_size, batch_norm=with_bn, drop_out=True)
-        
+        models['obj_predictor'] = PointNetCls(
+                            num_class,
+                            in_size=mconfig.point_feature_size,
+                            batch_norm=with_bn,
+                            drop_out=True)
+
         if mconfig.multi_rel_outputs:
             print("multi_rel_outputs")
             models['rel_predictor'] = PointNetRelClsMulti(
-                num_rel, 
-                in_size=mconfig.edge_feature_size, 
-                batch_norm=with_bn,
-                drop_out=True)
+                            num_rel,
+                            in_size=mconfig.edge_feature_size,
+                            batch_norm=with_bn,
+                            drop_out=True)
         else:
-            models['rel(name, op_t.pytorch_count_params(model))_predictor'] = PointNetRelCls(
-                num_rel, 
-                in_size=mconfig.edge_feature_size, 
-                batch_norm=with_bn,
-                drop_out=True)
+            models['rel_predictor'] = PointNetRelCls(
+                            num_rel,
+                            in_size=mconfig.edge_feature_size,
+                            batch_norm=with_bn,
+                            drop_out=True)
             
         params = list()
         print('==trainable parameters==')
@@ -170,8 +174,8 @@ class SGPNModel(BaseModel):
                 gcn_obj_feature, gcn_rel_feature, probs = self.gcn(obj_feature, rel_feature, edges)
             elif self.mconfig.GCN_TYPE == 'EAN_ms':
                 gcn_obj_feature, gcn_rel_feature, probs = self.gcn(obj_feature, rel_feature, edges)
-            '''elif self.mconfig.GCN_TYPE == 'EXP':
-                gcn_obj_feature, gcn_rel_feature = self.gcn(obj_feature, rel_feature, edges)'''
+            elif self.mconfig.GCN_TYPE == 'EXP':
+                gcn_obj_feature, gcn_rel_feature = self.gcn(obj_feature, rel_feature, edges)
 
         ###########################################################################################
             

@@ -180,7 +180,7 @@ class PointNetfeat(BaseNetwork):
                 return torch.cat([x, pointfeat], 1)
             return torch.cat([x, pointfeat], 1), trans, trans_feat
 
-    def trace(self, pth = './tmp',name_prefix=''):
+    '''def trace(self, pth = './tmp',name_prefix=''):
         import os
         x = torch.rand(1, self.point_size,512)
         names_i = ['x']
@@ -197,7 +197,7 @@ class PointNetfeat(BaseNetwork):
         names['model_'+name]['path'] = name
         names['model_'+name]['input']=names_i
         names['model_'+name]['output']=names_o
-        return names
+        return names'''
         
 
 class PointNetCls(BaseNetwork):
@@ -238,7 +238,7 @@ class PointNetCls(BaseNetwork):
         x = self.fc3(x)
         return F.log_softmax(x, dim=1)
 
-    def trace(self, pth = './tmp',name_prefix=''):
+    '''def trace(self, pth = './tmp',name_prefix=''):
         import os
         x = torch.rand(1, self.in_size)
         names_i = ['x']
@@ -253,12 +253,11 @@ class PointNetCls(BaseNetwork):
         names['model_'+name]['path'] = name
         names['model_'+name]['input']=names_i
         names['model_'+name]['output']=names_o
-        return names
+        return names'''
 
 
 class PointNetRelCls(BaseNetwork):
-    def __init__(self, k=2, in_size=1024, batch_norm = True, drop_out = True,
-                 init_weights=True):
+    def __init__(self, k=2, in_size=1024, batch_norm = True, drop_out = True, init_weights=True):
         super(PointNetRelCls, self).__init__()
         self.name = 'pnetcls'
         self.in_size=in_size
@@ -292,7 +291,7 @@ class PointNetRelCls(BaseNetwork):
         x = self.fc3(x)
         return F.log_softmax(x, dim=1) #, trans, trans_feat
 
-    def trace(self, pth = './tmp',name_prefix=''):
+    '''def trace(self, pth = './tmp',name_prefix=''):
         import os
         x = torch.rand(1, self.in_size)
         names_i = ['x']
@@ -307,12 +306,11 @@ class PointNetRelCls(BaseNetwork):
         names['model_'+name]['path'] = name
         names['model_'+name]['input']=names_i
         names['model_'+name]['output']=names_o
-        return names
+        return names'''
 
 
 class PointNetRelClsMulti(BaseNetwork):
-    def __init__(self, k=2, in_size=1024, batch_norm = True, drop_out = True,
-                 init_weights=True):
+    def __init__(self, k=2, in_size=1024, batch_norm = True, drop_out = True, init_weights=True):
         super(PointNetRelClsMulti, self).__init__()
         self.name = 'pnetcls'
         self.in_size=in_size
@@ -348,7 +346,7 @@ class PointNetRelClsMulti(BaseNetwork):
         x = torch.sigmoid(x)
         return x
         
-    def trace(self, pth = './tmp',name_prefix=''):
+    '''def trace(self, pth = './tmp',name_prefix=''):
         import os
         x = torch.rand(1, self.in_size)
         names_i = ['x']
@@ -363,17 +361,17 @@ class PointNetRelClsMulti(BaseNetwork):
         names['model_'+name]['path'] = name
         names['model_'+name]['input']=names_i
         names['model_'+name]['output']=names_o
-        return names
+        return names'''
 
 
-def feature_transform_regularizer(trans):
+'''def feature_transform_regularizer(trans):
     d = trans.size()[1]
     batchsize = trans.size()[0]
     I = torch.eye(d)[None, :, :]
     if trans.is_cuda:
         I = I.cuda()
     loss = torch.mean(torch.norm(torch.bmm(trans, trans.transpose(2,1)) - I, dim=(1,2)))
-    return loss
+    return loss'''
 
 
 if __name__ == '__main__':
