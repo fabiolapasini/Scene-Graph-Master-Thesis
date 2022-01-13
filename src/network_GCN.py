@@ -85,7 +85,6 @@ from torch_geometric.nn import GCNConv, GINConv
 from torch_geometric.utils import add_self_loops
 from torch_geometric.nn import MessagePassing
 import torch.nn.functional as F
-from ogb.graphproppred.mol_encoder import AtomEncoder,BondEncoder
 from torch_geometric.utils import degree
 
 
@@ -182,15 +181,15 @@ class GCNnet(BaseNetwork):
         for _ in range(self.num_layers):
             self.gconvs.append(GCN_(**gconv_kwargs))
 
-        self.node_nn2 = GCNConv(2*dim_node, dim_node, add_self_loops=False)
-        # self.node_nn2 = GCNConv_2(2*dim_node, dim_node)
+        # self.node_nn2 = GCNConv(2*dim_node, dim_node, add_self_loops=False)
+        self.node_nn2 = GCNConv_2(2*dim_node, dim_node)
 
     def forward(self, node_feature, edge_feature, edges_indices):
         for i in range(self.num_layers):
             gconv = self.gconvs[i]
             node_feature, edge_feature = gconv(node_feature, edge_feature, edges_indices)
-            node_feature = self.node_nn2(node_feature, edges_indices)
-            # node_feature = self.node_nn2(node_feature, edge_feature, edges_indices)           # for GCNConv_2
+            # node_feature = self.node_nn2(node_feature, edges_indices)
+            node_feature = self.node_nn2(node_feature, edge_feature, edges_indices)           # for GCNConv_2
             node_feature = functional.relu(node_feature)
 
             if i < (self.num_layers - 1):
