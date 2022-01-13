@@ -8,11 +8,7 @@ from shutil import copyfile
 from plyfile import PlyData
 import multiprocessing as mp
 
-import platform
-if (platform.system() == "Windows"):
-    from utils import define_win as define
-elif (platform.system() != "Windows"):
-    from utils import define as define
+from utils import define as define
 
 try:
     from sets import Set
@@ -98,7 +94,7 @@ def main():
     rescan2ref = read_transform_matrix()
 
     result = None
-    rescan_file_name = define.FILE_PATH + '/rescans.txt'
+    rescan_file_name = define.DATA_PATH + 'rescans.txt'
     if os.path.exists(rescan_file_name):
         counter = 0
         process_text = list()
@@ -134,7 +130,7 @@ def main():
         Warning('cannot find rescan file at',rescan_file_name)
     
     result = None
-    reference_file_name = define.FILE_PATH + '/references.txt'
+    reference_file_name = define.DATA_PATH + 'references.txt'
     if os.path.exists(reference_file_name):
         counter = 0
         process_text = list()

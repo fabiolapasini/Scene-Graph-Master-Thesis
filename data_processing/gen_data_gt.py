@@ -18,10 +18,9 @@ from utils import define as define
 ##########################################################################
 
 # Ubuntu:
-    # python3 gen_data_gt.py --pth_out '../Data' --target_scan '../3RScan/scans_name.txt'
-
-# this code creates a folder ..\\Data with inside: args.json  relationships_train.json classes.txt  relationships.txt
-# select the -- validation to create all the files needed
+    # python gen_data_gt.py --type train --pth_out '../gen_data' --target_scan ../3RScan/train_scans.txt
+    # python gen_data_gt.py --type validation --pth_out '../gen_data' --target_scan ../3RScan/validation_scans.txt
+    # python gen_data_gt.py --type test --pth_out '../gen_data' --target_scan ../3RScan/train_scans.txt
 
 def Parser(add_help=True):
     parser = argparse.ArgumentParser(description='Process some integers.', formatter_class = argparse.ArgumentDefaultsHelpFormatter, add_help=add_help)
@@ -52,7 +51,7 @@ def Parser(add_help=True):
 
 name_same_segment = 'same part'
 
-def generate_groups(cloud:trimesh.points.PointCloud, distance:float=1, bbox_distance:float=0.75, min_seg_per_group = 5, segs_neighbors=None): 
+'''def generate_groups(cloud:trimesh.points.PointCloud, distance:float=1, bbox_distance:float=0.75, min_seg_per_group = 5, segs_neighbors=None): 
 # def generate_groups(cloud, distance, bbox_distance, min_seg_per_group = 5, segs_neighbors=None):
     points = np.array(cloud.vertices.tolist())
     segments = cloud.metadata['ply_raw']['vertex']['data']['label'].flatten()
@@ -85,10 +84,10 @@ def generate_groups(cloud:trimesh.points.PointCloud, distance:float=1, bbox_dist
         for index in seg_ids:
             seg_colors[index] = util.color_rgb(util.rand_24_bit())
         counter=0
-    '''Get segment groups'''
+    # Get segment groups
     seg_group = list()
     
-    ''' Building Box Method '''  
+    # Building Box Method
     from enum import Enum
     class SAMPLE_METHODS(Enum):
         BBOX=1
@@ -115,7 +114,7 @@ def generate_groups(cloud:trimesh.points.PointCloud, distance:float=1, bbox_dist
             seg_group.append(segment_ids.tolist())
             
             if debug:
-                '''Visualize the segments involved'''
+                # Visualize the segments involved
                 cloud.visual.vertex_colors = [0,0,0,255]
                 for segment_id in segment_ids:
                     segment_indices = np.where(segments == segment_id )[0]
@@ -166,7 +165,7 @@ def generate_groups(cloud:trimesh.points.PointCloud, distance:float=1, bbox_dist
             seg_group.append(neighbors)
             
             if debug:
-                '''Visualize the segments involved'''
+                # Visualize the segments involved
                 cloud.visual.vertex_colors = [0,0,0,255]
                 for segment_id in neighbors:
                     segment_indices = np.where(segments == segment_id )[0]
@@ -174,7 +173,7 @@ def generate_groups(cloud:trimesh.points.PointCloud, distance:float=1, bbox_dist
                         cloud.visual.vertex_colors[idx][:3] = seg_colors[segment_id]
                 cloud.export('tmp'+str(counter)+'.ply')
                 counter+=1
-    return seg_group
+    return seg_group'''
 
 
 def process(pth_3RScan, scan_id, target_relationships:list, gt_relationships:dict=None, verbose=False,split_scene=True) -> list:
@@ -193,9 +192,10 @@ def process(pth_3RScan, scan_id, target_relationships:list, gt_relationships:dic
     segment_ids = segment_ids[segment_ids!=0]
 
     if split_scene:
-        seg_groups = generate_groups(cloud_gt, args.radius_seed, args.radius_receptive, args.min_segs, segs_neighbors=segs_neighbors)
-        if args.verbose:
-            print('final segGroups:',len(seg_groups))
+        print("This is not my case")
+        # seg_groups = generate_groups(cloud_gt, args.radius_seed, args.radius_receptive, args.min_segs, segs_neighbors=segs_neighbors)
+        # if args.verbose:
+        #    print('final segGroups:',len(seg_groups))
     else:    
         seg_groups = None
 
@@ -268,7 +268,7 @@ def gen_relationship(scan_id:str,split:int, map_segment_pd_2_gt:dict,instance2la
     split_relationships = list()
     ''' Inherit relationships from ground truth segments '''
     if gt_relationships is not None:
-        relationships_names = util.read_relationships(os.path.join(define.FILE_PATH, args.relation + ".txt"))
+        relationships_names = util.read_relationships(os.path.join(define.TreeDSSG_PATH_sub, args.relation + ".txt"))
         for rel in gt_relationships:
             id_src = rel[0]
             id_tar = rel[1]
@@ -301,8 +301,8 @@ if __name__ == '__main__':
     
     ''' Map label to 160'''
     label_names = sorted(util.read_classes(define.CLASS160_FILE))
-    # target_relationships = sorted(util.read_classes(define.RELEASE_PATH + '/classes160.txt'))
-    target_relationships = ['supported by', 'attached to','standing on','hanging on','connected to','part of','build in']
+    target_relationships = sorted(util.read_classes(define.TreeDSSG_PATH_sub + 'relationships.txt'))
+    # target_relationships = ['supported by', 'attached to','standing on','hanging on','connected to','part of','build in']
     classes_json = list()
     for name in label_names:
         if name == '-':continue
@@ -326,7 +326,7 @@ if __name__ == '__main__':
     relationships_new["scans"] = list()
     relationships_new['neighbors'] = dict()
     counter= 0
-    with open(os.path.join(define.FILE_PATH + args.relation + ".json"), "r") as read_file:
+    with open(os.path.join(define.TreeDSSG_PATH_sub + args.relation + ".json"), "r") as read_file:
         data = json.load(read_file)
         for s in tqdm(data["scans"]):
         # for s in data["scans"]:

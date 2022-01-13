@@ -1,10 +1,11 @@
-ROOT_PATH = 'C:\\Users\\fabio\\Documents\GitHub\\Scene-Graph-Master-Thesis\\' #'/path/to/repo/3DSSG/'
-DATA_PATH = 'C:\\Users\\fabio\\Documents\GitHub\\Scene-Graph-Master-Thesis\\3RScan\\' #'/path/to/3RScan/'
-FILE_PATH = ROOT_PATH+'files\\'
+ROOT_PATH = 'C:\\Users\\fabio\\Desktop\\Scene-Graph-Master-Thesis\\' #'/path/to/repo/3DSSG/'
+DATA_PATH = 'C:\\Users\\fabio\\Desktop\\Scene-Graph-Master-Thesis\\3RScan\\' #'/path/to/3RScan/'
+TreeDSSG_PATH_sub = 'C:\\Users\\fabio\\Desktop\\Scene-Graph-Master-Thesis\\3DSSG\\3DSSG_subset\\'
+# TreeDSSG_PATH = 'C:\\Users\\fabio\Desktop\\Scene-Graph-Master-Thesis\\3DSSG\\'
 
-Scan3RJson_PATH = FILE_PATH+'3RScan.json'
-CLASS160_FILE = FILE_PATH+'classes160.txt'
-LABEL_MAPPING_FILE = FILE_PATH+'3RScan.v2 Semantic Classes - Mapping.csv'
+Scan3RJson_PATH = DATA_PATH+'3RScan.json'
+CLASS160_FILE = TreeDSSG_PATH_sub+'classes160.txt'
+LABEL_MAPPING_FILE = DATA_PATH+'3RScan.v2 Semantic Classes - Mapping.csv'
 
 # 3RScan file names
 LABEL_FILE_NAME_RAW = 'labels.instances.annotated.v2.ply'

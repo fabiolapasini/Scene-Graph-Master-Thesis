@@ -22,12 +22,7 @@ import numpy as np
 from collections import defaultdict
 from utils import util
 
-
-import platform
-if (platform.system() == "Windows"):
-    from utils import define_win as define
-elif (platform.system() != "Windows"):
-    from utils import define as define
+from utils import define as define
 
 
 def Parser():
@@ -150,7 +145,8 @@ if __name__ == '__main__':
 
     if args.type == '3RScan':
         if args.with_rescan:
-            train_scans, validation_scans, test_scans = gen_splits(define.Scan3RJson_PATH,args.p)
+            print(" ")
+            # train_scans, validation_scans, test_scans = gen_splits(define.Scan3RJson_PATH,args.p)
         else:
             # my case
             train_scans,validation_scans,test_scans = gen_splits_norescan(define.Scan3RJson_PATH,args.p)
