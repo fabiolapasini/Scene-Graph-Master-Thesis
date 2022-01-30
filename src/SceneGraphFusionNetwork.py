@@ -124,6 +124,9 @@ class SGFN():
 
 
     def train(self):
+        import time
+        start = time.time()
+
         # create data loader 
         drop_last = True
         
@@ -135,6 +138,10 @@ class SGFN():
             drop_last=drop_last,
             shuffle=True,
         )
+        # print("#######################")
+        # print(len(self.dataset_train))
+
+        
         
         epoch = 1
         keep_training = True
@@ -184,7 +191,18 @@ class SGFN():
         eva_tool_prob = [util_eva.EvaPairWeight(self.dataset_valid.classNames) for i in range(self.model.mconfig.N_LAYERS)]
         while(keep_training):
             print('\n\nTraining epoch: %d' % epoch)
-            for items in loader:
+
+            #  floating point number expressed in seconds
+            if epoch == 1:
+                with open("time_"+str(self.config.DEVICE)+".csv", 'w') as f:
+                    f.write("epoch,time\n")
+
+            if epoch % 10 == 0:
+                with open("time_"+str(self.config.DEVICE)+".csv", 'a') as f:
+                    elapsed_time = time.time() - start
+                    f.write(f"{epoch},{elapsed_time}\n")
+
+            for i, items in enumerate(loader, 0):
                 self.model.train()
                 
                 scan_id = items[0][0]

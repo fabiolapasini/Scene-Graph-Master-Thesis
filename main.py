@@ -68,6 +68,8 @@ def main():
         config.DEVICE = torch.device("cuda")
     else:
         config.DEVICE = torch.device("cpu")
+
+    print(f"Using {config.DEVICE}")
         
     if config.MODE == 'trace':
         config.DEVICE = torch.device("cpu")

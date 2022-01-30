@@ -15,7 +15,7 @@ from src.network_util import build_mlp
 
 class TripletGCN(MessagePassing):
     """ A single layer of scene graph convolution """
-    def __init__(self, dim_node, dim_edge, dim_hidden, aggr='add', use_bn=True):
+    def __init__(self, dim_node, dim_edge, dim_hidden, aggr='mean', use_bn=True):
         super().__init__(aggr=aggr)
         self.dim_node = dim_node
         self.dim_edge = dim_edge
@@ -28,8 +28,9 @@ class TripletGCN(MessagePassing):
 
     def forward(self, x, edge_feature, edge_index):
         gcn_x, gcn_e = self.propagate(edge_index, x=x, edge_feature=edge_feature)
-        x = self.nn2(gcn_x)
-        return x, gcn_e
+        gcn_x = x + self.nn2(gcn_x)
+        # x = self.nn2(gcn_x)
+        return gcn_x, gcn_e
 
     def message(self, x_i, x_j, edge_feature):
         x = torch.cat([x_i, edge_feature, x_j], dim=1)
