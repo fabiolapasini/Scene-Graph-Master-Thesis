@@ -1,5 +1,4 @@
 .idea/
-3RScan/
 
 # ignore large files of output
 TRIP_train.out
