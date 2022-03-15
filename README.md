@@ -2,7 +2,6 @@
 
 Master's Thesis of Fabiola Pasini
 
-University of Parma / TUM
+University of Parma / Technical University of Munich
 
-https://docs.google.com/presentation/d/15d0ITt-Nzi0GwAF0GGQ8Noz8sIwLjqvWbmNXiqGJ92I/edit?usp=sharing
 
