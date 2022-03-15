@@ -15,6 +15,7 @@ from torch.nn import Sequential, Linear, ReLU, BatchNorm1d
 
 
 # COMMON ARCHITECTURE WITHOUT FOR LOOPS ###########################################
+'''
 class TripletGCN_0(MessagePassing):
     """ A single layer of scene graph convolution """
 
@@ -68,7 +69,7 @@ class TripletGCNModel_0(BaseNetwork):
         edge_feature = functional.relu(edge_feature)
         node_feature, edge_feature = self.conv2(node_feature, edge_feature, edges_indices)
         return node_feature, edge_feature
-
+'''
 # END #############################################################################
 
 
@@ -109,17 +110,18 @@ class GraphTripleConv(nn.Module):
         if output_dim is None:
             output_dim = input_dim
 
-        self.input_dim = input_dim
-        self.output_dim = output_dim
+        self.input_dim = input_dim          # dim_node
+        self.output_dim = output_dim        # dim_edge
         self.hidden_dim = hidden_dim
 
         assert pooling in ['sum', 'avg'], 'Invalid pooling "%s"' % pooling
         self.pooling = pooling
 
         # first network g : Linear(3Din -> H) & Linear(H -> 2H + Dout)
-        net1_layers = [3 * input_dim, hidden_dim, 2 * hidden_dim + output_dim]
+        net1_layers = [input_dim*2+output_dim, hidden_dim, hidden_dim*2+output_dim] # [3 * input_dim, hidden_dim, 2 * hidden_dim + output_dim]
         net1_layers = [l for l in net1_layers if l is not None]
         self.net1 = build_mlp_2(net1_layers, batch_norm=mlp_normalization)
+        print (self.net1)
         self.net1.apply(_init_weights)
 
         # second network g : Linear(H -> H) & Linear(H -> Dout)
@@ -127,7 +129,13 @@ class GraphTripleConv(nn.Module):
         self.net2 = build_mlp_2(net2_layers, batch_norm=mlp_normalization)
         self.net2.apply(_init_weights)
 
-    def forward(self, obj_vecs, pred_vecs, edges):
+    def forward(self, node_feature, edge_feature, edges_indices):
+
+        '''print(node_feature.size())
+        print(edge_feature.size())
+        print(edges_indices.size())
+        print("\n")'''
+
         """
         Inputs:
         - obj_vecs: FloatTensor of shape (O, D) giving vectors for all objects
@@ -139,44 +147,67 @@ class GraphTripleConv(nn.Module):
         - new_obj_vecs: FloatTensor of shape (O, D) giving new vectors for objects
         - new_pred_vecs: FloatTensor of shape (T, D) giving new vectors for predicates
         """
-        dtype, device = obj_vecs.dtype, obj_vecs.device
-        O, T = obj_vecs.size(0), pred_vecs.size(0)
+        dtype, device = node_feature.dtype, node_feature.device
+        O, T = node_feature.size(0), edge_feature.size(0)
         Din, H, Dout = self.input_dim, self.hidden_dim, self.output_dim
 
         # Break apart indices for subjects and objects; these have shape (T,)
-        s_idx = edges[:, 0].contiguous()
-        o_idx = edges[:, 1].contiguous()
+        s_idx = edges_indices[:, 0].contiguous()
+        o_idx = edges_indices[:, 1].contiguous()
 
         # Get current vectors for subjects and objects; these have shape (T, Din)
-        cur_s_vecs = obj_vecs[s_idx]
-        cur_o_vecs = obj_vecs[o_idx]
+        '''cur_s_vecs = node_feature[s_idx]
+        cur_o_vecs = node_feature[o_idx]'''
+
+        cur_s_vecs = node_feature[edges_indices[0]]
+        cur_o_vecs = node_feature[edges_indices[1]]
+
+        # torch.Size([420, 256])
+        # print(cur_s_vecs.size())
+        # print(edge_feature.size(), " ", type(edge_feature))
+        # print(cur_o_vecs.size())
 
         # Get current vectors for triples; shape is (T, 3 * Din)
         # Pass through net1 to get new triple vecs; shape is (T, 2 * H + Dout)
-        cur_t_vecs = torch.cat([cur_s_vecs, pred_vecs, cur_o_vecs], dim=1)      # CONCATENATE
+        cur_t_vecs = torch.cat([cur_s_vecs, edge_feature, cur_o_vecs], dim=1)      # CONCATENATE
         new_t_vecs = self.net1(cur_t_vecs)
+        '''print("\n")
+        print(new_t_vecs.size()) '''           # torch.Size([420, 1280])
 
         # Break apart into new s, p, and o vecs; s and o vecs have shape (T, H) and p vecs have shape (T, Dout)
         new_s_vecs = new_t_vecs[:, :H]                              # output of the function gs
         new_p_vecs = new_t_vecs[:, H:(H + Dout)]                    # output of the function gp
+        # new_o_vecs = new_t_vecs[:, (H + Dout):]
         new_o_vecs = new_t_vecs[:, (H + Dout):(2 * H + Dout)]       # output of the function go
+
+        # print(new_s_vecs.size())            # torch.Size([420, 512])
+        # print(new_p_vecs.size())
+        # print(new_o_vecs.size())            # torch.Size([420, 512])
 
         """
         the output of the gp function gives the output of the edge (Dout)
-        
         the output of the gs and go give the output for the first node and the second one,
         those need to be polled (avg)
         """
 
         # Allocate space for pooled object vectors of shape (O, H)
         pooled_obj_vecs = torch.zeros(O, H, dtype=dtype, device=device)
+        # print(pooled_obj_vecs.size())                       # torch.Size([28, 512])
 
         # Use scatter_add to sum vectors for objects that appear in multiple triples;
         # we first need to expand the indices to have shape (T, D)
-        s_idx_exp = s_idx.view(-1, 1).expand_as(new_s_vecs)
+        '''s_idx_exp = s_idx.view(-1, 1).expand_as(new_s_vecs)
         o_idx_exp = o_idx.view(-1, 1).expand_as(new_o_vecs)
         pooled_obj_vecs = pooled_obj_vecs.scatter_add(0, s_idx_exp, new_s_vecs)
+        pooled_obj_vecs = pooled_obj_vecs.scatter_add(0, o_idx_exp, new_o_vecs)'''
+
+        s_idx_exp = edges_indices[0].view(-1, 1).expand_as(new_s_vecs)
+        o_idx_exp = edges_indices[1].view(-1, 1).expand_as(new_o_vecs)
+        pooled_obj_vecs = pooled_obj_vecs.scatter_add(0, s_idx_exp, new_s_vecs)
         pooled_obj_vecs = pooled_obj_vecs.scatter_add(0, o_idx_exp, new_o_vecs)
+
+        # pooled_obj_vecs = pooled_obj_vecs.scatter_add(0, edges_indices[0], new_s_vecs)
+        # pooled_obj_vecs = pooled_obj_vecs.scatter_add(0, edges_indices[1], new_o_vecs)
 
         # symmetric pooling function
         if self.pooling == 'avg':
@@ -218,16 +249,22 @@ class GraphTripleConvNet(nn.Module):
         for _ in range(self.num_layers):
             self.gconvs.append(GraphTripleConv(**gconv_kwargs))
 
-    def forward(self, obj_vecs, pred_vecs, edges):
+    def forward(self, node_feature, edge_feature, edges_indices):
+
+        # print("node_feature size: ", node_feature.size())              # node_feature shape:  torch.Size([28, 256])
+        # print("edge_feature size: ", edge_feature.size())              # edge_feature shape:  torch.Size([420, 256])
+        # print("edges size: ", edges_indices.size())                    # edges shape:  torch.Size([2, 420])
+
         for i in range(self.num_layers):
             gconv = self.gconvs[i]
-            obj_vecs, pred_vecs = gconv(obj_vecs, pred_vecs, edges)
-        return obj_vecs, pred_vecs
+            node_feature, edge_feature = gconv(node_feature, edge_feature, edges_indices)
+        return node_feature, edge_feature
 
 # END #############################################################################
 
 
 # SOMETHING ###########################################
+'''
 class TripletGCN_1(MessagePassing):
     def __init__(self, dim_node, dim_edge, dim_hidden, aggr='add'):
         super().__init__(aggr=aggr)
@@ -289,7 +326,7 @@ class TripletGCNModel_1(BaseNetwork):
         edge_feature = functional.relu(edge_feature)
         node_feature, edge_feature = self.conv2(node_feature, edge_feature, edges_indices)
         return node_feature, edge_feature
-
+'''
 # END #############################################################################
     
     

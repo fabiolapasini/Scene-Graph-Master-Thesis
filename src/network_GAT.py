@@ -53,12 +53,12 @@ class MultiHeadedEdgeAttention(torch.nn.Module):
         assert dim_edge % num_heads == 0
         assert dim_atten % num_heads == 0
         self.name = 'MultiHeadedEdgeAttention'
-        self.dim_node=dim_node
-        self.dim_edge=dim_edge
-        self.d_n = d_n = dim_node // num_heads
-        self.d_e = d_e = dim_edge // num_heads
-        self.d_o = d_o = dim_atten // num_heads
-        self.num_heads = num_heads
+        self.dim_node=dim_node                              # 256
+        self.dim_edge=dim_edge                              # 512
+        self.d_n = d_n = dim_node // num_heads              # 64
+        self.d_e = d_e = dim_edge // num_heads              # 128
+        self.d_o = d_o = dim_atten // num_heads             # 64
+        self.num_heads = num_heads                          # 4
         self.use_edge = use_edge
         # creation o MLP ge()    ?? node_feature = 512, edge_feature = 256 ??  -> paper: mlp(1280, 768, 256)
         self.nn_edge = build_mlp([dim_node*2+dim_edge, dim_node+dim_edge, dim_edge], batch_norm= use_bn, final_nonlinearity=False)        # my: mlp(768, 512, 256)
@@ -84,15 +84,16 @@ class MultiHeadedEdgeAttention(torch.nn.Module):
             self.proj_value = build_mlp([dim_node,dim_atten])
         else:
             raise NotImplementedError('')
-        
+
+    # soggetto, relazione, oggetto
     def forward(self, query, edge, value):
-        batch_dim = query.size(0)
+        batch_dim = query.size(0)                               # 420
         edge_feature = self.nn_edge( torch.cat([query,edge,value],dim=1) ) #.view(b, -1, 1)
 
         # Attention function
         if self.attention == 'fat':
             # The key, query, and value are computed as linear projections (and reshape) of deep features of the graph neural network
-            value = self.proj_value(value)
+            value = self.proj_value(value)                                                      #
             query = self.proj_query(query).view(batch_dim, self.d_n, self.num_heads)
             edge = self.proj_edge(edge).view(batch_dim, self.d_e, self.num_heads)
             if self.use_edge:
@@ -145,13 +146,17 @@ class GraphEdgeAttenNetwork(BaseNetwork):
         else:
             raise NotImplementedError('')
 
-    def forward(self, x, edge_feature, edge_index):
+    def forward(self, x, edge_feature, edge_index):                                 # edge_feats: 420, 512    # edge_index:
         assert x.ndim == 2
         assert edge_feature.ndim == 2
-        x_i, x_j = self.index_get(x, edge_index)
+        x_i, x_j = self.index_get(x, edge_index)                                    # x_i: 420 x_j: 420
+
+        print("x size: ", x.size())                                                 # x size:  torch.Size([28, 256])
+        print("x_i size: ", x_i.size(), "x_j size: ", x_j.size())                   # x_i size:  torch.Size([420, 256]) x_j size:  torch.Size([420, 256])
+
         xx, gcn_edge_feature, prob = self.edgeatten(x_i,edge_feature,x_j)
         xx = self.index_aggr(xx,edge_index, dim_size = x.shape[0])
-        xx = self.prop(torch.cat([x,xx],dim=1))                                             # appling a MLP to the concatenation of the node and the neighbour
+        xx = self.prop(torch.cat([x,xx],dim=1))                                             # appling a MLP to the concatenation of the node and the updated node
         return xx, gcn_edge_feature, prob
     
     '''def trace(self, pth = './tmp', name_prefix=''):

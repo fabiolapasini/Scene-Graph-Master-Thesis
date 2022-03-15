@@ -11,7 +11,7 @@ import torch.utils.data as data
 import multiprocessing as mp
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-print("Running on", device)
+# print("Running on", device)
 
 import platform
 if (platform.system() == "Windows"):
@@ -22,21 +22,23 @@ elif (platform.system() != "Windows"):
     # print("Os: Ubuntu")
 
 
-def dataset_loading_3RScan(root:str, pth_selection:str,split:str,class_choice:list=None):    
+def dataset_loading_3RScan(root:str, pth_selection:str, split:str, class_choice:list=None):
     pth_catfile = os.path.join(pth_selection, 'classes.txt')
+    util.check_file_exist(pth_catfile)
     classNames = util.read_classes(pth_catfile)
-    
+
+    # here only a subset of all the relationship
     pth_relationship = os.path.join(pth_selection, 'relationships.txt')
     util.check_file_exist(pth_relationship)
     relationNames = util.read_relationships(pth_relationship)
     
     selected_scans=set()
     if split == 'train_scans' :
-        selected_scans = selected_scans.union(util.read_txt_to_list(os.path.join(pth_selection,'train_scans.txt')))
+        selected_scans = selected_scans.union(util.read_txt_to_list(os.path.join(pth_selection, 'train_scans.txt')))
     elif split == 'validation_scans':
-        selected_scans = selected_scans.union(util.read_txt_to_list(os.path.join(pth_selection,'validation_scans.txt')))
+        selected_scans = selected_scans.union(util.read_txt_to_list(os.path.join(pth_selection, 'validation_scans.txt')))
     elif split == 'test_scans':
-        selected_scans = selected_scans.union(util.read_txt_to_list(os.path.join(pth_selection,'test_scans.txt')))
+        selected_scans = selected_scans.union(util.read_txt_to_list(os.path.join(pth_selection, 'test_scans.txt')))
         # print("selected scans: \n")
         # print(len(selected_scans))    # 157 as th number of file in test_scans!
     else:
@@ -51,7 +53,7 @@ def dataset_loading_3RScan(root:str, pth_selection:str,split:str,class_choice:li
     data = dict()
     data['scans'] = data1['scans'] + data2['scans'] + data3['scans']
     data['neighbors'] = {**data1['neighbors'], **data2['neighbors'], **data3['neighbors']}
-    return classNames, relationNames, data, selected_scans
+    return  classNames, relationNames, data, selected_scans
 
 
 '''def gen_modelnet_id(root):
@@ -65,7 +67,7 @@ def dataset_loading_3RScan(root:str, pth_selection:str,split:str,class_choice:li
             f.write('{}\t{}\n'.format(classes[i], i))'''
             
             
-def load_mesh(path,label_file,use_rgb,use_normal):
+def load_mesh(path, label_file, use_rgb, use_normal):
     result=dict()
     if label_file == 'labels.instances.align.annotated.v2.ply' or label_file == 'labels.instances.align.annotated.ply':
         if use_rgb:
@@ -73,7 +75,7 @@ def load_mesh(path,label_file,use_rgb,use_normal):
         else:
             plydata = trimesh.load(os.path.join(path,label_file), process=False)
         # print(plydata)    # <trimesh.Trimesh(vertices.shape=(59970, 3), faces.shape=(90747, 3))>
-
+            
         points = np.array(plydata.vertices.tolist())
         instances = util_ply.read_labels(plydata).flatten()
         # print(instances)                # [12 12 12 ...  5  5  5]
@@ -122,14 +124,16 @@ class RIODatasetGraph(data.Dataset):
                  use_normal = False,
                  load_cache = False,
                  sample_in_runtime=True,
-                 for_eval = False,
+                 for_eval = False,          # for_eval = False,
                  max_edges = -1):
-        assert split in ['train_scans', 'validation_scans','test_scans']
+        assert split in ['train_scans', 'validation_scans', 'test_scans']
         self.config = config
         self.mconfig = config.dataset
-        
+
+        # file paths
         self.root = self.mconfig.root
         self.root_3rscan = define.DATA_PATH
+
         '''try:
             self.root_scannet = define.SCANNET_DATA_PATH
         except:
@@ -172,15 +176,16 @@ class RIODatasetGraph(data.Dataset):
                     # print("selected scans: \n")
                     # print("Lenght selected scans", len(selected_scans))
                     # print(selected_scans)
-                else:
+                '''else:
+                    # not my case
                     classNames = set(classNames).union(l_classNames)
                     relationNames= set(relationNames).union(l_relationNames)
                     data['scans'] = l_data['scans'] + data['scans']
                     data['neighbors'] = {**l_data['neighbors'], **data['neighbors']}
-                    selected_scans = selected_scans.union(l_selected_scans)
+                    selected_scans = selected_scans.union(l_selected_scans)'''
             classNames = list(classNames)
             relationNames = list(relationNames)
-        else:
+        '''else:
             with open(os.path.join(self.root,'args.json'), 'r') as f:
                 data = json.load(f)
                 self.label_type = data['label_type']
@@ -189,7 +194,7 @@ class RIODatasetGraph(data.Dataset):
             if self.mconfig.selection == "":
                 self.mconfig.selection = self.root
             classNames, relationNames, data, selected_scans = \
-                dataset_loading_3RScan(self.root, self.mconfig.selection, split)        
+                dataset_loading_3RScan(self.root, self.mconfig.selection, split)     '''
         
         self.relationNames = sorted(relationNames)
         self.classNames = sorted(classNames)
@@ -198,7 +203,7 @@ class RIODatasetGraph(data.Dataset):
             if 'none' not in self.relationNames:
                 self.relationNames.append('none')
                 
-        wobjs, wrels, o_obj_cls, o_rel_cls = compute_weight_occurrences.compute(self.classNames, self.relationNames, data,selected_scans, False)
+        wobjs, wrels, o_obj_cls, o_rel_cls = compute_weight_occurrences.compute(self.classNames, self.relationNames, data, selected_scans, False)
         self.w_cls_obj = torch.from_numpy(np.array(o_obj_cls)).float().to(self.config.DEVICE)
         self.w_cls_rel = torch.from_numpy(np.array(o_rel_cls)).float().to(self.config.DEVICE)
         self.w_cls_obj = torch.abs(1.0 / (torch.log(self.w_cls_obj)+1)) # +1 to prevent 1 /log(1) = inf
@@ -258,7 +263,7 @@ class RIODatasetGraph(data.Dataset):
     def __getitem__(self, index):
         scan_id = self.scans[index]
         scan_id_no_split = scan_id.rsplit('_',1)[0]
-        selected_instances = list(self.objs_json[scan_id].keys())
+        selected_instances = list( self.objs_json[scan_id].keys() )
         map_instance2labelName = self.objs_json[scan_id]
         
         if self.load_cache:
@@ -270,6 +275,9 @@ class RIODatasetGraph(data.Dataset):
                 path = os.path.join(self.root_3rscan, scan_id_no_split)
             data = load_mesh(path, self.mconfig.label_file, self.use_rgb, self.use_normal)
         points = data['points']
+        # print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        # print(type(points) ," ", points.shape)         # <class 'numpy.ndarray'>  (59970, 3)
+
         instances = data['instances']
 
         sample_num_nn=1
@@ -281,18 +289,18 @@ class RIODatasetGraph(data.Dataset):
 
         obj_points, rel_points, edge_indices, instance2mask, gt_rels, gt_class = \
             util_data.data_preparation(points, instances, selected_instances, 
-                         self.mconfig.num_points, self.mconfig.num_points_union,
-                         # use_rgb=self.use_rgb,use_normal=self.use_normal,
-                         for_train=True, instance2labelName=map_instance2labelName, 
-                         classNames=self.classNames,
-                         rel_json=self.relationship_json[scan_id], 
-                         relationships=self.relationNames,
-                         multi_rel_outputs=self.multi_rel_outputs,
-                         padding=0.2,num_max_rel=self.max_edges,
-                         shuffle_objs=self.shuffle_objs, nns=self.nns[scan_id_no_split],
-                         sample_in_runtime=self.sample_in_runtime,
-                         num_nn=sample_num_nn, num_seed=sample_num_seed,
-                         use_all = self.for_eval)
+                                         self.mconfig.num_points, self.mconfig.num_points_union,
+                                         # use_rgb=self.use_rgb,use_normal=self.use_normal,
+                                         for_train=True, instance2labelName=map_instance2labelName,
+                                         classNames=self.classNames,
+                                         rel_json=self.relationship_json[scan_id],
+                                         relationships=self.relationNames,
+                                         multi_rel_outputs=self.multi_rel_outputs,
+                                         padding=0.2, num_max_rel=self.max_edges,
+                                         shuffle_objs=self.shuffle_objs, nns=self.nns[scan_id_no_split],
+                                         sample_in_runtime=self.sample_in_runtime,
+                                         num_nn=sample_num_nn, num_seed=sample_num_seed,
+                                         use_all = self.for_eval)
 
         return scan_id, instance2mask, obj_points, rel_points, gt_class, gt_rels, edge_indices
 
@@ -321,6 +329,7 @@ class RIODatasetGraph(data.Dataset):
                     To verify this, run check_seg.py
                     '''
                     continue
+
             if scan['scan'] not in selected_scans:
                 # count_invalid += 1
                 # print("Invalid scans on total scans:", count_invalid, " / ", count_scans)
@@ -362,7 +371,7 @@ if __name__ == '__main__':
     config.dataset.label_file = 'labels.instances.align.annotated.v2.ply'
     config.dataset_type = 'SGPN'
     config.dataset.load_cache=False
-    use_rgb= False
+    use_rgb=False
     use_normal=True
     dataset = RIODatasetGraph(config,
                               split='validation_scans',

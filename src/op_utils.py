@@ -4,7 +4,7 @@ if __name__ == '__main__' and __package__ is None:
 
 import os,sys,time,math,torch
 import numpy as np
-from torch_geometric.nn.conv import MessagePassing
+# from torch_geometric.nn.conv import MessagePassing
 
 
 # put a text in a list, like the same functon in utils.util.py
@@ -17,7 +17,7 @@ from torch_geometric.nn.conv import MessagePassing
     return output'''
 
 
-def rotation_matrix(axis, theta):
+'''def rotation_matrix(axis, theta):
     """
     Return the rotation matrix associated with counterclockwise rotation about
     the given axis by theta radians.
@@ -30,10 +30,10 @@ def rotation_matrix(axis, theta):
     bc, ad, ac, ab, bd, cd = b * c, a * d, a * c, a * b, b * d, c * d
     return np.array([[aa + bb - cc - dd, 2 * (bc + ad), 2 * (bd - ac)],
                       [2 * (bc - ad), aa + cc - bb - dd, 2 * (cd + ab)],
-                      [2 * (bd + ac), 2 * (cd - ab), aa + dd - bb - cc]])
+                      [2 * (bd + ac), 2 * (cd - ab), aa + dd - bb - cc]])'''
 
 
-def rotation_matrix_from_vectors(vec1, vec2):
+'''def rotation_matrix_from_vectors(vec1, vec2):
     """ Find the rotation matrix that aligns vec1 to vec2
     :param vec1: A 3d "source" vector
     :param vec2: A 3d "destination" vector
@@ -45,14 +45,12 @@ def rotation_matrix_from_vectors(vec1, vec2):
     s = np.linalg.norm(v)
     kmat = np.array([[0, -v[2], v[1]], [v[2], 0, -v[0]], [-v[1], v[0], 0]])
     rotation_matrix = np.eye(3) + kmat + kmat.dot(kmat) * ((1 - c) / (s ** 2))
-    return rotation_matrix
+    return rotation_matrix'''
 
 
-def gen_descriptor(pts:torch.tensor):
-    '''
-    centroid_pts, std_pts, segment_dims, segment_volume, segment_lengths
-    [3, 3, 3, 1, 1]
-    '''
+'''def gen_descriptor(pts:torch.tensor):
+    "centroid_pts, std_pts, segment_dims, segment_volume, segment_lengths
+    [3, 3, 3, 1, 1]"
     assert pts.ndim==2
     assert pts.shape[-1]==3
     # centroid [n, 3]
@@ -65,10 +63,10 @@ def gen_descriptor(pts:torch.tensor):
     segment_volume = (segment_dims[0]*segment_dims[1]*segment_dims[2]).unsqueeze(0)
     # length [n, 1]
     segment_lengths = segment_dims.max().unsqueeze(0)
-    return torch.cat([centroid_pts,std_pts,segment_dims,segment_volume,segment_lengths],dim=0)
+    return torch.cat([centroid_pts,std_pts,segment_dims,segment_volume,segment_lengths],dim=0)'''
 
 
-class Gen_edge_descriptor(MessagePassing):  #TODO: move to model
+'''class Gen_edge_descriptor(MessagePassing):  #TODO: move to model
     """ A sequence of scene graph convolution layers  """
     def __init__(self, flow="source_to_target"):
         super().__init__(flow=flow)
@@ -98,7 +96,7 @@ class Gen_edge_descriptor(MessagePassing):  #TODO: move to model
         # length log ratio
         edge_feature[:,10] = torch.log( x_i[:,10] / x_j[:,10])
         # edge_feature, *_ = self.ef(edge_feature.unsqueeze(-1))
-        return edge_feature.unsqueeze(-1)
+        return edge_feature.unsqueeze(-1)'''
 
        
 def pytorch_count_params(model, trainable=True):
@@ -168,8 +166,7 @@ class Progbar(object):
                 self._values_order.append(k)
             if k not in self.stateful_metrics:
                 if k not in self._values:
-                    self._values[k] = [v * (current - self._seen_so_far),
-                                        current - self._seen_so_far]
+                    self._values[k] = [v * (current - self._seen_so_far), current - self._seen_so_far]
                 else:
                     self._values[k][0] += v * (current - self._seen_so_far)
                     self._values[k][1] += (current - self._seen_so_far)

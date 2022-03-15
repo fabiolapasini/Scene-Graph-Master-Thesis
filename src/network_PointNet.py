@@ -13,7 +13,7 @@ from torch.autograd import Variable
 import numpy as np
 import torch.nn.functional as F
 from src.networks_base import BaseNetwork
-import src.op_utils
+# import src.op_utils
 
 
 class STN3d(nn.Module):
@@ -26,7 +26,6 @@ class STN3d(nn.Module):
         self.fc2 = nn.Linear(512, 256)
         self.fc3 = nn.Linear(256, 9)
         self.relu = nn.ReLU()
-
         self.bn1 = nn.BatchNorm1d(64)
         self.bn2 = nn.BatchNorm1d(128)
         self.bn3 = nn.BatchNorm1d(1024)
@@ -205,7 +204,7 @@ class PointNetCls(BaseNetwork):
         super(PointNetCls, self).__init__()
         self.name = 'pnetcls'
         self.in_size=in_size
-        self.k = k
+        # self.k = k
         self.use_batch_norm = batch_norm
         self.use_drop_out   = drop_out
         self.fc1 = nn.Linear(in_size, 512)
@@ -227,14 +226,12 @@ class PointNetCls(BaseNetwork):
         if self.use_batch_norm:
             x = self.bn1(x)
         x = self.relu(x)
-        
         x = self.fc2(x)
         if self.use_drop_out:
             x = self.dropout(x)
         if self.use_batch_norm:
             x = self.bn2(x)
         x = self.relu(x)
-
         x = self.fc3(x)
         return F.log_softmax(x, dim=1)
 

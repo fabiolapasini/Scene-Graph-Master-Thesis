@@ -33,12 +33,19 @@ class TripletGCN(MessagePassing):
         return gcn_x, gcn_e
 
     def message(self, x_i, x_j, edge_feature):
+
+        # torch.Size([420, 256])
+        # print(x_i.size())
+        # print(edge_feature.size(), " ", type(edge_feature))
+        # print(x_j.size())
+
         x = torch.cat([x_i, edge_feature, x_j], dim=1)
-        x = self.nn1(x)
+        x = self.nn1(x)             # torch.Size([420, 1280])
+        # print("\n")
+        # print(x.size())
         new_x_i = x[:, :self.dim_hidden]
         new_e = x[:, self.dim_hidden:(self.dim_hidden + self.dim_edge)]
         new_x_j = x[:, (self.dim_hidden + self.dim_edge):]
-       # print("new new_e size: ", new_e.size())
         x = new_x_i + new_x_j
         return [x, new_e]
 

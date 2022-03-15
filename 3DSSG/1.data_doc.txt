@@ -21,6 +21,27 @@ http://campar.in.tum.de/files/3DSSG/README.md
 |-- wordnet_attributes.txt
     Extracted lexcial attributes of each of the 534 classes
 	
+	
+## Subset Data
+
+Additional files used for validation and training our networks can be found in 3DSSG_subset.zip.
+
+```
+[3DSSG_subset.zip](http://campar.in.tum.de/files/3DSSG/3DSSG_subset.zip)
+|-- relationships.json
+    Subset of the semantic relationships (edges) of our semantic graphs used for training
+|-- relationships_validation.json
+    Splitted graphs with subset of the semantic relationships (edges) used for validation
+|-- relationships_train.json
+    Splitted graphs with subset of the semantic relationships (edges) used for training
+|-- classes.txt
+    Subset of 160 classes used for training
+|-- relationships.txt
+    Subset of 27 relationships used for training
+```
+
+
+	
 
 **Object instances (nodes) (`objects.json`)**:
 {
@@ -65,3 +86,9 @@ http://campar.in.tum.de/files/3DSSG/README.md
         ...
       ],
       "scan": "531cff10-0021-28f6-8f94-80db8fdbbbee"
+	  
+	  
+	  
+	  
+	  
+Other important file in here https://github.com/ShunChengWu/3DSSG/blob/master/files/preparation.sh

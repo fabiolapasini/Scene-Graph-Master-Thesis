@@ -4,7 +4,7 @@ TreeDSSG_PATH_sub = '/home/fabiola/data_fabiola/Scene-Graph-Master-Thesis/3DSSG/
 
 Scan3RJson_PATH = DATA_PATH+'3RScan.json'
 CLASS160_FILE = TreeDSSG_PATH_sub+'classes160.txt'
-LABEL_MAPPING_FILE = DATA_PATH+'3RScan.v2_Semantic_Classes_Mapping.csv'
+LABEL_MAPPING_FILE = DATA_PATH+'3RScan.v2 Semantic Classes - Mapping.csv'
 
 # 3RScan file names
 LABEL_FILE_NAME_RAW = 'labels.instances.annotated.v2.ply'

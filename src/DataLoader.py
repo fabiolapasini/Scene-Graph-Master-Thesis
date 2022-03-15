@@ -27,7 +27,7 @@ class CustomDataLoader(DataLoader):
         super().__init__(dataset, batch_size, shuffle, sampler,
                  batch_sampler, num_workers, collate_fn, pin_memory, drop_last, timeout, worker_init_fn, multiprocessing_context)
         self.config = config
-        
+
     def init_fn(self, worker_id):
         np.random.seed(self.config.SEED + worker_id)
         

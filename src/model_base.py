@@ -33,7 +33,6 @@ class BaseModel(nn.Module):
                 data = torch.load(path)
             else:
                 data = torch.load(path, map_location=lambda storage, loc: storage)
-                
             try:
                 eva_iou = data['eva_iou']
             except:

@@ -9,26 +9,33 @@ import torch.optim as optim
 import torch.nn.functional as F
 from src.model_base import BaseModel
 from src.network_PointNet import PointNetfeat, PointNetCls, PointNetRelCls, PointNetRelClsMulti
-from config import Config
-import op_utils as op_t
+from src.config import Config
+import src.op_utils as op_t
 
 # TRIP:
-from src.network_TripletGCN import TripletGCNModel          # Johana Wald / J&J implementation with MS
+from src.network_TripletGCN import TripletGCNModel                          # Johana Wald / J&J implementation with MS
+# TRIPj&j
+from src.experiments_TripletGCN import GraphTripleConvNet
 # EAN:
-from src.network_GAT import GraphEdgeAttenNetworkLayers     # GAT Shun Cheng-Wu implementation
-# EAN_ms
-from src.network_GAT_ms import GEAN_ms                          # GAT with Message Passing class from Pytorch Geometric
-# EXP
-from src.network_GCN import GCNnet           # no Gat yes MS Shun Cheng-Wu way to deal with edges, Johana input
-
+from src.network_GAT import GraphEdgeAttenNetworkLayers                     # GAT Shun Cheng-Wu implementation
 # EXP_trip:
-# from src.experiments_TripletGCN import TripletGCNModel_1    # some experiments on J&J and Johana nets
+# from src.experiments_TripletGCN import TripletGCNModel_1                  # some experiments on J&J and Johana nets
+# GCN
+from src.network_GCN import GCNnet                                          # no Gat yes MS Shun Cheng-Wu way to deal with edges, Johana input
+# GIN
+from src.network_GIN import GINnet
+# GraphSAGE
+from src.network_GraphSAGE import SAGEnet
 # EXP_2
-# from src.experiments_network_GNN import GraphEdgeAttenNetworkLayers_           # no Gat no MS Shun Cheng-Wu way to deal with edges
+from src.experiments_network_GNN import GraphEdgeAttenNetworkLayers_        # no Gat yes MS Shun Cheng-Wu way to deal with edges
+# EAN_ms
+from src.network_GAT_ms import GEAN_ms                                      # GAT with Message Passing class from Pytorch Geometric
+# Graphormer
+from src.network_Graphormer_1_exp import Graphormer_Net                           # Graphormer with Message Passing
 
 
 class SGPNModel(BaseModel):
-    def __init__(self,config:Config,name:str, num_class, num_rel):
+    def __init__(self,config:Config, name:str, num_class, num_rel):
         '''
         Scene graph prediction network from https://arxiv.org/pdf/2004.03967.pdf
         '''
@@ -37,6 +44,7 @@ class SGPNModel(BaseModel):
         self.mconfig = mconfig = config.MODEL
         with_bn = mconfig.WITH_BN
         self.flow = 'target_to_source' # we want the mess
+        aggr = mconfig.GCN_AGGR
         
         dim_point = 3
         dim_point_rel = 3
@@ -49,6 +57,9 @@ class SGPNModel(BaseModel):
             
         if mconfig.USE_CONTEXT:
             dim_point_rel += 1
+
+        # POINTCLOUD
+        #########################################################################################################################
         
         # Object Encoder
         models['obj_encoder'] = PointNetfeat(
@@ -68,15 +79,42 @@ class SGPNModel(BaseModel):
             feature_transform=mconfig.feature_transform,
             out_size=mconfig.edge_feature_size)
 
-
+        # GCN
         #########################################################################################################################
 
         if mconfig.GCN_TYPE == "TRIP":
             models['gcn'] = TripletGCNModel(num_layers = mconfig.N_LAYERS,
                                             dim_node = mconfig.point_feature_size,
                                             dim_edge = mconfig.edge_feature_size,
-                                            dim_hidden = mconfig.gcn_hidden_feature_size)
-                            
+                                            dim_hidden = mconfig.gcn_hidden_feature_size,
+                                            aggr = self.mconfig.GCN_AGGR)
+
+        if mconfig.GCN_TYPE == "TRIP_j&j":
+            models['gcn'] = GraphTripleConvNet(input_dim = mconfig.point_feature_size,
+                                            num_layers = mconfig.N_LAYERS,
+                                            hidden_dim = mconfig.gcn_hidden_feature_size)
+
+        elif mconfig.GCN_TYPE == "GCN":
+            models['gcn'] = GCNnet(num_layers=mconfig.N_LAYERS,
+                                   dim_node=mconfig.point_feature_size,
+                                   dim_edge=mconfig.edge_feature_size,
+                                   dim_hidden=mconfig.gcn_hidden_feature_size,
+                                   aggr = self.mconfig.GCN_AGGR)
+
+        elif mconfig.GCN_TYPE == "GIN":
+            models['gcn'] = GINnet(num_layers=mconfig.N_LAYERS,
+                                   dim_node=mconfig.point_feature_size,
+                                   dim_edge=mconfig.edge_feature_size,
+                                   dim_hidden=mconfig.gcn_hidden_feature_size,
+                                   aggr = self.mconfig.GCN_AGGR)
+
+        elif mconfig.GCN_TYPE == "GraphSAGE":
+            models['gcn'] = SAGEnet(num_layers=mconfig.N_LAYERS,
+                                   dim_node=mconfig.point_feature_size,
+                                   dim_edge=mconfig.edge_feature_size,
+                                   dim_hidden=mconfig.gcn_hidden_feature_size,
+                                   aggr = self.mconfig.GCN_AGGR)
+
         elif mconfig.GCN_TYPE == 'EAN':
             models['gcn'] = GraphEdgeAttenNetworkLayers(self.mconfig.point_feature_size,
                                 self.mconfig.edge_feature_size,
@@ -86,6 +124,15 @@ class SGPNModel(BaseModel):
                                 self.mconfig.GCN_AGGR,
                                 flow=self.flow)
 
+            '''elif mconfig.GCN_TYPE == 'EXP_2':
+                models['gcn'] = GraphEdgeAttenNetworkLayers_(self.mconfig.point_feature_size,
+                                    self.mconfig.edge_feature_size,
+                                    self.mconfig.DIM_ATTEN,
+                                    self.mconfig.N_LAYERS,
+                                    self.mconfig.NUM_HEADS,
+                                    self.mconfig.GCN_AGGR,
+                                    flow=self.flow)'''
+
         elif mconfig.GCN_TYPE == 'EAN_ms':
             models['gcn'] = GEAN_ms(self.mconfig.point_feature_size,
                                 self.mconfig.edge_feature_size,
@@ -94,26 +141,20 @@ class SGPNModel(BaseModel):
                                 self.mconfig.NUM_HEADS,
                                 self.mconfig.GCN_AGGR)
 
-        elif mconfig.GCN_TYPE == "EXP":
-            models['gcn'] = GCNnet(num_layers=mconfig.N_LAYERS,
-                                   dim_node=mconfig.point_feature_size,
-                                   dim_edge=mconfig.edge_feature_size,
-                                   dim_hidden=mconfig.gcn_hidden_feature_size)
-        
-        '''elif mconfig.GCN_TYPE == "EXP_trip":
-            models['gcn'] = TripletGCNModel_1(num_layers=mconfig.N_LAYERS,
-                                   dim_node=mconfig.point_feature_size,
-                                   dim_edge=mconfig.edge_feature_size,
-                                   dim_hidden=mconfig.gcn_hidden_feature_size)
-
-        elif mconfig.GCN_TYPE == 'EXP_2':
-            models['gcn'] = GraphEdgeAttenNetworkLayers_(self.mconfig.point_feature_size,
+        elif mconfig.GCN_TYPE == 'GRAPHORMER':
+            models['gcn'] = Graphormer_Net(self.mconfig.point_feature_size,
                                 self.mconfig.edge_feature_size,
                                 self.mconfig.DIM_ATTEN,
                                 self.mconfig.N_LAYERS,
                                 self.mconfig.NUM_HEADS,
                                 self.mconfig.GCN_AGGR,
-                                flow=self.flow)'''
+                                flow=self.flow)
+
+        '''elif mconfig.GCN_TYPE == "EXP_trip":
+            models['gcn'] = TripletGCNModel_1(num_layers=mconfig.N_LAYERS,
+                                   dim_node=mconfig.point_feature_size,
+                                   dim_edge=mconfig.edge_feature_size,
+                                   dim_hidden=mconfig.gcn_hidden_feature_size)'''
 
         #########################################################################################################################
 
@@ -124,7 +165,7 @@ class SGPNModel(BaseModel):
                             in_size=mconfig.point_feature_size,
                             batch_norm=with_bn,
                             drop_out=True)
-
+        
         if mconfig.multi_rel_outputs:
             print("multi_rel_outputs")
             models['rel_predictor'] = PointNetRelClsMulti(
@@ -163,19 +204,21 @@ class SGPNModel(BaseModel):
 
         # print("obj_points shape: ", obj_points.size())      # obj_points shape:  torch.Size([28, 3, 128])
         # print("rel_points shape: ", rel_points.size())      # rel_points shape:  torch.Size([420, 4, 256])
-        # print("edges shape: ", edges.size)                  # edges shape:  torch.Size([420, 2])
+        # print("edges shape: ", edges.size())                # edges shape:  torch.Size([2, 420])
+
+        # print("obj_feature shape: ", obj_feature.size())     #  torch.Size([28, 256])
+        # print("rel_feature shape: ", rel_feature.size())     #  torch.Size([420, 256])
+        # print("edges shape: ", edges.size())                # edges shape:  torch.Size([2, 420])
 
         ###########################################################################################
+
         probs = None
         if self.mconfig.USE_GCN:
-            if self.mconfig.GCN_TYPE == 'TRIP':
+            if self.mconfig.GCN_TYPE == 'TRIP' or self.mconfig.GCN_TYPE == 'TRIP_j&j' or self.mconfig.GCN_TYPE == 'GCN' or self.mconfig.GCN_TYPE == 'GIN' or self.mconfig.GCN_TYPE == 'GraphSAGE':
                 gcn_obj_feature, gcn_rel_feature = self.gcn(obj_feature, rel_feature, edges)
-            elif self.mconfig.GCN_TYPE == 'EAN':
+            elif self.mconfig.GCN_TYPE == 'EAN' or self.mconfig.GCN_TYPE == 'EAN_ms' or self.mconfig.GCN_TYPE == 'GRAPHORMER':
                 gcn_obj_feature, gcn_rel_feature, probs = self.gcn(obj_feature, rel_feature, edges)
-            elif self.mconfig.GCN_TYPE == 'EAN_ms':
-                gcn_obj_feature, gcn_rel_feature, probs = self.gcn(obj_feature, rel_feature, edges)
-            elif self.mconfig.GCN_TYPE == 'EXP':
-                gcn_obj_feature, gcn_rel_feature = self.gcn(obj_feature, rel_feature, edges)
+            else: print("FREGATO")
 
         ###########################################################################################
             
@@ -185,10 +228,10 @@ class SGPNModel(BaseModel):
                 obj_cls = self.obj_predictor(obj_feature)
             rel_cls = self.rel_predictor(gcn_rel_feature)
 
-        else:
+        '''else:
             gcn_obj_feature = gcn_rel_feature = None
             obj_cls = self.obj_predictor(obj_feature)
-            rel_cls = self.rel_predictor(rel_feature)
+            rel_cls = self.rel_predictor(rel_feature)'''
         
         if return_meta_data:
             return obj_cls, rel_cls, obj_feature, rel_feature, gcn_obj_feature, gcn_rel_feature, probs
@@ -211,6 +254,7 @@ class SGPNModel(BaseModel):
         # else:
         #     raise NotImplementedError('')
 
+        # negative log likelihood loss
         loss_obj = F.nll_loss(obj_pred, gt_obj_cls, weight = weights_obj)
                     
         if self.mconfig.multi_rel_outputs:
@@ -226,6 +270,7 @@ class SGPNModel(BaseModel):
         logs = [("Loss/cls_loss",loss_obj.detach().item()),
                 ("Loss/rel_loss",loss_rel.detach().item()),
                 ("Loss/loss", loss.detach().item())]
+
         return logs, obj_pred.detach(), rel_pred.detach(), probs
     
 
@@ -235,13 +280,13 @@ class SGPNModel(BaseModel):
         self.optimizer.zero_grad()
     
 
-    def norm_tensor(self, points, dim):
+    '''def norm_tensor(self, points, dim):
         # points.shape = [n, 3, npts]
         centroid = torch.mean(points, dim=-1).unsqueeze(-1) # N, 3
         points -= centroid # n, 3, npts
         furthest_distance = points.pow(2).sum(1).sqrt().max(1)[0] # find maximum distance for each n -> [n]
         points /= furthest_distance[0]
-        return points
+        return points'''
     
 
     def calculate_metrics(self, preds, gts):

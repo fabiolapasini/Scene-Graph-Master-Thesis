@@ -27,6 +27,18 @@ def MLP(channels: list, do_bn=False, on_last=False, drop_out=None):
                 layers.append(torch.nn.Dropout(drop_out))
     return mySequential(*layers)
 
+def MLP_attn(channels: list, on_last=False):
+    """ Multi-layer perceptron """
+    n = len(channels)
+    layers = []
+    offset = 0 if on_last else 1
+    for i in range(1, n):
+        layers.append(
+            torch.nn.Embedding(channels[i - 1], channels[i]))
+        if i < (n-offset):
+            layers.append(torch.nn.ReLU())
+    return mySequential(*layers)
+
 
 # this creates a multi layer perceptron, basically a sequence of Linear and Relu and batch normalization layer
 def build_mlp(dim_list, activation='relu', batch_norm=False, dropout=0, final_nonlinearity=False):

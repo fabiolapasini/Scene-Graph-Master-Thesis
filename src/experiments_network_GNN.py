@@ -3,8 +3,8 @@
 # Some codes here are modified from SuperGluePretrainedNetwork https://github.com/magicleap/SuperGluePretrainedNetwork/blob/master/models/superglue.py
 
 import torch
-from network_util import build_mlp, Gen_Index, Aggre_Index
-from networks_base import BaseNetwork
+from src.network_util import build_mlp, Gen_Index, Aggre_Index
+from src.networks_base import BaseNetwork
 from torch_geometric.nn.conv import MessagePassing
 from torch.nn import Sequential, Linear, ReLU, BatchNorm1d
 from torch import Tensor
@@ -12,7 +12,7 @@ from torch_scatter import scatter
 from typing import Optional
 
 
-# SHUNG CHEN-WO WAY TO DEAL WITH EDGES / NO-MS IMPLEMENTATION ################################################################################
+# GAT / SHUNG CHEN-WO WAY TO DEAL WITH EDGES / MS IMPLEMENTATION ################################################################################
 
 class MultiHeadedEdgeAttention_(torch.nn.Module):
     def __init__(self, dim_node: int, dim_edge: int, dim_atten: int, use_bn=False, **kwargs):
@@ -32,13 +32,11 @@ class MultiHeadedEdgeAttention_(torch.nn.Module):
         return value, edge_feature
 
 
-class GraphEdgeAttenNetwork_(BaseNetwork):
+class GraphEdgeNetwork(MessagePassing):
     def __init__(self, dim_node, dim_edge, dim_atten, aggr= 'max', use_bn=False, flow='target_to_source',use_edge:bool=True, **kwargs):
         super().__init__()
         self.dim_node=dim_node
         self.dim_edge=dim_edge
-        self.index_get = Gen_Index(flow=flow)
-        self.index_aggr = Aggre_Index(aggr=aggr,flow=flow)
 
         self.edgeatten = MultiHeadedEdgeAttention_(
                     dim_node=dim_node,dim_edge=dim_edge, dim_atten=dim_atten,
@@ -46,11 +44,17 @@ class GraphEdgeAttenNetwork_(BaseNetwork):
         self.prop = build_mlp([dim_node + dim_atten, dim_node + dim_atten, dim_node], batch_norm=use_bn, final_nonlinearity=False)
 
     def forward(self, x, edge_feature, edge_index):
-        x_i, x_j = self.index_get(x, edge_index)
-        xx, gcn_edge_feature = self.edgeatten(x_i, edge_feature, x_j)
-        xx = self.index_aggr(xx, edge_index, dim_size = x.shape[0])
+        xx, gcn_edge_feature = self.propagate(edge_index, x=x, edge_feature=edge_feature)
         xx = self.prop(torch.cat([x, xx], dim=1))
         return xx, gcn_edge_feature
+
+    def message(self, x_i, x_j, edge_feature):
+        xx, gcn_edge_feature = self.edgeatten(x_i, edge_feature, x_j)
+        return [xx, gcn_edge_feature]
+
+    def aggregate(self, x:Tensor, index:Tensor, ptr:Optional[Tensor]=None, dim_size:Optional[int]=None) -> Tensor:
+        x[0] = scatter(x[0], index, dim=self.node_dim, dim_size=dim_size, reduce=self.aggr)
+        return x
 
 
 class GraphEdgeAttenNetworkLayers_(BaseNetwork):
@@ -60,7 +64,7 @@ class GraphEdgeAttenNetworkLayers_(BaseNetwork):
         self.gconvs = torch.nn.ModuleList()
 
         for _ in range(self.num_layers):
-            self.gconvs.append(GraphEdgeAttenNetwork_(dim_node, dim_edge, dim_atten, aggr,
+            self.gconvs.append(GraphEdgeNetwork(dim_node, dim_edge, dim_atten, aggr,
                                                      use_bn=use_bn, flow=flow, use_edge=use_edge, **kwargs))
 
     def forward(self, node_feature, edge_feature, edges_indices):
