@@ -1,12 +1,16 @@
+# this file calculates the objects that are passed as parameters in my part of code!
+
+
 import numpy as np
 import torch,random
 
 
 def build_edge_from_selection(node_ids, neighbor_dict, max_edges_per_node):
     '''flow: an edge passes message from i to j is denoted as  [i,j]. '''
-    ''' build trees '''
     edge_indices = list()
+    # print("node_ids: ", type(node_ids))          # node_ids:  <class 'set'>
     for s_idx in node_ids:
+        # print("s_idx: ", type(s_idx))           # s_idx:  <class 'int'>
         if s_idx in neighbor_dict:
             nn = neighbor_dict[s_idx]
         else:
@@ -16,9 +20,10 @@ def build_edge_from_selection(node_ids, neighbor_dict, max_edges_per_node):
         if max_edges_per_node>0:
             if len(nn) > max_edges_per_node:
                 nn = list(np.random.choice(list(nn),max_edges_per_node))
-        
         for t_idx in nn:
             edge_indices.append([s_idx, t_idx])
+        # print("edge_indices")
+        # print(edge_indices)  # [[1, 2], [1, 3], [1, 5], [1, 6], [1, 8], [1, 9], [1, 10], [1, 11], [1, 12], [1, 13], [1, 14], [1, 17], [1, 18]......
     return edge_indices
 
 
@@ -89,7 +94,10 @@ def data_preparation(points, instances, selected_instances, num_points, num_poin
         edge_indices = build_edge_from_selection(filtered_nodes, nns, max_edges_per_node=-1)
         
         if num_max_rel > 0:
-            choices = np.random.choice(range(len(edge_indices)),num_max_rel).tolist()
+            '''print("#########################")
+            print("Hi, num_max_rel > 0")
+            print("#########################")'''
+            choices = np.random.choice(range(len(edge_indices)),num_max_rel).tolist()               # this can be a problem!
             edge_indices = [edge_indices[t] for t in choices]
         instances_id = list(filtered_nodes)
         
@@ -137,11 +145,11 @@ def data_preparation(points, instances, selected_instances, num_points, num_poin
         edge_indices = [[instance2mask[edge[0]]-1,instance2mask[edge[1]]-1] for edge in edge_indices ]
             
     num_objects = len(instances_id) if selected_instances is None else len(selected_instances)
-
     masks = np.array(list(map(lambda l: instance2mask[l], instances)), dtype=np.int32)
-    
-    dim_point = points.shape[1]
+    dim_point = points.shape[1]             # 3
     obj_points = torch.zeros([num_objects, num_points, dim_point])
+
+    # print("num_objects: ", num_objects, " num_points: ", num_points, " dim_point: " ,dim_point)     # num_objects:  28  num_points:  128 (setted config)  dim_point:  3
     
     # create normalized pointsets for each object, sorted like the masks
     bboxes = list()
@@ -229,11 +237,17 @@ def data_preparation(points, instances, selected_instances, num_points, num_poin
         points4d = np.concatenate([points, mask_], 1)
 
         pointset = points4d[np.where(filter_mask > 0)[0], :]
+        # print("1 ", type(pointset), " ", pointset.shape)                                # 1  <class 'numpy.ndarray'>   (21614, 4)
         choice = np.random.choice(len(pointset), num_points_union, replace=True)
         pointset = pointset[choice, :]
+        # print("2 ", type(pointset), " ", pointset.shape)                                # 2  <class 'numpy.ndarray'>   (256, 4)
         pointset = torch.from_numpy(pointset.astype(np.float32))
+        # print("3 ", pointset.size(), " ", type(pointset))                             # 3  torch.Size([256, 4])   <class 'torch.Tensor'>
         pointset[:,:3] = zero_mean(pointset[:,:3])
+        # print("4 ", pointset.size(), " ", type(pointset))                               # 4  torch.Size([256, 4])   <class 'torch.Tensor'>
+
         rel_points.append(pointset)
+        # print(len(rel_points))                                 # 420
 
     if for_train:
         try:
@@ -243,7 +257,7 @@ def data_preparation(points, instances, selected_instances, num_points, num_poin
     else:
         rel_points = torch.stack(rel_points, 0)
 
-    cat = torch.from_numpy(np.array(cat, dtype=np.int64))
+    cat = torch.from_numpy(np.array(cat, dtype=np.int64))                   # gt_class
     edge_indices = torch.tensor(edge_indices,dtype=torch.long)
     
     if for_train:

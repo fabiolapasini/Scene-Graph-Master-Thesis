@@ -16,11 +16,11 @@ def check_file_exist(path):
 
 # put a text in a list
 def read_txt_to_list(file):
-    output = []
-    with open(file, 'r') as f:
-        for line in f:
-            entry = line.rstrip().lower()
-            output.append(entry)
+    output = [] 
+    with open(file, 'r') as f: 
+        for line in f: 
+            entry = line.rstrip().lower() 
+            output.append(entry) 
     return output
 
 

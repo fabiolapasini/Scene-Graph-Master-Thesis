@@ -50,7 +50,6 @@ def get_label(ply_in, dataset_type, label_type):
 '''def load_rgb(path, target_name = define.LABEL_FILE_NAME):
     # path: path to the folder contains config.OBJ_NAME, config.MTL_NAME, config.TEXTURE_NAME,
     # config.LABEL_FILE_NAME and config.LABEL_FILE_NAME_RAW
-
     dirname = path
     pth_label = os.path.join(dirname,target_name)
     if path.find('scene') >=0:    

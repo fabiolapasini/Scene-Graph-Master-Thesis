@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-from scipy.spatial import KDTree
-# import trimesh
-# import open3d as o3d
+import trimesh
+import open3d as o3d
 from utils import util
 from enum import Enum
 
@@ -35,17 +34,17 @@ def find_neighbors(points, segments, search_method:SAMPLE_METHODS, receptive_fie
     # tmp_bboxes=dict()
     for idx in seg_ids:
         segs_pts[idx] = points[np.where(segments==idx)]
-        trees[idx] = KDTree(segs_pts[idx][:,:3].transpose())
+        from scipy.spatial import KDTree
+        # trees[idx] = KDTree(segs_pts[idx][:, :3].transpose())
+        trees[idx] = o3d.geometry.KDTreeFlann(segs_pts[idx][:,:3].transpose())
         bboxes[idx] = [segs_pts[idx][:,:3].min(0)-receptive_field,segs_pts[idx][:,:3].max(0)+receptive_field]
         # tmp_bboxes[idx] = [segs_pts[idx].min(0),segs_pts[idx].max(0)]
 
-    
     if debug:
         seg_colors = dict()
         for index in seg_ids:
             seg_colors[index] = util.color_rgb(util.rand_24_bit())
 
-    
     # Building Box Method      
     segs_neighbors = dict()
     if search_method == SAMPLE_METHODS.BBOX:
