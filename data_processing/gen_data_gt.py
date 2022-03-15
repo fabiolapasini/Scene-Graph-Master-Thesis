@@ -3,30 +3,47 @@ if __name__ == '__main__' and __package__ is None:
     sys.path.append('../')
 
 import trimesh
-from scipy.spatial import KDTree
-# import open3d as o3d
+import open3d as o3d
 import numpy as np
 from utils import util_ply, util_label, util
 from utils.util_search import SAMPLE_METHODS, find_neighbors
 from tqdm import tqdm
 from pathlib import Path
-import os,json    
+import os, json
 import argparse
 
-from utils import define as define
+import platform
+if (platform.system() == "Windows"):
+    from utils import define_win as define
+elif (platform.system() != "Windows"):
+    from utils import define as define
 
 ##########################################################################
 
 # Ubuntu:
     # python gen_data_gt.py --type train --pth_out '../gen_data' --target_scan ../3RScan/train_scans.txt
     # python gen_data_gt.py --type validation --pth_out '../gen_data' --target_scan ../3RScan/validation_scans.txt
-    # python gen_data_gt.py --type test --pth_out '../gen_data' --target_scan ../3RScan/train_scans.txt
+    # python gen_data_gt.py --type test --pth_out '../gen_data' --target_scan ../3RScan/test_scans.txt
+
+# Win:
+    # python gen_data_gt.py --type train --pth_out ..\gen_data --target_scan ..\3RScan\train_scans.txt
+    # python gen_data_gt.py --type validation --pth_out ..\gen_data --target_scan ..\3RScan\validation_scans.txt
+    # python gen_data_gt.py --type test --pth_out ..\gen_data --target_scan ..\3RScan\test_scans.txt
+
+    # python gen_data_gt.py --type train --pth_out ..\gen_data --target_scan ..\3RScan\scan_name.txt
+    # python gen_data_gt.py --type validation --pth_out ..\gen_data --target_scan ..\3RScan\scan_name.txt
+    # python gen_data_gt.py --type test --pth_out ..\gen_data --target_scan ..\3RScan\scan_name.txt
+
+##########################################################################
+
+# this code creates a folder ..\\Data with inside: args.json  relationships_train.json classes.txt  relationships.txt
+# select the -- validation to create all the files needed
 
 def Parser(add_help=True):
     parser = argparse.ArgumentParser(description='Process some integers.', formatter_class = argparse.ArgumentDefaultsHelpFormatter, add_help=add_help)
     parser.add_argument('--scans', type=str,default='../3RScan/')
     parser.add_argument('--type', type=str, default='validation', choices=['train', 'test', 'validation'], help="allow multiple rel pred outputs per pair",required=False)
-    parser.add_argument('--pth_out', type=str,default='../Data/', help='pth to output directory',required=True)
+    parser.add_argument('--pth_out', type=str,default='../data/tmp', help='pth to output directory',required=True)
     parser.add_argument('--relation', type=str,default='relationships', choices=['relationships_extended', 'relationships'])
     parser.add_argument('--target_scan', type=str, default='', help='path to a txt file that contains a list of scan ids that you want to use.')
     parser.add_argument('--label_type', type=str,default='3RScan160', choices=['3RScan160'], help='label',required=False)
@@ -42,7 +59,7 @@ def Parser(add_help=True):
     parser.add_argument('--radius_receptive', type=float,default=0.5,help='The receptive field of each seed.')
     
     # split parameters
-    parser.add_argument('--split', type=int,default=0,help='Split scene into groups.')
+    parser.add_argument('--split', type=int, default=0, help='Split scene into groups.')
     parser.add_argument('--radius_seed', type=float,default=1,help='The minimum distance between two seeds.')
     parser.add_argument('--min_segs', type=int,default=5,help='Minimum segments for each segGroup')
     parser.add_argument('--split_method', type=str, choices=['BBOX','KNN'],default='BBOX',help='How to split the scene.')
@@ -51,8 +68,8 @@ def Parser(add_help=True):
 
 name_same_segment = 'same part'
 
-'''def generate_groups(cloud:trimesh.points.PointCloud, distance:float=1, bbox_distance:float=0.75, min_seg_per_group = 5, segs_neighbors=None): 
-# def generate_groups(cloud, distance, bbox_distance, min_seg_per_group = 5, segs_neighbors=None):
+
+'''def generate_groups(cloud:trimesh.points.PointCloud, distance:float=1, bbox_distance:float=0.75, min_seg_per_group = 5, segs_neighbors=None):
     points = np.array(cloud.vertices.tolist())
     segments = cloud.metadata['ply_raw']['vertex']['data']['label'].flatten()
     seg_ids = np.unique(segments)
@@ -130,7 +147,9 @@ name_same_segment = 'same part'
         bboxes = dict()
         for idx in seg_ids:
             segs[idx] = points[np.where(segments==idx)]
-            trees[idx] = KDTree(segs[idx].transpose())
+            from scipy.spatial import KDTree
+            # trees[idx] = KDTree(segs[idx].transpose())
+            trees[idx] = o3d.geometry.KDTreeFlann(segs[idx].transpose())
             bboxes[idx] = [segs[idx].min(0)-radknn,segs[idx].max(0)+radknn]
 
         # search neighbor for each segments
@@ -183,7 +202,7 @@ def process(pth_3RScan, scan_id, target_relationships:list, gt_relationships:dic
     # load gt
     cloud_gt = trimesh.load(pth_gt, process=False)
     points_gt = np.array(cloud_gt.vertices.tolist())
-    segments_gt = util_ply.get_label(cloud_gt, '3RScan', 'Segment').flatten()
+    segments_gt = util_ply.get_label(cloud_gt, '3RScan', 'Segment').flatten()   # read objectId from semseg.v2
     
     segs_neighbors = find_neighbors(points_gt, segments_gt, search_method,receptive_field=args.radius_receptive)
     relationships_new['neighbors'][scan_id] = segs_neighbors
@@ -192,16 +211,16 @@ def process(pth_3RScan, scan_id, target_relationships:list, gt_relationships:dic
     segment_ids = segment_ids[segment_ids!=0]
 
     if split_scene:
-        print("This is not my case")
+        print ("This is not my case")
         # seg_groups = generate_groups(cloud_gt, args.radius_seed, args.radius_receptive, args.min_segs, segs_neighbors=segs_neighbors)
         # if args.verbose:
         #    print('final segGroups:',len(seg_groups))
-    else:    
+    else:
         seg_groups = None
 
     _, label_name_mapping, _ = util_label.getLabelMapping(args.label_type)
     pth_semseg_file = os.path.join(pth_3RScan, scan_id, segseg_file_name)
-    instance2labelName = util.load_semseg(pth_semseg_file, label_name_mapping,args.mapping)
+    instance2labelName = util.load_semseg(pth_semseg_file, label_name_mapping, args.mapping)
     
     ''' Find and count all corresponding segments'''
     size_segments_gt = dict()
@@ -211,35 +230,35 @@ def process(pth_3RScan, scan_id, target_relationships:list, gt_relationships:dic
         segment_points = points_gt[segment_indices]        
         size_segments_gt[segment_id] = len(segment_points)
         map_segment_pd_2_gt[segment_id]=segment_id
-    
 
     ''' Save as ply '''
-    if debug:
+    '''if debug:
         for seg, label_name in instance2labelName.items():
             segment_indices = np.where(segments_gt == seg)[0]
             if label_name != 'none':
                 continue
             for index in segment_indices:
                 cloud_gt.visual.vertex_colors[index][:3] = [0,0,0]
-        cloud_gt.export('tmp_gtcloud.ply')
+        cloud_gt.export('tmp_gtcloud.ply')'''
 
     
     '''' Save as relationship_*.json '''
     list_relationships = list()
     if seg_groups is not None:
-        for split_id in range(len(seg_groups)):
+        print("This is not my case")
+        '''for split_id in range(len(seg_groups)):
             seg_group = seg_groups[split_id]
             relationships = gen_relationship(scan_id,split_id,map_segment_pd_2_gt, instance2labelName,seg_group)
             if len(relationships["objects"]) == 0 or len(relationships['relationships']) == 0:
                 continue
             list_relationships.append(relationships)
             
-            ''' check '''
+            # check 
             for obj in relationships['objects']:
                 assert(obj in seg_group)
             for rel in relationships['relationships']:
                 assert(rel[0] in relationships['objects'])
-                assert(rel[1] in relationships['objects'])
+                assert(rel[1] in relationships['objects'])'''
     else:
         relationships = gen_relationship(scan_id,0, map_segment_pd_2_gt, instance2labelName)
         if len(relationships["objects"]) != 0 and len(relationships['relationships']) != 0:
@@ -263,8 +282,7 @@ def gen_relationship(scan_id:str,split:int, map_segment_pd_2_gt:dict,instance2la
             continue
         objects[int(seg)] = name #labels_utils.NYU40_Label_Names[label-1]
     relationships["objects"] = objects
-    
-    
+
     split_relationships = list()
     ''' Inherit relationships from ground truth segments '''
     if gt_relationships is not None:
@@ -280,11 +298,7 @@ def gen_relationship(scan_id:str,split:int, map_segment_pd_2_gt:dict,instance2la
                 # if debug:print('filter',name,'it is not in the target relationships')
                 continue
             idx_in_txt_new = target_relationships.index(name)
-            
-            
-            
             split_relationships.append([ int(id_src), int(id_tar), idx_in_txt_new, name ])
-            
     relationships["relationships"] = split_relationships
     return relationships
     
@@ -301,8 +315,12 @@ if __name__ == '__main__':
     
     ''' Map label to 160'''
     label_names = sorted(util.read_classes(define.CLASS160_FILE))
+
+    # those relationnship are the ones written in the relationship.txt file produced
+    ###################################################
     target_relationships = sorted(util.read_classes(define.TreeDSSG_PATH_sub + 'relationships.txt'))
     # target_relationships = ['supported by', 'attached to','standing on','hanging on','connected to','part of','build in']
+
     classes_json = list()
     for name in label_names:
         if name == '-':continue
@@ -326,6 +344,7 @@ if __name__ == '__main__':
     relationships_new["scans"] = list()
     relationships_new['neighbors'] = dict()
     counter= 0
+
     with open(os.path.join(define.TreeDSSG_PATH_sub + args.relation + ".json"), "r") as read_file:
         data = json.load(read_file)
         for s in tqdm(data["scans"]):
@@ -344,9 +363,9 @@ if __name__ == '__main__':
             if debug:print('processing scene',scan_id)
             valid_scans.append(scan_id)
             relationships, segs_neighbors = process(args.scans, scan_id, target_relationships,
-                                    gt_relationships = gt_relationships,
-                                    split_scene = args.split,
-                                    verbose = args.verbose)
+                                                        gt_relationships = gt_relationships,
+                                                        split_scene = args.split,
+                                                        verbose = args.verbose)
             if len(relationships) == 0:
                 print('skip',scan_id,'due to not enough objs and relationships')
                 continue
@@ -358,25 +377,30 @@ if __name__ == '__main__':
             
             if debug:
                 break
+
+    ''' SAVE EVERYTHING '''
             
     Path(args.pth_out).mkdir(parents=True, exist_ok=True)
     pth_args = os.path.join(args.pth_out,'args.json')
     with open(pth_args, 'w') as f:
-            tmp = vars(args)
-            json.dump(tmp, f, indent=2)
+        tmp = vars(args)
+        json.dump(tmp, f, indent=2)
     
     pth_relationships_json = os.path.join(args.pth_out, "relationships_" + args.type + ".json")
     with open(pth_relationships_json, 'w') as f:
         json.dump(relationships_new, f)
+
     pth_classes = os.path.join(args.pth_out, 'classes.txt')
     with open(pth_classes,'w') as f:
         for name in classes_json:
             if name == '-': continue
             f.write('{}\n'.format(name))
+
     pth_relation = os.path.join(args.pth_out, 'relationships.txt')
     with open(pth_relation,'w') as f:
         for name in target_relationships:
             f.write('{}\n'.format(name))
+
     pth_split = os.path.join(args.pth_out, args.type+'_scans.txt')
     with open(pth_split,'w') as f:
         for name in valid_scans:

@@ -12,7 +12,9 @@ run download.py to download the data semseg.v2.json and the labels.instance.anno
         - segments
         - label (bed, armchair, wall, floor)
 
-run the transform_ply.py under utils to generate labels.instances.align.annotated.v2.ply:
-run the generate_train_valid_test.py to split the datset in train validation and test.
-run gen_data_gt.py to generate relationships_test, relationships_train, relationships_valid (put the right parameter)
-    
+run the transform_ply.py under data_processing to generate labels.instances.align.annotated.v2.ply:
+    questo file legge la matrice di trasformazione del file 3RScan.json e la applica alla pointcloud, poi la salva
+run the generate_train_valid_test.py to split the dataset in train validation and test:
+    questo file legge il type(train, val, test) della scansione dal file 3RScan.json
+run gen_data_gt.py to generate relationships_test, relationships_train, relationships_valid (put the right parameter):
+    all the generated_data are read inside the dataset_SGPN.py under src

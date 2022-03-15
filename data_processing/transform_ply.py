@@ -8,7 +8,13 @@ from shutil import copyfile
 from plyfile import PlyData
 import multiprocessing as mp
 
-from utils import define as define
+# python transform_ply.py --scan_id 0a4b8ef6-a83a-21f2-8672-dce34dd0d7ca
+
+import platform
+if (platform.system() == "Windows"):
+    from utils import define_win as define
+elif (platform.system() != "Windows"):
+    from utils import define as define
 
 try:
     from sets import Set
@@ -18,8 +24,8 @@ except ImportError:
 parser = argparse.ArgumentParser()
 parser.add_argument('--scan_id', type=str, default='', help="target scan_id. leave empty to process all scans")
 parser.add_argument('--thread', type=int, default=1, help="how many threads")
-
 opt = parser.parse_args()
+
 
 def resave_ply(filename_in, filename_out, matrix):
     """ Reads a PLY file from disk.
@@ -70,7 +76,7 @@ def resave_ply(filename_in, filename_out, matrix):
     
     plydata.write(filename_out)
 
-    
+
 # read the transformation matrix from 3RDScan.json, read a 4x4 matrix from a 16 elm list
 def read_transform_matrix():
     rescan2ref = {} # dictioinary to be created: couples scan_id - matrix 4x4  
@@ -80,7 +86,6 @@ def read_transform_matrix():
             for scans in scene["scans"]:
                 if "transform" in scans:
                     rescan2ref[scans["reference"]] = np.matrix(scans["transform"]).reshape(4,4)
-
                     # print(len(scans["transform"])) # list 16 element
                     # print(rescan2ref[scans["reference"]].shape) #(4.4)
 
@@ -108,7 +113,7 @@ def main():
                     continue
 
                 file_in = os.path.join(define.DATA_PATH, scan_id, define.LABEL_FILE_NAME_RAW)
-                file_out = os.path.join(define.DATA_PATH, scan_id, define.LABEL_FILE_NAME)                
+                file_out = os.path.join(define.DATA_PATH, scan_id, define.LABEL_FILE_NAME)
                 
                 if os.path.exists(file_out) is True: continue
                 if scan_id in rescan2ref: # if not we have a hidden test scan
@@ -120,8 +125,8 @@ def main():
                         resave_ply(file_in, file_out, rescan2ref[scan_id])
                 counter += 1
         while pool._cache:
+            # print('\r{} {:2.2%}'.format(process_text[1-len(pool._cache)], 1-len(pool._cache)/len(process_text)),flush=True,end='')
             print(process_text[1 - len(pool._cache)], 1 - len(pool._cache) / len(process_text))
-           #  print('\r{} {:2.2%}'.format(process_text[1-len(pool._cache)], 1-len(pool._cache)/len(process_text)),flush=True,end='')
             time.sleep(0.5)
         if opt.thread > 1:
             result = result.get()
@@ -139,7 +144,7 @@ def main():
             for line in f:
                 text = '{}: {}/ 432 rescans'.format(line.rstrip(), counter)
                 scan_id = line.rstrip()
-                # print(scan_id)    #all the scan_id in rescan.txt file
+                # print(scan_id)    #all the scan_id in references.txt file
                 if (opt.scan_id != "") and (scan_id != opt.scan_id):
                     continue
 
@@ -147,7 +152,6 @@ def main():
                 file_out = os.path.join(define.DATA_PATH, scan_id, define.LABEL_FILE_NAME)
 
                 if os.path.exists(file_out): continue
-                # questo codice non lo fa...
                 if opt.thread > 1:
                     process_text.append(text)
                     result = pool.apply_async(copyfile,(file_in, file_out))
@@ -156,8 +160,8 @@ def main():
                     copyfile(file_in, file_out)
                 counter += 1
         while pool._cache:
+            # print('\r{} {:2.2%}'.format(process_text[1-len(pool._cache)], 1-len(pool._cache)/len(process_text)),flush=True,end='')
             print(process_text[1-len(pool._cache)], 1-len(pool._cache)/len(process_text))
-           #  print('\r{} {:2.2%}'.format(process_text[1-len(pool._cache)], 1-len(pool._cache)/len(process_text)),flush=True,end='')
             time.sleep(0.5)
         if result is not None:
             result = result.get()

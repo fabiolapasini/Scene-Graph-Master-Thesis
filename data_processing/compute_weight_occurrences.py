@@ -7,15 +7,6 @@ import argparse
 import json
 from utils import util
 
-
-def Parser():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--root', type=str, default='../data/example_data', help="rio path")
-    parser.add_argument('--type', type=str, default='train', choices=['train', 'test', 'validation'], help="allow multiple rel pred outputs per pair",required=False)
-    parser.add_argument('--txt', type=str, default='"../data/train_scans.txt"', help="path to the txt file contain scan ids",required=False)
-    return parser
-
-
 def compute_weights(labels, classes, count, verbose=False):
     if verbose: print("-------------")    
     sum_weights = 0
@@ -38,15 +29,15 @@ def compute_weights(labels, classes, count, verbose=False):
     return weights
 
 
-def compute(classNames,relationNames, relationship_data, selections:list = None, verbose=False):
+def compute(classNames, relationNames, relationship_data, selections:list = None, verbose=False):
     o_rel_cls = np.zeros((len(relationNames)))
     o_obj_cls = np.zeros((len(classNames)))
     classes_count = 0
     counter = 0
-    
     exceed_ids = dict()
     scene_analysis = dict()
     cnn=0
+
     for scan in relationship_data['scans']:
         scan_id = scan["scan"]
         if selections is not None:
@@ -111,27 +102,10 @@ def compute(classNames,relationNames, relationship_data, selections:list = None,
             print('\t',id,count)
 
     if verbose: print("objects:")
-    wobjs = compute_weights(classNames, o_obj_cls, classes_count,verbose)
+    wobjs = compute_weights(classNames, o_obj_cls, classes_count, verbose)
     if verbose: print("relationships:")
-    wrels = compute_weights(relationNames, o_rel_cls, classes_count,verbose)
-    return wobjs,wrels,o_obj_cls,o_rel_cls
-
-
-def read_relationships_json(args):
-    catfile = os.path.join(args.root, 'classes.txt')
-    classNames = util.read_classes(catfile)
-    relationNames = util.read_relationships(os.path.join(args.root,'relationships.txt'))
-    pth_relationships_json = os.path.join(os.path.join(args.root,'relationships_'+str(args.type)+'.json'))
-
-    with open(pth_relationships_json, "r") as read_file:
-        data = json.load(read_file)
-
-    wobjs, wrels, o_obj_cls, o_rel_cls = compute(classNames, relationNames, data, verbose=True)
-
-
-def main():
-    args = Parser().parse_args()
-    read_relationships_json(args)
+    wrels = compute_weights(relationNames, o_rel_cls, classes_count, verbose)
+    return wobjs, wrels, o_obj_cls, o_rel_cls
 
 
 #if __name__ == "__main__": main()

@@ -6,8 +6,9 @@ Created on Fri Oct  2 13:21:59 2020
 This problem build up the scan and rescan list.
 """
 
-# python generate_train_valid_test.py --pth_out C:\\Users\\fabio\\Documents\GitHub\\Scene-Graph-Master-Thesis\\3RScan
-# train: 1064 validation: 114 test 157
+# python generate_train_valid_test.py --pth_out ..\\3RScan
+# python generate_train_valid_test.py --pth_out ../3RScan
+# train: 956 validation: 222 test 157
 
 if __name__ == '__main__' and __package__ is None:
     from os import sys
@@ -22,19 +23,24 @@ import numpy as np
 from collections import defaultdict
 from utils import util
 
-from utils import define as define
+
+import platform
+if (platform.system() == "Windows"):
+    from utils import define_win as define
+elif (platform.system() != "Windows"):
+    from utils import define as define
 
 
 def Parser():
     parser = argparse.ArgumentParser(description='Process some integers.', formatter_class = argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--p',type=float,default=0.8, help='split percentage.')
-    parser.add_argument('--pth_out',type=str,default='../3RScan',help='output path')
+    parser.add_argument('--p',type=float,default=0.9, help='split percentage.')
+    parser.add_argument('--pth_out',type=str,default='./',help='output path')
     parser.add_argument('--type',type=str,choices=['3RScan','ScanNet'],default='3RScan', help='type of dataset')
     parser.add_argument('--with_rescan', type=int, default=0, help='if >0, all rescan will be treated as new scans. the scans of the same room may appear in training and validation split.')
     return parser
 
 
-def gen_splits_norescan(pth_3rscan_json, train_valid_percent = 0.8):
+def gen_splits_norescan(pth_3rscan_json, train_valid_percent = 0.9):
     with open(pth_3rscan_json,'r') as f:
         scan3r = json.load(f)
     
@@ -43,6 +49,7 @@ def gen_splits_norescan(pth_3rscan_json, train_valid_percent = 0.8):
     for scan in scan3r:
         ref_id = scan['reference']
 
+        # no test!
         if scan['type'] == 'train':
             ll = scan_list_train
         elif scan['type'] == 'validation':
@@ -57,7 +64,7 @@ def gen_splits_norescan(pth_3rscan_json, train_valid_percent = 0.8):
     
     sample_train_indices = np.random.choice(range(n_scans),n_train,replace=False).tolist()
     sample_valid_indices = set(range(n_scans)).difference(sample_train_indices)
-    assert  len(sample_train_indices) + len(sample_valid_indices) == n_scans
+    assert len(sample_train_indices) + len(sample_valid_indices) == n_scans
     
     sample_train=[]
     for idx in sample_train_indices:
@@ -80,7 +87,7 @@ def gen_splits_norescan(pth_3rscan_json, train_valid_percent = 0.8):
     return sample_train, sample_valid, test_list
 
 
-def gen_splits(pth_3rscan_json, train_valid_percent = 0.8):
+'''def gen_splits(pth_3rscan_json, train_valid_percent = 0.75):
     with open(pth_3rscan_json,'r') as f:
         scan3r = json.load(f)
     
@@ -111,10 +118,10 @@ def gen_splits(pth_3rscan_json, train_valid_percent = 0.8):
     
     print('train:',len(sample_train),'validation:',len(sample_valid),'test',len(test_list))
             
-    return sample_train, sample_valid, test_list
+    return sample_train, sample_valid, test_list'''
 
 
-def gen_splits_scannet(pth_train_txt,pth_test_txt, train_valid_percent=0.8):
+'''def gen_splits_scannet(pth_train_txt,pth_test_txt, train_valid_percent=0.8):
     train_list = util.read_txt_to_list(pth_train_txt)
     test_list  = util.read_txt_to_list(pth_test_txt)
     n_train = int(math.ceil(train_valid_percent*len(train_list)))
@@ -128,7 +135,7 @@ def gen_splits_scannet(pth_train_txt,pth_test_txt, train_valid_percent=0.8):
     
     print('train:',len(sample_train),'validation:',len(sample_valid),'test',len(test_list))
             
-    return sample_train, sample_valid, test_list
+    return sample_train, sample_valid, test_list'''
 
 
 def save(path, scans):
@@ -138,6 +145,7 @@ def save(path, scans):
 
 
 if __name__ == '__main__':
+    # this file read the type(test, train,val) from the 3RScan.json file
     args = Parser().parse_args()
     train_scans = list()
     validation_scans = list()
@@ -149,9 +157,9 @@ if __name__ == '__main__':
             # train_scans, validation_scans, test_scans = gen_splits(define.Scan3RJson_PATH,args.p)
         else:
             # my case
-            train_scans,validation_scans,test_scans = gen_splits_norescan(define.Scan3RJson_PATH,args.p)
+            train_scans, validation_scans, test_scans = gen_splits_norescan(define.Scan3RJson_PATH, args.p)
     elif args.type == 'ScanNet':
-        print("This is not my case")
+        print(" ")
         '''train_scans,validation_scans,test_scans = gen_splits_scannet(
             define.SCANNET_SPLIT_TRAIN,
             define.SCANNET_SPLIT_VAL,

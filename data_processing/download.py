@@ -3,6 +3,14 @@
 # Run with ./download.py (or python download-scannet.py on Windows)
 # -*- coding: utf-8 -*-
 
+#   windows
+# python download.py -o ../3RScan/ --type semseg.v2.json
+# python download.py -o ../3RScan/ --type labels.instances.annotated.v2.ply
+
+#   ubuntu
+# python download.py -o ../3RScan/ --type semseg.v2.json
+# python download.py -o ../3RScan/ --type labels.instances.annotated.v2.ply
+
 import sys
 import argparse
 import os
