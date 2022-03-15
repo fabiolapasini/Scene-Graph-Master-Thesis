@@ -31,7 +31,7 @@ from src.experiments_network_GNN import GraphEdgeAttenNetworkLayers_        # no
 # EAN_ms
 from src.network_GAT_ms import GEAN_ms                                      # GAT with Message Passing class from Pytorch Geometric
 # Graphormer
-from src.network_Graphormer_1_exp import Graphormer_Net                           # Graphormer with Message Passing
+from src.network_Graphormer_12 import Graphormer_Net                            # Graphormer with Message Passing
 
 
 class SGPNModel(BaseModel):
