@@ -9,3 +9,4 @@ SGPN/SGPN/*
 SGPNgpu/logs/SGPN/*
 SGPNgpu/SGPN/*
 files/server_comands.txt
+data_processing/download_dataset.py

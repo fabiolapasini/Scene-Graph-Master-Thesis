@@ -24,3 +24,6 @@ During this thesis I started from the code in this [repo](https://github.com/Shu
 3. GraphSAGE,
 4. Updated GraphEdgeAttenNetworkLayers with PyTorch Geometric,
 5. Updated GraphEdgeAttenNetworkLayers with some part of Graphormer Net.
+
+
+
