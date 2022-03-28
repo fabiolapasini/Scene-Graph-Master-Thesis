@@ -14,3 +14,13 @@ PyTorch \
 Pytorch Geometric \
 Trimesh \
 pyximport 
+
+# Work done
+During this thesis I started from the code in this [repo](https://github.com/ShunChengWu/3DSSG) and I worked mainly on Graph Neural Network and I replaced the original networks with five different networks and I compared the results.
+
+## Nets
+1. GCN,
+2. GIN,
+3. GraphSAGE,
+4. Updated GraphEdgeAttenNetworkLayers with PyTorch Geometric,
+5. Updated GraphEdgeAttenNetworkLayers with some part of Graphormer Net.
