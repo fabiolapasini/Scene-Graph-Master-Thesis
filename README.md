@@ -1,8 +1,8 @@
 # Scene-Graph-Master-Thesis
 
 Master's Thesis of Fabiola Pasini \
-University of Parma  &
-Technical University of Munich &
+University of Parma  \
+Technical University of Munich \
 Computer Aided Medical Procedures (CAMP) chair
 
 # Summary
