@@ -17,7 +17,7 @@ Trimesh \
 pyximport 
 
 # Work done
-During this thesis I started from the code in this [repo](https://github.com/ShunChengWu/3DSSG), I worked mainly on Graph Neural Network, I replaced the original network with five different networks and I compared the results.
+During this thesis I started from the code in this [repo](https://github.com/ShunChengWu/3DSSG), I worked mainly on Graph Neural Network. I studied the concepts and ideas behind the first GNN model, then I studied five different cutting-edge GNN architectures. Finally I replaced the original network with those five different networks and I compared the results.
 
 ## Nets
 1. GCN,
