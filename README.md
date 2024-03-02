@@ -2,7 +2,8 @@
 
 Master's Thesis of Fabiola Pasini \
 University of Parma  &
-Technical University of Munich 
+Technical University of Munich &
+Computer Aided Medical Procedures (CAMP) chair
 
 # Summary
 Graph Neural Networks have become an interesting field of reaserch in the last years and diffent variants of the original GNN architecture have been proposed. The most famous works  focused mainly on the nodes and their features, not considering the edges between them. 
