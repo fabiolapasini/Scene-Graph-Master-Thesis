@@ -1,4 +1,4 @@
-# Scene-Graph-Master-Thesis
+# Discovering Graph Neural Networks for Indoor 3D Scene Representation
 
 Master's Thesis of Fabiola Pasini \
 University of Parma  \
